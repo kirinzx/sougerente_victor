@@ -33,18 +33,20 @@ const Profile = () => {
 
       <View style={stilos.container}>
         <TextInput
+          style={stilos.placeholder}
           placeholder="Email"
           autoCorrect={false}
           onChangeText={() => { }}
         />
 
         <TextInput
+          style={stilos.placeholder}
           placeholder="Senha"
           autoCorrect={false}
           onChangeText={() => { }}
         />
 
-        <TouchableOpacity>
+        <TouchableOpacity style={stilos.btnEntrar}>
           <Text>Entrar</Text>
         </TouchableOpacity>
 
@@ -62,7 +64,7 @@ const stilos = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#CB8D00',
+    backgroundColor: 'white',
 
   },
 
@@ -91,7 +93,27 @@ const stilos = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '90%',
+    width: '100%',
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80,
+  },
+
+  placeholder: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
+    marginTop: '8%',
+  },
+
+  btnEntrar: {
+    backgroundColor: 'white',
+    width: 70,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+    marginTop: '10%',
+
 
   },
 

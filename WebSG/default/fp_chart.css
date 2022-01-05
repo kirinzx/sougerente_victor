@@ -1,0 +1,20 @@
+.trdep-selected {
+    border: 3px solid #004494;
+    background-color: rgb(224, 224, 224);
+    font-weight: bold;
+}
+
+.transition {
+    transition: all .1s ease-in;
+}
+
+.transition-valores {
+    transition: all .5s;
+}
+
+.expand-card {
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    transition: all .5s;
+}
+
+@media screen and (min-width:200px) {}

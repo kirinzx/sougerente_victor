@@ -1,0 +1,140 @@
+.pg-custom {
+  width: 100%;
+  height: 60px;
+  padding-top: 20px;
+}
+
+.pg-custom {
+  display: flex;
+  justify-content: center;
+}
+
+.item {
+  background-color: #d1d3d4;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #7e7e7e;
+  text-align: center;
+}
+
+.item h5 {
+  margin-top: 10px;
+}
+
+.item-check {
+  background-color: #004494;
+  color: white;
+}
+
+.line {
+  transition: all .3s;
+  margin-top: 25px;
+  width: 200px;
+  height: 5px;
+  background-color: #d1d3d4;
+}
+
+.line-half {
+  transition: all .3s;
+  background-image: linear-gradient(to right, #004494 20%, #d1d3d4);
+}
+
+.line-full {
+  transition: all .3s;
+  background-color: #004494;
+}
+
+.pg-text {
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  color: #7e7e7e;
+  display: flex;
+  justify-content: center;
+}
+
+.pg-text div {
+  width: 250px;
+}
+
+.btn-pb button {
+  transition: all .1s ease-in;
+  background-color: transparent;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 90%;
+  margin: 0 auto;
+  border: 1px solid #7e7e7e;
+}
+
+.btn-pb .not-allow {
+  color: #a8a8a8;
+  border: 1px solid #a8a8a8;
+  cursor: not-allowed;
+}
+
+.btn-pb .allow {
+  color: #7e7e7e;
+  cursor: pointer;
+}
+
+.btn-pb .allow:hover {
+  background-color: #cccccc;
+  color: rgb(70, 70, 70);
+}
+
+.normal h6 {
+  font-weight: bold;
+  width: 90%;
+  margin: 5px auto;
+}
+
+.pg-text {
+  margin-top: 20px;
+}
+
+.h6-check {
+  color: #004494;
+}
+
+.pgbtn-check {
+  background-color: #004494 !important;
+  color: white !important;
+}
+
+.lds-roller {
+  border: 2px solid red;
+  margin-bottom: 100px !important;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 50px;
+}
+
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+
+.spinner {
+  border: 8px solid rgba(255, 255, 255, .8);
+  border-left-color: #17A2B8;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-top: -8px;
+}
+
+.checkspin {
+  width: 40px;
+  height: 40px;
+  margin-top: -8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

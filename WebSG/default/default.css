@@ -1,0 +1,217 @@
+:root {
+    --azul-crg: #004494;
+    --amarelo-crg: #F5AB00;
+    --cinza-crg: #C3C3C9;
+}
+
+@media only screen and (min-width: 1250px) {
+    .modalxl-responsive .modal-dialog {
+        padding: .2em 2em;
+        margin: 0;
+    }
+    .modalxl-responsive .modal-content {
+        width: 110%;
+        height: 600px;
+    }
+    .modalxl-widget {
+        margin-top: -10px;
+        height: 55px;
+    }
+    .modalxl-widget h5 {
+        font-size: 16px !important;
+    }
+    .modalxl-body {
+        height: 400px;
+    }
+    .modalxl-tb {
+        font-size: 11.5px;
+    }
+    .modalxl-tb thead {
+        font-size: 10px;
+    }
+    .modalxl-tb tbody {
+        font-size: 8px;
+    }
+}
+
+@media only screen and (min-width: 1400px) {
+    .modalxl-tb thead {
+        font-size: 11px;
+    }
+    .modalxl-tb tbody {
+        font-size: 9px;
+    }
+}
+
+@media only screen and (min-width: 1450px) {
+    .modalxl-tb thead {
+        font-size: 12px;
+    }
+    .modalxl-tb tbody {
+        font-size: 10px;
+        padding: -2px;
+    }
+}
+
+@media only screen and (min-width: 1500px) {
+    .modalxl-responsive .modal-dialog {
+        padding: .2em 3em;
+        margin: 0;
+    }
+    .modalxl-responsive .modal-content {
+        width: 135%;
+        height: 95vh;
+    }
+    .modalxl-widget h5 {
+        font-size: 17px !important;
+    }
+    .modalxl-widget {
+        margin-top: -10px;
+        height: 60px;
+    }
+    .modalxl-body {
+        height: 450px;
+    }
+    .modalxl-tb {
+        font-size: 13px;
+    }
+}
+
+@media only screen and (min-width: 1600px) {
+    .modalxl-responsive .modal-dialog {
+        padding: .8em 4em;
+        margin: 0;
+    }
+    .modalxl-responsive .modal-content {
+        width: 160%;
+        height: 95vh;
+    }
+    .modalxl-widget h5 {
+        font-size: 19px !important;
+    }
+    .modalxl-widget {
+        margin-top: -10px;
+        height: 70px;
+    }
+    .modalxl-body {
+        height: 500px;
+    }
+    .modalxl-tb {
+        font-size: 14.5px;
+    }
+    .modalxl-tb thead {
+        font-size: 13px;
+    }
+    .modalxl-tb tbody {
+        font-size: 11px;
+        padding: 0px;
+    }
+}
+
+@media only screen and (min-width: 1850px) {
+    .modalxl-responsive .modal-dialog {
+        padding: 1em 5em;
+        margin: 0;
+    }
+    .modalxl-responsive .modal-content {
+        width: 180%;
+        height: 95vh;
+    }
+    .modalxl-widget h5 {
+        font-size: 20px !important;
+    }
+    .modalxl-body {
+        height: 70vh;
+    }
+    .modalxl-tb {
+        font-size: 16px;
+    }
+    .modalxl-tb thead {
+        font-size: 14px;
+    }
+    .modalxl-tb tbody {
+        font-size: 12px;
+    }
+}
+
+#maincard-headerdetalhado {
+    width: 100%;
+    height: 50%;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #F4F4F4;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    background: #F4F4F4;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #dad7d7;
+}
+
+.bg-crg {
+    background-color: #004494;
+    color: white;
+    width: 80%;
+}
+
+.bg-grey {
+    background: #989898;
+    color: white;
+    width: 80%;
+}
+
+.modalxl-tb thead {
+    font-weight: bold;
+}
+
+.tbbadge thead tr th:nth-child(7) {
+    color: #fff !important;
+    background-color: #0062cc !important;
+    text-align: right !important;
+}
+
+.tbbadge thead tr th:nth-child(8) {
+    color: #fff !important;
+    background-color: #17a2b8 !important;
+    text-align: right !important;
+}
+
+.tbbadge thead tr th:nth-child(9) {
+    text-align: right !important;
+}
+
+.valor-right {
+    text-align: right;
+}
+
+.alert-red {
+    transition: all .8s;
+    border: 3px solid red;
+    box-sizing: border-box;
+}
+
+.titulo-default {
+    margin-left: 30px;
+    color: #787878;
+    font-weight: bold;
+}
+
+.transition-default {
+    transition: all .5s;
+}
+
+.bk-crg-azul {
+    background-color: var(--azul-crg) !important;
+    color: white !important;
+}
+
+.spangrey {
+    width: 50%;
+    height: 20px;
+    background: #989898;
+    color: white;
+}

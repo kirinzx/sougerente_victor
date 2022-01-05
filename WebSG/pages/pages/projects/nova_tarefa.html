@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../../../assets/img/Group3.png">
+  <title>
+    SOU Gerente | Criar Tarefas
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../../../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../../../assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+
+  <script type="text/javascript">
+
+    function carregarPagina() {
+      localStorage.setItem('conexao_geral', '192.168.1.6')
+      loadMentoria();
+      loadDepartamento();
+      loadFuncao();
+      loadGrupo();
+      loadGridTarefa();
+    }
+
+    function openNovaTarefa() {
+      $('#nova-tarefa').modal('show');
+    }
+
+    function loadMentoria() {
+      $('#mentoria').empty();
+      var tipos = newloadAPI('load_mentoria', []);
+      $.each(newloadAPI('load_mentoria', []), function (indice, valor) {
+        let item = "<option value='" + valor.idmentoria + "'>" + valor.descricao_mentor + "</option>";
+        $('#mentoria').append(item);
+      });
+    }
+
+    function loadDepartamento() {
+      $('#departamento').empty();
+      var tipos = newloadAPI('load_departamento', []);
+      $.each(newloadAPI('load_departamento', []), function (indice, valor) {
+        let item = "<option value='" + valor.iddepartamento + "'>" + valor.descricao_departamento + "</option>";
+        $('#departamento').append(item);
+      });
+    }
+
+    function loadFuncao() {
+      $('#funcao').empty();
+      var tipos = newloadAPI('load_funcao', []);
+      $.each(newloadAPI('load_funcao', []), function (indice, valor) {
+        let item = "<option value='" + valor.idfuncao + "'>" + valor.descricao_funcao + "</option>";
+        $('#funcao').append(item);
+      });
+    }
+
+    function loadGrupo() {
+      $('#grupo').empty();
+      var tipos = newloadAPI('load_grupo', []);
+      $.each(newloadAPI('load_grupo', []), function (indice, valor) {
+        let item = "<option value='" + valor.idgrupo_tarefas + "'>" + valor.descricao_grupo_tarefas + "</option>";
+        $('#grupo').append(item);
+      });
+    }
+
+    function insertTarefa() {
+      let descricao = $('#descricao').val();
+      let grupo = $('#grupo').val();
+      let funcao = $('#funcao').val();
+      let mentoria = $('#mentoria').val();
+      let departamento = $('#departamento').val();
+      let observacao = $('#observacao').val();
+
+      newloadAPI('insert_nova_tarefa', [descricao, grupo, funcao, departamento, mentoria, observacao])
+      $('#descricao').val('');
+      $('#observacao').val('');
+      loadGridTarefa();
+      $('#btn-sucesso').click();
+    }
+
+    function loadGridTarefa() {
+      $('#table-tarefas').empty();
+      var item = ''
+      let grupo = newloadAPI('load_grid_tarefas', [])
+
+      $.each(grupo, function (i, tsk) {
+        item += '<tr>' +
+          `<td>` +
+          `<div class="d-flex px-2 py-1">` +
+          `<div class="d-flex flex-column justify-content-center">` +
+          `<h6 class="mb-0 text-xs"> ${tsk.descricao} </h6>` +
+          `</div>` +
+          `</div>` +
+          `</td>` +
+          `<td>` +
+          `<p class="text-xs font-weight-bold mb-0"> ${tsk.descricao_grupo} </p>` +
+          `</td>` +
+          `<td>` +
+          `<p class="text-xs font-weight-bold mb-0"> ${tsk.descricao_funcao} </p>` +
+          `</td>` +
+          `<td>` +
+          `<p class="text-xs font-weight-bold mb-0"> ${tsk.descricao_departamento} </p>` +
+          `</td>` +
+          `</tr>`;
+      })
+      $('#table-tarefas').append(item)
+    }
+
+  </script>
+
+
+</head>
+
+<body class="g-sidenav-show  bg-gray-100" onload="carregarPagina();">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 "
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href="../../../pages/pages/projects/home.html">
+        <img src="../../../assets/img/Group3.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold">SOU Gerente</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto h-auto h-100" id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link " aria-controls="dashboardsExamples"
+            role="button" aria-expanded="false">
+            <div
+              class="icon icon-shape icon-md shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center  me-2">
+              <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px"
+                viewBox="0 0 24 24" width="24px" fill="#000000">
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <path
+                    d="M21,12V6c0-1.1-0.9-2-2-2h-1V2h-2v2H8V2H6v2H5C3.9,4,3,4.9,3,6v14c0,1.1,0.9,2,2,2h7v-2H5V10h14v2H21z M19,8H5V6h14V8z M15.64,20c0.43,1.45,1.77,2.5,3.36,2.5c1.93,0,3.5-1.57,3.5-3.5s-1.57-3.5-3.5-3.5c-0.95,0-1.82,0.38-2.45,1l1.45,0V18h-4v-4h1.5 l0,1.43C16.4,14.55,17.64,14,19,14c2.76,0,5,2.24,5,5s-2.24,5-5,5c-2.42,0-4.44-1.72-4.9-4L15.64,20z" />
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Tarefas</span>
+          </a>
+          <div class="collapse " id="dashboardsExamples">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/nova_tarefa.html">
+                  <span class="sidenav-normal"> Tarefas </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/mentoria.html">
+                  <span class="sidenav-normal"> Mentoria</span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/grupo_tarefas.html">
+                  <span class="sidenav-normal"> Grupo de Tarefas</span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/funcao.html">
+                  <span class="sidenav-normal"> Função</span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/departamento.html">
+                  <span class="sidenav-normal"> Departamento</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#usuarios" class="nav-link " aria-controls="dashboardsExamples"
+            role="button" aria-expanded="false">
+            <div
+              class="icon icon-shape icon-md shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center  me-2">
+              <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="48px"
+                viewBox="0 0 20 20" width="48px" fill="#000000">
+                <g>
+                  <rect fill="none" height="20" width="20" y="0" />
+                </g>
+                <g>
+                  <g>
+                    <g>
+                      <path
+                        d="M16.5,6H12V3.5C12,2.67,11.33,2,10.5,2h-1C8.67,2,8,2.67,8,3.5V6H3.5C2.67,6,2,6.67,2,7.5v9C2,17.33,2.67,18,3.5,18h13 c0.83,0,1.5-0.67,1.5-1.5v-9C18,6.67,17.33,6,16.5,6z M9.5,3.5h1v4h-1V3.5z M16.5,16.5h-13v-9H8C8,8.33,8.67,9,9.5,9h1 C11.33,9,12,8.33,12,7.5h4.5V16.5z" />
+                    </g>
+                    <g>
+                      <rect height="1.5" width="3" x="12" y="10" />
+                    </g>
+                    <g>
+                      <rect height="1.5" width="3" x="12" y="12.5" />
+                    </g>
+                    <g>
+                      <circle cx="7.5" cy="11.25" r="1.25" />
+                    </g>
+                    <g>
+                      <path
+                        d="M9.24,13.36C8.7,13.13,8.12,13,7.5,13c-0.62,0-1.2,0.13-1.74,0.36C5.3,13.56,5,14.01,5,14.52V15h5v-0.48 C10,14.01,9.7,13.56,9.24,13.36z" />
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+          <div class="collapse " id="usuarios">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/novo_usario.html">
+                  <span class="sidenav-normal">Novo Usuario</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav
+      class="navbar navbar-main navbar-expand-lg position-sticky mt-4 top-1 px-0 mx-4 shadow-none border-radius-xl z-index-sticky"
+      id="navbarBlur" data-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Tarefas</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page"></li>
+          </ol>
+          <h6 class="font-weight-bolder mb-0">Tarefas</h6>
+        </nav>
+        <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
+          <a href="javascript:;" class="nav-link text-body p-0">
+            <div class="sidenav-toggler-inner">
+              <i class="sidenav-toggler-line"> </i>
+              <i class="sidenav-toggler-line"> </i>
+              <i class="sidenav-toggler-line"> </i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+
+
+        <div class="row my-4">
+          <div class="col-12">
+            <span class="material-icons ms-2 font-weight" style="font-size: 250%; align-items: left;" type="button"
+              onclick="openNovaTarefa();">
+              control_point
+            </span>
+            <div class="card">
+              <div class=" table-responsive">
+                <table class="table align-items-center mb-3">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs text-dark font-weight-bolder">Descrição</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-dark ps-2">Grupo</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-dark ps-2">Função</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-dark ps-2">
+                        Departamento
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-tarefas">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+      <div class="position-fixed bottom-1 end-1 z-index-2">
+        <div class="toast fade hide p-2 bg-success" role="alert" aria-live="assertive" id="successToast"
+          aria-atomic="true">
+          <div class="toast-header border-0 bg-success">
+            <i class="ni ni-check-bold text-success me-2"></i>
+            <span class="me-auto text-light font-weight-bold">SUCESSO!</span>
+            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal dark m-0">
+          <div class="toast-body text-light font-weight-bolder">
+            Grupo Cadastrado com Sucesso
+          </div>
+        </div>
+        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="warningToast"
+          aria-atomic="true">
+          <div class="toast-header border-0">
+            <i class="ni ni-spaceship text-warning me-2"></i>
+            <span class="me-auto font-weight-bold">ERRO!</span>
+            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal dark m-0">
+          <div class="toast-body">
+            Erro! Ação não concluida!
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer pt-3  ">
+        <div class="container-fluid">
+          <div class="row align-items-center justify-content-lg-between">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+              <div class="copyright text-center text-sm text-muted text-lg-start">
+                ©
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>,
+                Owned by
+                <a class="font-weight-bold" target="_blank">CRG Gestão</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <div class="modal fade" id="nova-tarefa" tabindex="-1" role="dialog" aria-labelledby="exampleModalMessageTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Tarefa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-9 col-12 mx-auto">
+              <label class="form-label">Descrição</label>
+              <input type="text" class="form-control" id="descricao" maxlength="45">
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Grupo</label>
+                <select class="form-control" id="grupo">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Função</label>
+                <select class="form-control" id="funcao">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Mentoria</label>
+                <select class="form-control" id="mentoria">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Departamento</label>
+                <select class="form-control" id="departamento">
+                </select>
+              </div>
+              <label class="mt-4">Observação</label>
+              <p class="form-text text-muted text-xs ms-1">
+                Descreva a tarefa a ser executada
+              </p>
+              <textarea class="form-control" id="observacao" rows="3" maxlength="255"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" name="button" class="btn btn-light m-0" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" name="button" class="btn bg-gradient-primary m-0 ms-2" onclick="insertTarefa();">Criar
+            Tarefa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <button class="btn bg-gradient-success w-100 mb-0 toast-btn" type="button" data-target="successToast"
+    style="display: none;" id="btn-sucesso">Success
+    Notification</button>
+
+  <!--   Core JS Files   -->
+  <script src="../../../default/default.js"></script>
+  <script src="../../../plugins/jquery/jquery.min.js"></script>
+  <script src="../../../plugins/jquery-ui/jquery-ui.min.js"></script>
+  <script src="../../../assets/js/core/popper.min.js"></script>
+  <script src="../../../assets/js/core/bootstrap.min.js"></script>
+  <script src="../../../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../../../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../../../assets/js/plugins/choices.min.js"></script>
+  <script src="../../../assets/js/plugins/quill.min.js"></script>
+  <script src="../../../assets/js/plugins/flatpickr.min.js"></script>
+  <script src="../../../assets/js/plugins/dropzone.min.js"></script>
+  <script src="../../../plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script>
+    if (document.getElementById('editor')) {
+      var quill = new Quill('#editor', {
+        theme: 'snow' // Specify theme in configuration
+      });
+    }
+
+    if (document.getElementById('choices-multiple-remove-button')) {
+      var element = document.getElementById('choices-multiple-remove-button');
+      const example = new Choices(element, {
+        removeItemButton: true
+      });
+
+      example.setChoices(
+        [{
+          value: 'One',
+          label: 'Label One',
+          disabled: true
+        },
+        {
+          value: 'Two',
+          label: 'Label Two',
+          selected: true
+        },
+        {
+          value: 'Three',
+          label: 'Label Three'
+        },
+        ],
+        'value',
+        'label',
+        false,
+      );
+    }
+
+    if (document.querySelector('.datetimepicker')) {
+      flatpickr('.datetimepicker', {
+        allowInput: true
+      }); // flatpickr
+    }
+
+    Dropzone.autoDiscover = false;
+    var drop = document.getElementById('dropzone')
+    var myDropzone = new Dropzone(drop, {
+      url: "/file/post",
+      addRemoveLinks: true
+
+    });
+  </script>
+  <!-- Kanban scripts -->
+  <script src="../../../assets/js/plugins/dragula/dragula.min.js"></script>
+  <script src="../../../assets/js/plugins/jkanban/jkanban.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../../../assets/js/soft-ui-dashboard.min.js?v=1.0.5"></script>
+
+
+</body>
+
+</html>

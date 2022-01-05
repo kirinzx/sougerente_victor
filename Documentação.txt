@@ -1,0 +1,13 @@
+ADOBEXD - PROGRAMA
+https://drive.google.com/file/d/1HQCA4wuIdG6XRgU5u8GG-CM1KUA-8tCa/view?usp=sharing
+
+TEMPLATES DE REACT/NEXT
+https://1drv.ms/u/s!AkBGQ4LM52-XdHtRfvtp4JZszLM?e=pWNU1l
+
+
+ICONES MINIMALISTAS
+https://www.flaticon.com/br/autores/basic-rounded/lineal/7
+
+ORDEM DE CRIAÇÃO
+
+LOGIN ---> TELA GERENTE -----> CRIAÇÃO DE USUARIO -----> PERFIL ----> WEB

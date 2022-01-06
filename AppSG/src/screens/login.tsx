@@ -6,6 +6,7 @@ import { Block, Button } from '../components';
 import axios from 'axios';
 import { useData, useTheme, useTranslation } from '../hooks';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import translations from '../constants/translations';
 
 
 const isAndroid = Platform.OS === 'android';
@@ -201,5 +202,13 @@ const stilos = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: '55%',
     marginTop: '-8%',
+  },
+
+  olhinho: {
+    borderWidth: 1,
+    borderColor: 'black',
+    width: '68%',
+    marginRight: '15%',
+    marginTop: '-5%'
   },
 });

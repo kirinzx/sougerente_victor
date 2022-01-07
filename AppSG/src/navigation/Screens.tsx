@@ -12,15 +12,21 @@ import Login from '../screens/login';
 const Stack = createStackNavigator();
 
 export default () => {
-  const { t } = useTranslation();
   const screenOptions = useScreenOptions();
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
+
       <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ title: t('navigation.home') }}
+        name="login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="HomeGerente"
+        component={HomeGerente}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -35,17 +41,6 @@ export default () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen
-        name="HomeGerente"
-        component={HomeGerente}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
     </Stack.Navigator>
   );
 };

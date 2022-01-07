@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Linking, StyleSheet } from 'react-native';
+import { Animated, Linking, StyleSheet, Text } from 'react-native';
 
 import {
   useIsDrawerOpen,
@@ -10,8 +10,8 @@ import {
 } from '@react-navigation/drawer';
 
 import Screens from './Screens';
-import { Block, Text, Switch, Button, Image } from '../components';
-import { useData, useTheme, useTranslation } from './hooks';
+import { Block, Switch, Button, Image } from '../components';
+import { useData, useTheme } from './hooks';
 
 const Drawer = createDrawerNavigator();
 
@@ -66,11 +66,8 @@ const DrawerContent = (
   props: DrawerContentComponentProps<DrawerContentOptions>,
 ) => {
   const { navigation } = props;
-  const { isDark, handleIsDark } = useData();
-  const { t } = useTranslation();
   const [active, setActive] = useState('Home');
   const { assets, colors, gradients, sizes } = useTheme();
-  const labelColor = isDark ? colors.white : colors.text;
 
   const handleNavigation = useCallback(
     (to) => {
@@ -80,17 +77,14 @@ const DrawerContent = (
     [navigation, setActive],
   );
 
-  const handleWebLink = useCallback((url) => Linking.openURL(url), []);
 
   // screen list for Drawer menu
   const screens = [
-    { name: t('screens.home'), to: 'Home', icon: assets.home },
+    { name: 'Home', to: 'HomeGerente', icon: assets.home },
     { name: 'Perfil', to: 'Profile', icon: assets.profile },
-    { name: t('screens.settings'), to: 'Settings', icon: assets.settings },
     { name: 'Tarefas ADM', to: 'TarefasAdmin', icon: assets.extras },
     { name: 'Tarefas Gerente', to: 'TarefasGerente', icon: assets.extras },
-    { name: 'Home Gerente', to: 'HomeGerente', icon: assets.extras },
-    { name: 'Login', to: 'login', icon: assets.extras },
+
   ];
 
   return (
@@ -101,21 +95,17 @@ const DrawerContent = (
       renderToHardwareTextureAndroid
       contentContainerStyle={{ paddingBottom: sizes.padding }}>
       <Block paddingHorizontal={sizes.padding}>
-        <Block flex={0} row align="center" marginBottom={sizes.l}>
+        <Block flex={0} row align="center" marginBottom={'20%'} style={{ width: '110%' }}>
           <Image
             radius={0}
-            width={33}
-            height={33}
-            color={colors.text}
-            source={assets.logo}
-            marginRight={sizes.sm}
+            width={60}
+            height={60}
+            source={require('../assets/images/logo_grey.png')}
+            marginRight={sizes.s}
           />
           <Block>
-            <Text size={12} semibold>
-              {t('app.name')}
-            </Text>
-            <Text size={12} semibold>
-              {t('app.native')}
+            <Text style={stilos.textLogo}>
+              SOU Gerente
             </Text>
           </Block>
         </Block>
@@ -137,83 +127,29 @@ const DrawerContent = (
                 width={sizes.md}
                 height={sizes.md}
                 marginRight={sizes.s}
-                gradient={gradients[isActive ? 'primary' : 'white']}>
+                color={'white'}>
                 <Image
                   radius={0}
                   width={14}
                   height={14}
                   source={screen.icon}
-                  color={colors[isActive ? 'white' : 'black']}
+                  color={'black'}
                 />
               </Block>
-              <Text p semibold={isActive} color={labelColor}>
+              <Text style={stilos.page}>
                 {screen.name}
               </Text>
             </Button>
           );
         })}
 
-        <Block
-          flex={0}
-          height={1}
-          marginRight={sizes.md}
-          marginVertical={sizes.sm}
-          gradient={gradients.menu}
-        />
-
-        <Text semibold transform="uppercase" opacity={0.5}>
-          {t('menu.documentation')}
-        </Text>
-
-        <Button
-          row
-          justify="flex-start"
-          marginTop={sizes.sm}
-          marginBottom={sizes.s}
-          onPress={() =>
-            handleWebLink('https://github.com/creativetimofficial')
-          }>
-          <Block
-            flex={0}
-            radius={6}
-            align="center"
-            justify="center"
-            width={sizes.md}
-            height={sizes.md}
-            marginRight={sizes.s}
-            gradient={gradients.white}>
-            <Image
-              radius={0}
-              width={14}
-              height={14}
-              color={colors.black}
-              source={assets.documentation}
-            />
-          </Block>
-          <Text p color={labelColor}>
-            {t('menu.started')}
-          </Text>
-        </Button>
-
-        <Block row justify="space-between" marginTop={sizes.sm}>
-          <Text color={labelColor}>{t('darkMode')}</Text>
-          <Switch
-            checked={isDark}
-            onPress={(checked) => handleIsDark(checked)}
-          />
-        </Block>
       </Block>
-    </DrawerContentScrollView>
+    </DrawerContentScrollView >
   );
 };
-
-/* drawer menu navigation */
 export default () => {
-  const { isDark } = useData();
-  const { gradients } = useTheme();
-
   return (
-    <Block gradient={gradients[isDark ? 'dark' : 'light']}>
+    <Block color={'#5A5A67'}>
       <Drawer.Navigator
         drawerType="slide"
         overlayColor="transparent"
@@ -221,7 +157,7 @@ export default () => {
         drawerContent={(props) => <DrawerContent {...props} />}
         drawerStyle={{
           flex: 1,
-          width: '60%',
+          width: '50%',
           borderRightWidth: 0,
           backgroundColor: 'transparent',
         }}>
@@ -230,3 +166,20 @@ export default () => {
     </Block>
   );
 };
+
+const stilos = StyleSheet.create({
+  textLogo: {
+    fontSize: 22,
+    color: 'white',
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-ExtraBold'
+  },
+
+  page: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
+
+  },
+})

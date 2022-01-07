@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Text, Image, View } from 'react-native';
+import { StyleSheet, Text, Image, View, TouchableHighlight } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+
 
 import { useTheme } from '../navigation/hooks/';
-import { Block } from '../components/';
+import { Block, Button } from '../components/';
 
 const Home = () => {
   const { assets, colors, fonts, gradients, sizes } = useTheme();
 
 
 
-  return (
 
+  return (
 
     <Block marginTop={sizes.m} paddingHorizontal={sizes.padding}>
       <View style={{ marginTop: '13%' }}>
@@ -83,6 +85,10 @@ const stilos = StyleSheet.create({
     borderRadius: 15,
     height: '30%',
     marginTop: '30%',
+    shadowColor: '#757575',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
   },
 
   card2: {
@@ -90,6 +96,10 @@ const stilos = StyleSheet.create({
     borderRadius: 15,
     height: '30%',
     marginTop: '-20%',
+    shadowColor: '#757575',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
   },
 
   icon: {

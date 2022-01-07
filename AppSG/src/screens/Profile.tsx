@@ -41,7 +41,7 @@ const Profile = () => {
               row
               flex={0}
               justify="flex-start"
-              onPress={getNome}>
+              onPress={() => navigation.goBack()}>
               <Image
                 radius={0}
                 width={10}

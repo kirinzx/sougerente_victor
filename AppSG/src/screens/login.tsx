@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, KeyboardAvoidingView, View, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { Platform, StyleSheet, Text, KeyboardAvoidingView, View, Image, TouchableOpacity } from 'react-native';
 
-import { Block, Button } from '../components';
+
+
 import axios from 'axios';
-import { useData, useTheme, useTranslation } from '../hooks';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import translations from '../constants/translations';
+import { TextInput } from 'react-native-gesture-handler';
 
 
 const isAndroid = Platform.OS === 'android';
@@ -14,8 +12,6 @@ const isAndroid = Platform.OS === 'android';
 
 
 const Profile = () => {
-  const navigation = useNavigation();
-  const { assets, colors, sizes } = useTheme();
   const [user, SetUser] = useState('');
   const [senha, SetSenha] = useState('');
   const [usuario, SetUsuario] = useState({});

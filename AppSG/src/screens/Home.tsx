@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, Image, View } from 'react-native';
 
 import { useTheme } from '../navigation/hooks/';
 import { Block } from '../components/';
@@ -10,12 +10,16 @@ const Home = () => {
 
 
   return (
+
+
     <Block marginTop={sizes.m} paddingHorizontal={sizes.padding}>
-      {/* inline cards */}
-      <Block row marginTop={sizes.sm}>
+      <View>
+        <Text style={stilos.bemvindo}>Bem Vindo,</Text>
+        <Text style={stilos.bemvindo}>Admin</Text>
+      </View>
+      <Block row marginTop={sizes.sm} style={{ marginBottom: '-35%' }}>
         <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            //resizeMode="contain"
             source={require('../assets/images/usabilidade.png')}
             style={stilos.icon}
           />
@@ -25,7 +29,6 @@ const Home = () => {
         </Block>
         <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            //resizeMode="contain"
             source={require('../assets/images/avaliacao.png')}
             style={stilos.icon}
           />
@@ -34,10 +37,9 @@ const Home = () => {
           </Text>
         </Block>
       </Block>
-      <Block row marginTop={sizes.sm}>
+      <Block row>
         <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            //resizeMode="contain"
             source={require('../assets/images/aumentando.png')}
             style={stilos.icon}
           />
@@ -47,7 +49,6 @@ const Home = () => {
         </Block>
         <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            //resizeMode="contain"
             source={require('../assets/images/graficoDeBarras.png')}
             style={stilos.icon}
           />
@@ -56,10 +57,9 @@ const Home = () => {
           </Text>
         </Block>
       </Block>
-      <Block row marginTop={sizes.sm}>
-        <Block marginRight={sizes.sm} style={stilos.card}>
+      <Block row>
+        <Block marginRight={sizes.sm} style={stilos.card2}>
           <Image
-            //resizeMode="contain"
             source={require('../assets/images/organograma.png')}
             style={stilos.icon}
           />
@@ -82,6 +82,14 @@ const stilos = StyleSheet.create({
     backgroundColor: '#CB8D00',
     borderRadius: 15,
     height: '40%',
+    marginTop: '40%',
+  },
+
+  card2: {
+    backgroundColor: '#CB8D00',
+    borderRadius: 15,
+    height: '40%',
+    marginTop: '5%',
   },
 
   icon: {
@@ -92,12 +100,19 @@ const stilos = StyleSheet.create({
   },
 
   titulo: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',
     color: 'white',
     marginTop: '6%',
     marginLeft: '5%'
+  },
+
+  bemvindo: {
+    color: '#CB8D00',
+    fontSize: 30,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-ExtraBold',
   },
 
 });

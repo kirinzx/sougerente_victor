@@ -1,107 +1,103 @@
-import React, { useCallback, useState, Touc } from 'react';
-import { FlatList, TouchableOpacity } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 
-import { useData, useTheme, useTranslation } from '../navigation/hooks/';
-import { Block, Button, Image, Input, Product, Text } from '../components/';
+import { useTheme } from '../navigation/hooks/';
+import { Block } from '../components/';
 
 const Home = () => {
-  const { t } = useTranslation();
-  const [tab, setTab] = useState<number>(0);
-  const { following, trending } = useData();
-  const [products, setProducts] = useState(following);
   const { assets, colors, fonts, gradients, sizes } = useTheme();
 
-  const handleProducts = useCallback(
-    (tab: number) => {
-      setTab(tab);
-      setProducts(tab === 0 ? following : trending);
-    },
-    [following, trending, setTab, setProducts],
-  );
+
 
   return (
     <Block marginTop={sizes.m} paddingHorizontal={sizes.padding}>
       {/* inline cards */}
       <Block row marginTop={sizes.sm}>
-        <Block card marginRight={sizes.sm}>
+        <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            resizeMode="cover"
+            //resizeMode="contain"
             source={require('../assets/images/usabilidade.png')}
-            style={{ width: '100%' }}
+            style={stilos.icon}
           />
-          <Block padding={sizes.s} justify="space-between">
-            <Text p marginBottom={sizes.s}>
-              Indicadores
-            </Text>
-          </Block>
+          <Text style={stilos.titulo}>
+            Indicadores
+          </Text>
         </Block>
-        <Block card>
+        <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            resizeMode="cover"
-            source={assets?.card3}
-            style={{ width: '100%' }}
+            //resizeMode="contain"
+            source={require('../assets/images/avaliacao.png')}
+            style={stilos.icon}
           />
-          <Block padding={sizes.s} justify="space-between">
-            <Text p marginBottom={sizes.s}>
-              The highest status people.
-            </Text>
-            <TouchableOpacity>
-              <Block row align="center">
-                <Text p semibold marginRight={sizes.s} color={colors.link}>
-                  Read Article
-                </Text>
-                <Image source={assets.arrow} color={colors.link} />
-              </Block>
-            </TouchableOpacity>
-          </Block>
+          <Text style={stilos.titulo}>
+            Tarefas
+          </Text>
         </Block>
       </Block>
       <Block row marginTop={sizes.sm}>
-        <Block card marginRight={sizes.sm}>
+        <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            resizeMode="cover"
-            source={assets?.card2}
-            style={{ width: '100%' }}
+            //resizeMode="contain"
+            source={require('../assets/images/aumentando.png')}
+            style={stilos.icon}
           />
-          <Block padding={sizes.s} justify="space-between">
-            <Text p marginBottom={sizes.s}>
-              New ways to meet your business goals.
-            </Text>
-            <TouchableOpacity>
-              <Block row align="center">
-                <Text p semibold marginRight={sizes.s} color={colors.link}>
-                  Read Article
-                </Text>
-                <Image source={assets.arrow} color={colors.link} />
-              </Block>
-            </TouchableOpacity>
-          </Block>
+          <Text style={stilos.titulo}>
+            Resultados
+          </Text>
         </Block>
-        <Block card>
+        <Block marginRight={sizes.sm} style={stilos.card}>
           <Image
-            resizeMode="cover"
-            source={assets?.card3}
-            style={{ width: '100%' }}
+            //resizeMode="contain"
+            source={require('../assets/images/graficoDeBarras.png')}
+            style={stilos.icon}
           />
-          <Block padding={sizes.s} justify="space-between">
-            <Text p marginBottom={sizes.s}>
-              The highest status people.
-            </Text>
-            <TouchableOpacity>
-              <Block row align="center">
-                <Text p semibold marginRight={sizes.s} color={colors.link}>
-                  Read Article
-                </Text>
-                <Image source={assets.arrow} color={colors.link} />
-              </Block>
-            </TouchableOpacity>
-          </Block>
+          <Text style={stilos.titulo}>
+            Dados
+          </Text>
         </Block>
       </Block>
       <Block row marginTop={sizes.sm}>
+        <Block marginRight={sizes.sm} style={stilos.card}>
+          <Image
+            //resizeMode="contain"
+            source={require('../assets/images/organograma.png')}
+            style={stilos.icon}
+          />
+          <Text style={stilos.titulo}>
+            Organograma
+          </Text>
+        </Block>
+        <Block marginRight={sizes.sm}>
+        </Block>
       </Block>
     </Block>
   );
 };
 
 export default Home;
+
+const stilos = StyleSheet.create({
+
+  card: {
+    backgroundColor: '#CB8D00',
+    borderRadius: 15,
+    height: '40%',
+  },
+
+  icon: {
+    width: 30,
+    height: 30,
+    marginLeft: '8%',
+    marginTop: '6%',
+  },
+
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-ExtraBold',
+    color: 'white',
+    marginTop: '6%',
+    marginLeft: '5%'
+  },
+
+});

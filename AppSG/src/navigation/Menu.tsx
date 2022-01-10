@@ -110,39 +110,6 @@ const DrawerContent = (
           </Block>
         </Block>
 
-        {screens?.map((screen, index) => {
-          const isActive = active === screen.to;
-          return (
-            <Button
-              row
-              justify="flex-start"
-              marginBottom={sizes.s}
-              key={`menu-screen-${screen.name}-${index}`}
-              onPress={() => handleNavigation(screen.to)}>
-              <Block
-                flex={0}
-                radius={6}
-                align="center"
-                justify="center"
-                width={sizes.md}
-                height={sizes.md}
-                marginRight={sizes.s}
-                color={'white'}>
-                <Image
-                  radius={0}
-                  width={14}
-                  height={14}
-                  source={screen.icon}
-                  color={'black'}
-                />
-              </Block>
-              <Text style={stilos.page}>
-                {screen.name}
-              </Text>
-            </Button>
-          );
-        })}
-
       </Block>
     </DrawerContentScrollView >
   );
@@ -151,7 +118,8 @@ export default () => {
   return (
     <Block color={'#5A5A67'}>
       <Drawer.Navigator
-        drawerType="slide"
+        edgeWidth={0}
+        drawerType="back"
         overlayColor="transparent"
         sceneContainerStyle={{ backgroundColor: 'transparent' }}
         drawerContent={(props) => <DrawerContent {...props} />}

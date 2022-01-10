@@ -8,6 +8,7 @@ import TarefasAdmin from '../screens/TarefasAdmin';
 import TarefasGerente from '../screens/TarefasGerente';
 import HomeGerente from '../screens/HomeGerente';
 import Login from '../screens/login';
+import { NavigationContext } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
@@ -15,12 +16,12 @@ export default () => {
   const screenOptions = useScreenOptions();
 
   return (
-    <Stack.Navigator screenOptions={screenOptions.stack}>
+    <Stack.Navigator>
 
       <Stack.Screen
         name="login"
         component={Login}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, }}
       />
 
       <Stack.Screen

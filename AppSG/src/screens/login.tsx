@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, KeyboardAvoidingView, View, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Platform, StyleSheet, Text, KeyboardAvoidingView, View, Image, TouchableOpacity, AsyncStorageStatic } from 'react-native';
+
 
 
 
 import axios from 'axios';
 import { TextInput } from 'react-native-gesture-handler';
+import { NavigationContext, NavigationHelpersContext, StackActions, StackRouter, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
+let usuarium = [{}];
 const isAndroid = Platform.OS === 'android';
 
 
@@ -14,15 +17,50 @@ const isAndroid = Platform.OS === 'android';
 const Profile = () => {
   const [user, SetUser] = useState('');
   const [senha, SetSenha] = useState('');
-  const [usuario, SetUsuario] = useState({});
   const [hide, SetHide] = useState(true);
+  const navigation = useNavigation();
 
-  const getUser = async () => {
-    const { data } = await axios.get(`http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario_login?p1=${user}&p2=${senha}`);
-    SetUsuario(data[0]);
-    alert(usuario.nome_completo)
-    alert(usuario.cpf);
+  const getUser = () => {
+
+    usuarium.splice(0, 1);
+    loadAPI('load_usuario_login', [user, senha]).then((result) => {
+      for (const dado of result) {
+        usuarium.push(dado)
+      }
+
+      if (!usuarium[0].quantidade) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeGerente' }]
+        })
+        AsyncStorage.setItem('iduser', usuarium[0].idusuario)
+        AsyncStorage.getItem('iduser').then((valor) => console.log(valor))
+
+      } else {
+        alert('Usuario ou Senha Invalidos!')
+      }
+
+      //console.log(usuarium[0].email);
+
+    });
+
   };
+
+  async function loadAPI(api, param) {
+    let newp = '';
+    if (param) {
+      if (param.length != 0) {
+        for (let x = 0; x < param.length; x++) newp += `p${x + 1}=${param[x]}&`;
+      }
+    }
+    newp = newp.slice(0, newp.length - 1);
+
+    const { data } = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
+    );
+
+    return data;
+  }
 
 
 
@@ -49,7 +87,7 @@ const Profile = () => {
           style={stilos.placeholder}
           placeholder="Entre usando CPF, Email ou Telefone"
           autoCorrect={false}
-          onChangeText={SetUser}
+          onChangeText={value => SetUser(value)}
         />
 
         <Text style={stilos.tituloSenha}>Senha</Text>
@@ -58,7 +96,7 @@ const Profile = () => {
           secureTextEntry={hide}
           placeholder="Senha"
           autoCorrect={false}
-          onChangeText={SetSenha}
+          onChangeText={value => SetSenha(value)}
         />
         <TouchableOpacity onPress={() => SetHide(!hide)} style={{ marginLeft: '70%' }}>
           <Image
@@ -78,7 +116,7 @@ const Profile = () => {
         </TouchableOpacity>
 
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
 
   );
 };

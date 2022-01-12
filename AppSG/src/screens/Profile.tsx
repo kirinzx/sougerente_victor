@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Platform, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import { ProgressCircle, PieChart } from 'react-native-svg-charts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import { Block, Image, Button } from '../components/';
 import axios from 'axios';
@@ -14,13 +17,31 @@ const isAndroid = Platform.OS === 'android';
 const Profile = () => {
   const navigation = useNavigation();
   const { assets, colors, sizes } = useTheme();
-  const [Nome, SetNome] = useState({});
+  const [user, setUser] = useState({});
 
-  const getNome = async () => {
-    const { data } = await axios.get('http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario');
-    console.log(data);
-    SetNome(data[0]);
+  async function getUser() {
+    var user = await AsyncStorage.getItem('iduser');
+    const { data } = await axios.get(`http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario?p1=${user}`);
+    setUser(data[0]);
   };
+  const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+
+  const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
+
+  const pieData = data
+    .filter((value) => value > 0)
+    .map((value, index) => ({
+      value,
+      svg: {
+        fill: randomColor(),
+        onPress: () => console.log('press', index),
+      },
+      key: `pie-${index}`,
+    }));
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
 
   return (
@@ -56,13 +77,13 @@ const Profile = () => {
               <Image
                 width={120}
                 height={120}
-                source={require('../assets/images/victor.jpeg')}
+                source={{ uri: user.foto }}
               />
               <Text style={stilos.nomePerfil}>
-                {Nome.nome_completo}
+                {user.nome_completo}
               </Text>
               <Text style={stilos.tituloPerfil}>
-                {Nome.email}
+                {user.email}
               </Text>
               <Block row marginVertical={sizes.m}>
 
@@ -133,6 +154,7 @@ const Profile = () => {
             </Block>
           </Block>
         </Block >
+        <PieChart style={{ height: 200 }} data={pieData} />
       </Block >
     </Block >
   );

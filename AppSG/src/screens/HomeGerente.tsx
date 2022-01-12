@@ -1,35 +1,57 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, Image, View, TouchableHighlight } from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, Image, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTheme } from '../navigation/hooks/';
-import { Block, Button } from '../components/';
+import axios from 'axios';
+import { Block } from '../components/';
+
 
 const Home = () => {
-  const { assets, colors, fonts, gradients, sizes } = useTheme();
+  const { sizes } = useTheme();
+  const navigation = useNavigation();
+  const [nome, setNome] = useState('');
 
+  async function getUser() {
+    var user = await AsyncStorage.getItem('iduser');
+    const { data } = await axios.get(`http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_nome_home?p1=${user}`);
+    setNome(data[0]);
+  };
 
-
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
 
     <Block marginTop={sizes.m} paddingHorizontal={sizes.padding}>
       <View style={{ marginTop: '13%' }}>
         <Text style={stilos.bemvindo}>Bem Vindo,</Text>
-        <Text style={stilos.bemvindo}>Admin</Text>
+        <Text style={stilos.bemvindo}>{nome.nome_completo}</Text>
       </View>
-      <Block row marginTop={sizes.sm} style={{ marginBottom: '-50%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card}>
+      <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
+        <Block marginRight={sizes.sm} style={stilos.card2} onTouchStart={() => navigation.navigate('Profile')}>
           <Image
-            source={require('../assets/images/usabilidade.png')}
+            source={require('../assets/images/erro.png')}
+            style={stilos.iconC2}
+          />
+          <Text style={stilos.tituloC2}>
+            7 Tarefas Pendentes
+          </Text>
+        </Block>
+      </Block>
+      <Block row style={{ marginBottom: '-70%' }}>
+        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Profile')}>
+          <Image
+            source={require('../assets/images/usuario.png')}
             style={stilos.icon}
           />
           <Text style={stilos.titulo}>
-            Indicadores
+            Perfil
           </Text>
         </Block>
-        <Block marginRight={sizes.sm} style={stilos.card}>
+        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('TarefasAdmin')}>
           <Image
             source={require('../assets/images/avaliacao.png')}
             style={stilos.icon}
@@ -40,38 +62,19 @@ const Home = () => {
         </Block>
       </Block>
       <Block row>
-        <Block marginRight={sizes.sm} style={stilos.card}>
+        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Indicadores')}>
           <Image
-            source={require('../assets/images/aumentando.png')}
+            source={require('../assets/images/usabilidade.png')}
             style={stilos.icon}
           />
           <Text style={stilos.titulo}>
-            Resultados
-          </Text>
-        </Block>
-        <Block marginRight={sizes.sm} style={stilos.card}>
-          <Image
-            source={require('../assets/images/graficoDeBarras.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Dados
-          </Text>
-        </Block>
-      </Block>
-      <Block row>
-        <Block marginRight={sizes.sm} style={stilos.card2}>
-          <Image
-            source={require('../assets/images/organograma.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Organograma
+            Indicadores
           </Text>
         </Block>
         <Block marginRight={sizes.sm}>
         </Block>
       </Block>
+
     </Block>
   );
 };
@@ -83,7 +86,7 @@ const stilos = StyleSheet.create({
   card: {
     backgroundColor: '#CB8D00',
     borderRadius: 15,
-    height: '30%',
+    height: '25%',
     marginTop: '30%',
     shadowColor: '#757575',
     shadowOffset: { width: 1, height: 3 },
@@ -92,10 +95,10 @@ const stilos = StyleSheet.create({
   },
 
   card2: {
-    backgroundColor: '#CB8D00',
+    backgroundColor: '#842222',
     borderRadius: 15,
-    height: '30%',
-    marginTop: '-20%',
+    height: '25%',
+    marginTop: '30%',
     shadowColor: '#757575',
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
@@ -116,6 +119,22 @@ const stilos = StyleSheet.create({
     color: 'white',
     marginTop: '6%',
     marginLeft: '5%'
+  },
+
+  iconC2: {
+    width: 55,
+    height: 55,
+    marginLeft: '5%',
+    marginTop: '6%',
+  },
+
+  tituloC2: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-ExtraBold',
+    color: 'white',
+    marginTop: '-13%',
+    marginLeft: '26%'
   },
 
   bemvindo: {

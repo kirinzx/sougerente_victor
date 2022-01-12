@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "kirin-project",
+    "name": "SouGerente",
     "slug": "kirin-project",
     "description": "React Native - Soft UI Kit",
     "primaryColor": "#CB0C9F",
@@ -15,18 +15,18 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "SouGerente"
     },
     "android": {
+      "package": "com.kirinzx.kirinproject",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#CB0C9F"
+        "foregroundImage": "./assets/icon.png"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }

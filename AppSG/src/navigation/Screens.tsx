@@ -4,10 +4,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Home, Profile } from '../screens';
 
 import { useScreenOptions, useTranslation } from './hooks';
-import TarefasAdmin from '../screens/TarefasAdmin';
-import TarefasGerente from '../screens/TarefasGerente';
+import { TarefasAdmin } from '../screens/TarefasAdmin';
 import HomeGerente from '../screens/HomeGerente';
 import Login from '../screens/login';
+import indicadores from '../screens/indicadores';
 import { NavigationContext } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
@@ -18,11 +18,14 @@ export default () => {
   return (
     <Stack.Navigator>
 
-      <Stack.Screen
+      {/*<Stack.Screen
         name="login"
         component={Login}
         options={{ headerShown: false, }}
-      />
+      />  */}
+
+
+
 
       <Stack.Screen
         name="HomeGerente"
@@ -39,6 +42,12 @@ export default () => {
       <Stack.Screen
         name="TarefasAdmin"
         component={TarefasAdmin}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Indicadores"
+        component={indicadores}
         options={{ headerShown: false }}
       />
 

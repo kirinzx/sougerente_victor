@@ -28,16 +28,19 @@ const Profile = () => {
         usuarium.push(dado)
       }
 
-      if (!usuarium[0].quantidade) {
+      if (!usuarium[0].idusuario == 9) {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'HomeGerente' }]
+          routes: [{ name: 'HomeADM' }]
         })
         AsyncStorage.setItem('iduser', usuarium[0].idusuario)
         AsyncStorage.getItem('iduser').then((valor) => console.log(valor))
 
       } else {
-        alert('Usuario ou Senha Invalidos!')
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeGerente' }]
+        })
       }
 
       //console.log(usuarium[0].email);

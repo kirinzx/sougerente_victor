@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import React, { useCallback, useState, useEffect } from 'react';
+import { StyleSheet, Text, Image, View, TouchableHighlight } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTheme } from '../navigation/hooks/';
 import axios from 'axios';
-import { Block } from '../components/';
+import { Block, Button } from '../components/';
 
 
-const HomeGerente = () => {
-  const { sizes } = useTheme();
+let usus = [];
+
+
+const HomeADM = () => {
+  const { assets, colors, fonts, gradients, sizes } = useTheme();
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
 
@@ -31,17 +35,6 @@ const HomeGerente = () => {
         <Text style={stilos.bemvindo}>{nome.nome_completo}</Text>
       </View>
       <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card2} onTouchStart={() => navigation.navigate('Profile')}>
-          <Image
-            source={require('../assets/images/erro.png')}
-            style={stilos.iconC2}
-          />
-          <Text style={stilos.tituloC2}>
-            7 Tarefas Pendentes
-          </Text>
-        </Block>
-      </Block>
-      <Block row style={{ marginBottom: '-70%' }}>
         <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Profile')}>
           <Image
             source={require('../assets/images/usuario.png')}
@@ -61,15 +54,14 @@ const HomeGerente = () => {
           </Text>
         </Block>
       </Block>
+      <Block row style={{ marginBottom: '-70%' }}>
+        <Block marginRight={sizes.sm}>
+        </Block>
+        <Block marginRight={sizes.sm}>
+        </Block>
+      </Block>
       <Block row>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Indicadores')}>
-          <Image
-            source={require('../assets/images/usabilidade.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Indicadores
-          </Text>
+        <Block marginRight={sizes.sm}>
         </Block>
         <Block marginRight={sizes.sm}>
         </Block>
@@ -79,7 +71,7 @@ const HomeGerente = () => {
   );
 };
 
-export default HomeGerente;
+export default HomeADM;
 
 const stilos = StyleSheet.create({
 
@@ -95,10 +87,10 @@ const stilos = StyleSheet.create({
   },
 
   card2: {
-    backgroundColor: '#842222',
+    backgroundColor: '#CB8D00',
     borderRadius: 15,
-    height: '25%',
-    marginTop: '30%',
+    height: '30%',
+    marginTop: '-20%',
     shadowColor: '#757575',
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
@@ -121,22 +113,6 @@ const stilos = StyleSheet.create({
     marginLeft: '5%'
   },
 
-  iconC2: {
-    width: 55,
-    height: 55,
-    marginLeft: '5%',
-    marginTop: '6%',
-  },
-
-  tituloC2: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    fontFamily: 'OpenSans-ExtraBold',
-    color: 'white',
-    marginTop: '-13%',
-    marginLeft: '26%'
-  },
-
   bemvindo: {
     color: '#CB8D00',
     fontSize: 30,
@@ -145,3 +121,5 @@ const stilos = StyleSheet.create({
   },
 
 });
+
+

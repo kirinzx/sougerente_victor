@@ -6,6 +6,7 @@ import { Home, Profile } from '../screens';
 import { useScreenOptions, useTranslation } from './hooks';
 import { TarefasAdmin } from '../screens/TarefasAdmin';
 import HomeGerente from '../screens/HomeGerente';
+import HomeADM from '../screens/HomeADM';
 import Login from '../screens/login';
 import indicadores from '../screens/indicadores';
 import { NavigationContext } from '@react-navigation/native';
@@ -18,11 +19,11 @@ export default () => {
   return (
     <Stack.Navigator>
 
-      {/*<Stack.Screen
+      <Stack.Screen
         name="login"
         component={Login}
         options={{ headerShown: false, }}
-      />  */}
+      />
 
 
 

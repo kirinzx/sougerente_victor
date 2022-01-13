@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet } from 'react-native';
-import { Text } from 'react-native-svg';
+import { Platform, StyleSheet, Text, Dimensions } from 'react-native';
 
 import { useNavigation } from '@react-navigation/core';
-import { ProgressCircle, PieChart, AreaChart, Grid } from 'react-native-svg-charts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as shape from 'd3-shape';
-
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { Block, Image, Button } from '../components/';
 import axios from 'axios';
-import { useData, useTheme, useTranslation } from '../hooks/';
+import { useData, useTheme } from '../hooks/';
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 
 
 const isAndroid = Platform.OS === 'android';
@@ -28,84 +34,114 @@ const indicadores = () => {
     setUser(data[0]);
   };
 
-  const data = [
-    {
-      key: 1,
-      amount: 50,
-      svg: { fill: '#600080' },
-    },
-    {
-      key: 2,
-      amount: 50,
-      svg: { fill: '#9900cc' }
-    },
-    {
-      key: 3,
-      amount: 40,
-      svg: { fill: '#c61aff' }
-    },
-    {
-      key: 4,
-      amount: 95,
-      svg: { fill: '#d966ff' }
-    },
-    {
-      key: 5,
-      amount: 35,
-      svg: { fill: '#ecb3ff' }
-    }
-  ];
-
-  const Labels = ({ slices, height, width }) => {
-    return slices.map((slice, index) => {
-      const { labelCentroid, pieCentroid, data } = slice;
-      return (
-        <Text
-          key={index}
-          x={pieCentroid[0]}
-          y={pieCentroid[1]}
-          fill={'white'}
-          textAnchor={'middle'}
-          alignmentBaseline={'middle'}
-          fontSize={24}
-          stroke={'black'}
-          strokeWidth={0.2}
-        >
-          {data.amount}
-        </Text>
-      )
-    })
+  const props = {
+    activeStrokeWidth: 25,
+    inActiveStrokeWidth: 25,
+    inActiveStrokeOpacity: 0.2
   };
 
+  const data = {
+    labels: ["JAN", "FEB", "MAR", "ABR", "MAI", "JUN"],
+    datasets: [
+      {
+        data: [10, 90, 30, 15, 50, 60],
+        color: (opacity = 1) => `rgb(203, 141, 0, ${opacity})`, // optional
+        strokeWidth: 2 // optional
+      }
+    ],
+    legend: ["METAS"] // optional
+  };
+
+  const screenWidth = Dimensions.get("window").width;
+
+  const chartConfig = {
+    backgroundColor: "#6a00ff",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#ffffff",
+    backgroundGradientToOpacity: 0.9,
+    color: (opacity = 1) => `rgb(137, 55, 0)`,
+    strokeWidth: 9, // optional, default 3
+    barPercentage: 0.8,
+    useShadowColorFromDataset: false, // optional
+  };
+
+
   return (
-    <Block safe marginTop={sizes.md}>
+    <Block safe style={stilos.bck}>
       <Block
         scroll
         paddingHorizontal={sizes.s}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: sizes.padding }}>
         <Block flex={1}>
+          <Block row style={stilos.bordin}>
+            <CircularProgress value={28}
+              activeStrokeColor={'#CB8D00'}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Metas'}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+              titleColor={'white'}
+              textColor={'white'}
+            />
+
+            <CircularProgress
+              value={63}
+              activeStrokeColor={'#CB8D00'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Tarefas'}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+              titleColor={'white'}
+              textColor={'white'}
+              duration={2000}
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={87}
+              activeStrokeColor={'#CB8D00'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Objetivos'}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+              titleColor={'white'}
+              textColor={'white'}
+              duration={2000}
+            //textColor={'#ecf0f1'}
+            />
+          </Block>
           <Block style={stilos.bordin}>
-            <PieChart
-              style={{ height: 200 }}
-              valueAccessor={({ item }) => item.amount}
+
+            <LineChart
               data={data}
-              spacing={0}
-              outerRadius={'95%'}
-            >
-              <Labels />
-            </PieChart>
+              width={360}
+              height={220}
+              chartConfig={chartConfig}
+              style={{ borderRadius: 40 }}
+            />
+
           </Block>
-          <Block style={stilos.bordin}>
-            <ProgressCircle style={{ height: 200 }} progress={0.7} progressColor={'#CB8D00'} strokeWidth={10} />
-          </Block>
-          <Block style={stilos.bordin}>
-            <Text>Teste</Text>
+          <Block row style={stilos.bordin}>
+            <CircularProgress
+              value={87}
+              activeStrokeColor={'#CB8D00'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Concluidas'}
+              titleColor={'white'}
+              textColor={'white'}
+              duration={2000}
+            //textColor={'#ecf0f1'}
+            />
           </Block>
         </Block >
       </Block >
-
     </Block >
+
+
   );
 };
 
@@ -113,11 +149,15 @@ export default indicadores;
 
 
 const stilos = StyleSheet.create({
+  bck: {
+    backgroundColor: '#CB8D00',
+    height: '100%',
+    width: '100%',
+
+  },
 
   bordin: {
-    //borderWidth: 1,
-    //borderColor: 'black',
-    backgroundColor: '#d3d3d3',
+    backgroundColor: '#b2b2b2',
     borderRadius: 40,
     marginTop: 20,
   },

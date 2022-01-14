@@ -28,7 +28,7 @@ const Profile = () => {
         usuarium.push(dado)
       }
 
-      if (!usuarium[0].idusuario == 9) {
+      if (usuarium[0].idusuario == 9) {
         navigation.reset({
           index: 0,
           routes: [{ name: 'HomeADM' }]

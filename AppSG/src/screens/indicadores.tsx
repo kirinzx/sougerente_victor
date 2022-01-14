@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text, Dimensions } from 'react-native';
+import { Platform, StyleSheet, Text, Dimensions, Image } from 'react-native';
 
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import { Block, Image, Button } from '../components/';
+import { Block, Button } from '../components/';
 import axios from 'axios';
 import { useData, useTheme } from '../hooks/';
+import { LineChart, Path, Grid } from 'react-native-svg-charts';
+import * as shape from 'd3-shape';
 
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
+
+
 
 
 const isAndroid = Platform.OS === 'android';
@@ -40,30 +36,19 @@ const indicadores = () => {
     inActiveStrokeOpacity: 0.2
   };
 
-  const data = {
-    labels: ["JAN", "FEB", "MAR", "ABR", "MAI", "JUN"],
-    datasets: [
-      {
-        data: [10, 90, 30, 15, 50, 60],
-        color: (opacity = 1) => `rgb(203, 141, 0, ${opacity})`, // optional
-        strokeWidth: 2 // optional
-      }
-    ],
-    legend: ["METAS"] // optional
-  };
+  const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
 
-  const screenWidth = Dimensions.get("window").width;
+  const Line = ({ line }) => (
+    <Path
+      key={'line'}
+      d={line}
+      stroke={'rgb(134, 65, 244)'}
+      fill={'none'}
+    />
+  )
 
-  const chartConfig = {
-    backgroundColor: "#6a00ff",
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#ffffff",
-    backgroundGradientToOpacity: 0.9,
-    color: (opacity = 1) => `rgb(137, 55, 0)`,
-    strokeWidth: 9, // optional, default 3
-    barPercentage: 0.8,
-    useShadowColorFromDataset: false, // optional
-  };
+
+
 
 
   return (
@@ -74,66 +59,223 @@ const indicadores = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: sizes.padding }}>
         <Block flex={1}>
+          <Button
+            row
+            flex={0}
+            justify="flex-start"
+            onPress={() => navigation.goBack()}>
+            <Image
+              style={stilos.voltar}
+              source={require('../assets/images/seta-branca.png')}
+            />
+            <Text style={stilos.textVoltar}>Voltar</Text>
+          </Button>
           <Block row style={stilos.bordin}>
-            <CircularProgress value={28}
-              activeStrokeColor={'#CB8D00'}
+            <CircularProgress
+              value={28}
+              activeStrokeColor={'#004494'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeWidth={10}
               inActiveStrokeOpacity={0.6}
               valueSuffix={'%'}
               title={'Metas'}
               titleStyle={{ fontFamily: 'OpenSans-Bold' }}
-              titleColor={'white'}
-              textColor={'white'}
+              duration={2000}
+            //textColor={'#ecf0f1'}
             />
 
             <CircularProgress
               value={63}
-              activeStrokeColor={'#CB8D00'}
+              activeStrokeColor={'#F5AB00'}
+              inActiveStrokeColor={'#d8d2d2'}
               activeStrokeWidth={12}
               inActiveStrokeOpacity={0.6}
               valueSuffix={'%'}
               title={'Tarefas'}
               titleStyle={{ fontFamily: 'OpenSans-Bold' }}
-              titleColor={'white'}
-              textColor={'white'}
               duration={2000}
             //textColor={'#ecf0f1'}
             />
             <CircularProgress
               value={87}
-              activeStrokeColor={'#CB8D00'}
+              activeStrokeColor={'#a4a4a5'}
+              inActiveStrokeColor={'#d8d2d2'}
               activeStrokeWidth={12}
               inActiveStrokeOpacity={0.6}
               valueSuffix={'%'}
               title={'Objetivos'}
               titleStyle={{ fontFamily: 'OpenSans-Bold' }}
-              titleColor={'white'}
-              textColor={'white'}
               duration={2000}
             //textColor={'#ecf0f1'}
             />
           </Block>
-          <Block style={stilos.bordin}>
-
-            <LineChart
-              data={data}
-              width={360}
-              height={220}
-              chartConfig={chartConfig}
-              style={{ borderRadius: 40 }}
+          <Block row style={stilos.bordin}>
+            <Image
+              source={require('../assets/images/loja.png')}
+              style={stilos.icon}
             />
 
-          </Block>
-          <Block row style={stilos.bordin}>
+            <Text style={stilos.loja}>LOJA  1</Text>
+            <Text style={stilos.titulo}>Tarefas</Text>
             <CircularProgress
               value={87}
-              activeStrokeColor={'#CB8D00'}
+              activeStrokeColor={'#2ecc71'}
+              inActiveStrokeColor={'#d8d2d2'}
               activeStrokeWidth={12}
               inActiveStrokeOpacity={0.6}
               valueSuffix={'%'}
               title={'Concluidas'}
-              titleColor={'white'}
-              textColor={'white'}
               duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={13}
+              activeStrokeColor={'#ff0000'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Atrasadas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+            //textColor={'#ecf0f1'}
+            />
+          </Block>
+          <Block row style={stilos.bordin}>
+            <Image
+              source={require('../assets/images/loja.png')}
+              style={stilos.icon}
+            />
+
+            <Text style={stilos.loja}>LOJA  2</Text>
+            <Text style={stilos.titulo}>Tarefas</Text>
+            <CircularProgress
+              value={30}
+              activeStrokeColor={'#2ecc71'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Concluidas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={70}
+              activeStrokeColor={'#ff0000'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Atrasadas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+            />
+          </Block>
+          <Block row style={stilos.bordin}>
+            <Image
+              source={require('../assets/images/loja.png')}
+              style={stilos.icon}
+            />
+
+            <Text style={stilos.loja}>LOJA  3</Text>
+            <Text style={stilos.titulo}>Tarefas</Text>
+            <CircularProgress
+              value={96}
+              activeStrokeColor={'#2ecc71'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Concluidas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={4}
+              activeStrokeColor={'#ff0000'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Atrasadas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+            //textColor={'#ecf0f1'}
+            />
+          </Block>
+          <Block row style={stilos.bordin}>
+            <Image
+              source={require('../assets/images/loja.png')}
+              style={stilos.icon}
+            />
+
+            <Text style={stilos.loja}>LOJA  4</Text>
+            <Text style={stilos.titulo}>Tarefas</Text>
+            <CircularProgress
+              value={61}
+              activeStrokeColor={'#2ecc71'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Concluidas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={39}
+              activeStrokeColor={'#ff0000'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Atrasadas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+            //textColor={'#ecf0f1'}
+            />
+          </Block>
+          <Block row style={stilos.bordin}>
+            <Image
+              source={require('../assets/images/loja.png')}
+              style={stilos.icon}
+            />
+
+            <Text style={stilos.loja}>LOJA  5</Text>
+            <Text style={stilos.titulo}>Tarefas</Text>
+            <CircularProgress
+              value={56}
+              activeStrokeColor={'#2ecc71'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Concluidas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
+
+            //textColor={'#ecf0f1'}
+            />
+            <CircularProgress
+              value={44}
+              activeStrokeColor={'#ff0000'}
+              inActiveStrokeColor={'#d8d2d2'}
+              activeStrokeWidth={12}
+              inActiveStrokeOpacity={0.6}
+              valueSuffix={'%'}
+              title={'Atrasadas'}
+              duration={2000}
+              titleStyle={{ fontFamily: 'OpenSans-Bold' }}
             //textColor={'#ecf0f1'}
             />
           </Block>
@@ -157,109 +299,34 @@ const stilos = StyleSheet.create({
   },
 
   bordin: {
-    backgroundColor: '#b2b2b2',
-    borderRadius: 40,
+    backgroundColor: 'white',
+    borderRadius: 20,
     marginTop: 20,
+
+    shadowColor: '#757575',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
   },
 
-
-  task: {
-    color: 'white',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '3%',
+  icon: {
+    width: 40,
+    height: 40,
+    marginLeft: '3%',
+    marginTop: '20%',
   },
 
-  tsktext: {
-    fontWeight: 'bold',
-    fontSize: 50,
-    color: 'white',
-  },
-
-  textConcluido: {
-    backgroundColor: '#39AF31',
-    width: 10,
-    height: 28,
-    borderRadius: 30,
-    marginRight: 10,
-    borderColor: 'white',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  textCentral: {
-    width: 10,
-    height: 28,
-    borderRadius: 30,
-    marginRight: 10,
-    marginLeft: 0,
-    borderColor: 'white',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  textEsquerda: {
-    width: 10,
-    height: 28,
-    borderRadius: 30,
-    marginRight: 10,
-    marginLeft: 10,
-    borderColor: 'white',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  textRnd: {
-    fontSize: 17,
+  loja: {
     fontFamily: 'OpenSans-Bold',
-    color: 'white',
-  },
-
-  titleTask: {
-    color: 'white',
-    fontSize: 21,
-    fontFamily: 'OpenSans-ExtraBold',
-  },
-
-  numberPerfil: {
-    color: 'white',
-    fontFamily: 'OpenSans-ExtraBold',
-    fontSize: 25,
-    marginTop: -5,
-    marginBottom: 5,
-    marginLeft: 5,
-  },
-
-  numberText: {
-    color: 'white',
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 17,
-    marginLeft: 7,
-  },
-
-  nomePerfil: {
-    color: 'white',
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 23,
-    marginTop: 8,
-  },
-
-  tituloPerfil: {
-    color: 'white',
-    fontFamily: 'OpenSans-Regular',
-    fontSize: 16,
-    marginTop: 4,
-  },
-
-  textVoltar: {
-    color: 'white',
-    fontFamily: 'OpenSans-SemiBold',
-    marginLeft: 6,
     fontSize: 18,
+    marginTop: '24%',
+  },
+
+  titulo: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 24,
+    marginLeft: '-23%',
+    paddingRight: '4%',
   },
 
   shadowProp: {
@@ -267,5 +334,20 @@ const stilos = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 4,
+  },
+
+  textVoltar: {
+    color: 'white',
+    fontFamily: 'OpenSans-Bold',
+    marginLeft: 6,
+    fontSize: 18,
+  },
+
+  voltar: {
+    width: 20,
+    height: 20,
+    marginRight: '-2%'
+
+
   },
 });

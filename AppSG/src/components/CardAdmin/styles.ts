@@ -3,10 +3,10 @@ import {RFValue, RFPercentage} from 'react-native-responsive-fontsize';
 
 export const Card = styled.View`
   background-color: white;
-  width: ${RFPercentage(48)}px;
+  width: ${RFPercentage(50)}px;
   height: ${RFValue(200)}px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 15px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: ${RFValue(20)}px;
 `;
@@ -56,18 +56,14 @@ export const IconLocal = styled.Image`
 `;
 
 export const IconClock = styled.Image`
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  bottom: 17%;
+  width: 28px;
+  height: 28px;
 `;
 
 export const Dados = styled.View`
   margin-vertical: ${RFValue(20)}px;
   flex-direction: row;
-  position: absolute;
-  bottom: 35%;
-  left: 5%;
+  justify-content: flex-start;
 `;
 
 export const TitleDados = styled.Text`
@@ -80,8 +76,8 @@ export const TitleDados = styled.Text`
 export const User = styled.View`
   width: 100%;
   flex-direction: row;
-  position: absolute;
-  bottom: 12%;
+  align-content: space-between;
+  padding-right: 20px;
 `;
 
 export const Photos = styled.Image`
@@ -92,22 +88,21 @@ export const Photos = styled.Image`
 `;
 
 export const Time = styled.View`
-  width: 50%;
+  width: 40%;
   flex-direction: row;
-  margin-top: 5px;
+  align-items: center;
 `;
 
 export const ContainerPhoto = styled.View`
   width: 50%;
   flex-direction: row;
-  margin-left: ${RFValue(25)}px;
 `;
 
 export const Dia = styled.Text`
   font-size: ${RFValue(30)}px;
   font-weight: bold;
   color: #cb8d00;
-  margin: -3px 5px 0 30px;
+  margin-horizontal: ${RFValue(5)}px;
 `;
 
 export const Hora = styled.Text`
@@ -116,7 +111,6 @@ export const Hora = styled.Text`
   font-weight: bold;
   border: 1px solid black;
   border-radius: 10px;
-  width: 45%;
+  width: 65%;
   height: 65%;
-  margin-top: 3px;
 `;

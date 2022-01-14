@@ -51,7 +51,7 @@ const HomeGerente = () => {
             Perfil
           </Text>
         </Block>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('TarefasAdmin')}>
+        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('TarefasGerente')}>
           <Image
             source={require('../assets/images/avaliacao.png')}
             style={stilos.icon}
@@ -62,14 +62,7 @@ const HomeGerente = () => {
         </Block>
       </Block>
       <Block row>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Indicadores')}>
-          <Image
-            source={require('../assets/images/usabilidade.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Indicadores
-          </Text>
+        <Block marginRight={sizes.sm}>
         </Block>
         <Block marginRight={sizes.sm}>
         </Block>

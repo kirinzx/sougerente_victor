@@ -1,5 +1,4 @@
-import React, {useState, useRef} from 'react';
-import {Container} from './style';
+import React, {useState} from 'react';
 import {Camera} from 'expo-camera';
 import {
   View,
@@ -8,34 +7,46 @@ import {
   Image,
   StyleSheet,
   Image as ReactImage,
-  Modal,
-  Pressable,
 } from 'react-native';
+
+import {ModalObs} from '../ModalObs';
+import {ModalAlert} from '../ModalAlert';
+import axios from 'axios';
+import {
+  Container,
+  ContainerInf,
+  BlockLoja,
+  BlockInf,
+  Title,
+  Periodo,
+  ContainerTime,
+  TitleHora,
+  ContainerPeriodo,
+} from './style';
 
 interface Props {
   dados: {
-    loja: string;
-    titulo: string;
-    hora: string;
+    observacao: string;
     descricao: string;
+    horario: string;
+    periodo: string;
+    titulo: string;
+    loja: string;
+    id: string;
   };
+  openCamera: () => void;
+  loadTarefas: () => void;
 }
 
-export function CardTarefa({dados}: Props) {
-  let obj = {
+export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
+  const [configCard, setConfigCard] = useState({
     opacity: '0',
     extended: false,
     degSeta: '270deg',
     height: 120,
-  };
-
-  const [configCard, setConfigCard] = useState(obj);
-  const [hasPermission, setHasPermission] = useState(false);
-  const [displayCamera, setDisplayCamera] = useState('none');
-  const [capturedPhoto, setCapturedPhoto] = useState(null);
-  const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.front);
-  const [modalPic, setModalPic] = useState(false);
-  const camRef = useRef(null);
+  });
+  const [obsVisible, setObsVisible] = useState(false);
+  const [alert, setAlert] = useState(false);
 
   function handleDiv() {
     if (configCard.extended) {
@@ -55,182 +66,141 @@ export function CardTarefa({dados}: Props) {
     }
   }
 
-  function handleCamera() {
-    (async () => {
-      const {status} = await Camera.requestPermissionsAsync();
-      setHasPermission(status == 'granted');
-    })();
-    let newDisplay = displayCamera == 'none' ? 'inline-block' : 'none';
-    setDisplayCamera(newDisplay);
+  function closeModal() {
+    setObsVisible(false);
   }
 
-  function swapCamera() {
-    setTypeCamera(
-      typeCamera === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back,
-    );
+  function concluirTarefa(id) {
+    loadAPI('tarefasgerente_concluirtarefa', [id]);
+    loadTarefas();
+
+    setAlert(true);
+    setTimeout(() => {
+      setAlert(false);
+    }, 2500);
+
+    setConfigCard({
+      opacity: '0',
+      extended: false,
+      degSeta: '270deg',
+      height: 120,
+    });
   }
 
-  async function takePicture() {
-    if (camRef) {
-      const data = await camRef.current.takePictureAsync();
-      setCapturedPhoto(data.uri);
-      setModalPic(true);
+  async function loadAPI(api, param) {
+    let newp = '';
+    if (param) {
+      if (param.length != 0) {
+        for (let x = 0; x < param.length; x++) newp += `p${x + 1}=${param[x]}&`;
+      }
     }
+    newp = newp.slice(0, newp.length - 1);
+
+    const {data} = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
+    );
+
+    return data;
   }
 
   return (
-    <Container height={configCard.height}>
-      <View style={{width: '100%', height: '100%', display: displayCamera}}>
-        <Camera
-          style={{width: '100%', height: '100%'}}
-          type={typeCamera}
-          ref={camRef}></Camera>
+    <>
+      <ModalAlert visible={alert} msg={'Tarefa concluida com sucesso!'} />
+
+      <ModalObs
+        visible={obsVisible}
+        close={closeModal}
+        id={dados.id}
+        observacao={dados.observacao}
+      />
+      <Container height={configCard.height}>
+        <View style={{paddingVertical: 7}}>
+          <Text style={style.titleTask}>{dados.titulo}</Text>
+
+          <ContainerInf>
+            <BlockLoja>
+              <Title>{dados.loja}</Title>
+            </BlockLoja>
+            <BlockInf>
+              <ContainerPeriodo>
+                <Image
+                  style={style.icone}
+                  source={require('../../assets/icons/tempo.png')}
+                />
+              </ContainerPeriodo>
+
+              <Periodo>{dados.periodo}</Periodo>
+              <ContainerTime>
+                <TitleHora>{dados.horario}</TitleHora>
+              </ContainerTime>
+
+              <TouchableOpacity onPress={handleDiv}>
+                <Image
+                  style={{width: 25, height: 25, marginTop: 5, marginLeft: 5}}
+                  transform={[{rotate: configCard.degSeta}]}
+                  source={require('../../assets/icons/seta.png')}
+                />
+              </TouchableOpacity>
+            </BlockInf>
+          </ContainerInf>
+        </View>
 
         <View
           style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            flexDirection: 'row',
+            opacity: configCard.opacity,
+            marginVertical: 20,
           }}>
-          <TouchableOpacity style={stilos.swapPic} onPress={swapCamera}>
-            <ReactImage
-              style={[stilos.icons, {left: '32%', top: '30%'}]}
-              source={require('../../assets/icons/troca.png')}
-            />
-          </TouchableOpacity>
+          <Text style={stilos.textTitleObs}>Descrição da tarefa:</Text>
 
-          <TouchableOpacity style={stilos.btnPic} onPress={takePicture}>
-            <View style={stilos.iconPic}></View>
-          </TouchableOpacity>
+          <View style={style.cardExtented}>
+            <Text style={stilos.textObs}>{dados.descricao}</Text>
+          </View>
 
-          {capturedPhoto && (
-            <Modal animationType="slide" transparent={false} visible={modalPic}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    position: 'absolute',
-                    bottom: 30,
-                    zIndex: 1,
-                    justifyContent: 'space-around',
-                  }}>
-                  <Pressable onPress={() => setModalPic(false)}>
-                    <ReactImage
-                      style={{width: 50, height: 50}}
-                      source={require('../../assets/icons/confirme.png')}
-                    />
-                  </Pressable>
+          <View style={{flexDirection: 'row', marginTop: 17, marginLeft: 5}}>
+            <TouchableOpacity
+              style={{marginLeft: 15}}
+              onPress={() => setObsVisible(true)}>
+              <ReactImage
+                style={[stilos.icons]}
+                source={require('../../assets/icons/editar.png')}
+              />
+            </TouchableOpacity>
 
-                  <Pressable onPress={() => setModalPic(false)}>
-                    <ReactImage
-                      style={{width: 50, height: 50}}
-                      source={require('../../assets/icons/fecha.png')}
-                    />
-                  </Pressable>
-                </View>
+            <TouchableOpacity
+              style={{marginTop: 0, marginLeft: 15}}
+              onPress={openCamera}>
+              <ReactImage
+                style={stilos.icons}
+                source={require('../../assets/icons/camera.png')}
+              />
+            </TouchableOpacity>
 
-                <Image
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderTopLeftRadius: 0,
-                    borderTopRightRadius: 0,
-                    borderBottomLeftRadius: 0,
-                    borderBottomRightRadius: 0,
-                  }}
-                  source={{uri: capturedPhoto}}
-                />
+            <View style={stilos.containerConcluir}>
+              <View style={[stilos.textCardSelect]}>
+                <TouchableOpacity onPress={() => concluirTarefa(dados.id)}>
+                  <Text style={[stilos.textRnd, {color: 'white'}]}>
+                    Concluir
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </Modal>
-          )}
-        </View>
-      </View>
-      <View style={{paddingVertical: 7}}>
-        <Text style={style.titleTask}>{dados.titulo}</Text>
-
-        <View style={{flexDirection: 'row'}}>
-          <View style={[stilos.blockLoja, {width: '21%'}]}>
-            <Text style={[stilos.textRnd, {color: 'white'}]}>{dados.loja}</Text>
-          </View>
-
-          <View>
-            <Image
-              style={style.icone}
-              source={require('../../assets/icons/tempo.png')}
-            />
-          </View>
-          <Text style={style.letraDia}>D</Text>
-          <View style={style.textTime}>
-            <Text style={[stilos.textRnd]}>{dados.hora}</Text>
-          </View>
-          <TouchableOpacity onPress={handleDiv}>
-            <Image
-              style={{width: 25, height: 25, marginTop: 5, marginLeft: 5}}
-              transform={[{rotate: configCard.degSeta}]}
-              source={require('../../assets/icons/seta.png')}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={{
-          opacity: configCard.opacity,
-          marginVertical: 20,
-        }}>
-        <Text style={stilos.textTitleObs}>Descrição da tarefa:</Text>
-
-        <View style={style.cardExtented}>
-          <Text style={stilos.textObs}>{dados.descricao}</Text>
-        </View>
-
-        <View style={{flexDirection: 'row', marginTop: 17, marginLeft: 5}}>
-          <TouchableOpacity style={{marginLeft: 10}}>
-            <ReactImage
-              style={stilos.icons}
-              source={require('../../assets/icons/mais.png')}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{marginLeft: 15}}>
-            <ReactImage
-              style={[stilos.icons]}
-              source={require('../../assets/icons/editar.png')}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{marginTop: 0, marginLeft: 15}}>
-            <ReactImage
-              style={stilos.icons}
-              source={require('../../assets/icons/camera.png')}
-            />
-          </TouchableOpacity>
-
-          <View style={[stilos.textCardSelect, {marginLeft: 50}]}>
-            <Text style={[stilos.textRnd, {color: 'white'}]}>Concluir</Text>
+            </View>
           </View>
         </View>
-      </View>
-    </Container>
+      </Container>
+    </>
   );
 }
 
 import stilos from '../../screens/stilos/TarefasGerente';
 const style = StyleSheet.create({
   icone: {
-    marginTop: 5,
-    marginLeft: 60,
-    marginRight: -5,
-    width: 25,
-    height: 25,
+    width: 28,
+    height: 28,
+  },
+
+  containerInf: {
+    backgroundColor: 'red',
+    flexDirection: 'row',
   },
 
   titleTask: {

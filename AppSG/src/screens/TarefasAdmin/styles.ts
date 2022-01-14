@@ -6,5 +6,5 @@ export const Container = styled.View`
   flex: 1;
   background-color: #cb8d00;
   align-items: center;
-  padding-top: ${RFValue(60)}px;
+  padding-top: ${RFValue(40)}px;
 `;

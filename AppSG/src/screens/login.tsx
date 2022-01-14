@@ -41,6 +41,9 @@ const Profile = () => {
           index: 0,
           routes: [{ name: 'HomeGerente' }]
         })
+        AsyncStorage.clear()
+        AsyncStorage.setItem('iduser', usuarium[0].idusuario)
+        AsyncStorage.getItem('iduser').then((valor) => console.log(valor))
       }
 
       //console.log(usuarium[0].email);

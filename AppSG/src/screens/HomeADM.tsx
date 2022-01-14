@@ -55,7 +55,14 @@ const HomeADM = () => {
         </Block>
       </Block>
       <Block row style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm}>
+        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Indicadores')}>
+          <Image
+            source={require('../assets/images/usabilidade.png')}
+            style={stilos.icon}
+          />
+          <Text style={stilos.titulo}>
+            Indicadores
+          </Text>
         </Block>
         <Block marginRight={sizes.sm}>
         </Block>

@@ -86,6 +86,12 @@ const stilos = StyleSheet.create({
     alignItems: 'center',
   },
 
+  containerConcluir: {
+    width: '100%',
+
+    alignItems: 'center',
+  },
+
   btnCancel: {
     backgroundColor: '#eb4034',
     borderColor: 'white',
@@ -215,9 +221,6 @@ const stilos = StyleSheet.create({
   },
 
   btnPic: {
-    position: 'absolute',
-    bottom: 20,
-    left: 125,
     width: 70,
     height: 70,
     backgroundColor: '#FFF',
@@ -240,8 +243,31 @@ const stilos = StyleSheet.create({
     right: 20,
     width: 60,
     height: 60,
-    backgroundColor: 'rgba(115, 115, 115,0.7)',
+    backgroundColor: 'rgba(115, 115, 115, 0.6)',
     borderRadius: 50,
+  },
+
+  swapRow: {
+    width: 60,
+    height: 60,
+    backgroundColor: 'rgba(115, 115, 115, 0.6)',
+    borderRadius: 50,
+  },
+
+  iconCamera: {
+    width: 60,
+    height: 60,
+    backgroundColor: 'rgba(115, 115, 115, 0.6)',
+    borderRadius: 50,
+  },
+
+  cameraSettings: {
+    width: '100%',
+    height: '100%',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
 });
 

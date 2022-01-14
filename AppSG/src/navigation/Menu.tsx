@@ -86,6 +86,9 @@ const DrawerContent = (
     { name: 'Tarefas Gerente', to: 'TarefasGerente', icon: assets.extras },
     { name: 'Indicadores', to: 'Indicadores', icon: assets.extras },
     { name: 'HomeADM', to: 'HomeADM', icon: assets.extras },
+    { name: 'agenda', to: 'agenda', icon: assets.extras },
+
+
 
   ];
 

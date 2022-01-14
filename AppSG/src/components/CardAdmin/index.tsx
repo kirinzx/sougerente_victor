@@ -48,7 +48,7 @@ export function CardAdmin({dados}: Props) {
       </Dados>
       <User>
         <ContainerPhoto>
-          <Photos style={{marginLeft: -12}} source={{uri: dados.foto}}></Photos>
+          <Photos source={{uri: dados.foto}}></Photos>
         </ContainerPhoto>
         <Time>
           <IconClock source={require('../../assets/icons/tempo.png')} />

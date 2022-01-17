@@ -5,14 +5,15 @@ import {Container, Titulo, Icon, ModalPosition} from './styles';
 interface Props {
   visible: boolean;
   msg: string;
+  icon: string;
 }
 
-export function ModalAlert({visible, msg}: Props) {
+export function ModalAlert({visible, msg, icon}: Props) {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <ModalPosition>
         <Container>
-          <Icon name="check-circle" />
+          <Icon name={icon} />
           <Titulo>{msg}</Titulo>
         </Container>
       </ModalPosition>

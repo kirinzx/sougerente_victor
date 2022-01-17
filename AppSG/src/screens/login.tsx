@@ -1,55 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text, KeyboardAvoidingView, View, Image, TouchableOpacity, AsyncStorageStatic } from 'react-native';
-
-
-
+import React, {useState, useEffect} from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  KeyboardAvoidingView,
+  View,
+  Image,
+  TouchableOpacity,
+  AsyncStorageStatic,
+} from 'react-native';
 
 import axios from 'axios';
-import { TextInput } from 'react-native-gesture-handler';
-import { NavigationContext, NavigationHelpersContext, StackActions, StackRouter, useNavigation } from '@react-navigation/native';
+import {TextInput} from 'react-native-gesture-handler';
+import {
+  NavigationContext,
+  NavigationHelpersContext,
+  StackActions,
+  StackRouter,
+  useNavigation,
+} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ModalAlert} from '../components/ModalAlert';
 
+let cpf = false;
 let usuarium = [{}];
 const isAndroid = Platform.OS === 'android';
-
-
 
 const Profile = () => {
   const [user, SetUser] = useState('');
   const [senha, SetSenha] = useState('');
   const [hide, SetHide] = useState(true);
+  const [modal, SetModal] = useState(false);
+  const [msg, setMsg] = useState('');
   const navigation = useNavigation();
 
   const getUser = () => {
-
     usuarium.splice(0, 1);
+
+    if (!user || !senha) {
+      setMsg('Digite todos os campos antes de continuar!');
+      SetModal(true);
+      setTimeout(() => {
+        SetModal(false);
+      }, 2500);
+      return;
+    }
+
     loadAPI('load_usuario_login', [user, senha]).then((result) => {
       for (const dado of result) {
-        usuarium.push(dado)
+        usuarium.push(dado);
+      }
+
+      if (usuarium[0].quantidade) {
+        setMsg('Usuário ou senha incorreto!');
+        SetModal(true);
+        setTimeout(() => {
+          SetModal(false);
+        }, 2500);
+        return;
       }
 
       if (usuarium[0].idusuario == 9) {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'HomeADM' }]
-        })
-        AsyncStorage.setItem('iduser', usuarium[0].idusuario)
-        AsyncStorage.getItem('iduser').then((valor) => console.log(valor))
-
+          routes: [{name: 'HomeADM'}],
+        });
+        AsyncStorage.setItem('iduser', usuarium[0].idusuario);
+        AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
       } else {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'HomeGerente' }]
-        })
-        AsyncStorage.clear()
-        AsyncStorage.setItem('iduser', usuarium[0].idusuario)
-        AsyncStorage.getItem('iduser').then((valor) => console.log(valor))
+          routes: [{name: 'HomeGerente'}],
+        });
+        AsyncStorage.clear();
+        AsyncStorage.setItem('iduser', usuarium[0].idusuario);
+        AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
       }
 
       //console.log(usuarium[0].email);
-
     });
-
   };
 
   async function loadAPI(api, param) {
@@ -61,74 +90,71 @@ const Profile = () => {
     }
     newp = newp.slice(0, newp.length - 1);
 
-    const { data } = await axios.get(
+    const {data} = await axios.get(
       `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
     );
 
     return data;
   }
 
-
-
-
   return (
-    <KeyboardAvoidingView style={stilos.background}
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={0}
-    >
-      <View style={stilos.logoContainer}>
-        <Image
-          style={stilos.logo}
-          source={require('../assets/images/sougerente.png')}
-          resizeMode='contain'
-        />
-      </View>
+    <>
+      <ModalAlert visible={modal} icon={'x-circle'} msg={msg} />
 
-
-
-      <View style={stilos.container}>
-        <Text style={stilos.welcome}>BEM-VINDO</Text>
-        <Text style={stilos.tituloUser}>Usuário</Text>
-        <TextInput
-          style={stilos.placeholder}
-          placeholder="Entre usando CPF, Email ou Telefone"
-          autoCorrect={false}
-          onChangeText={value => SetUser(value)}
-        />
-
-        <Text style={stilos.tituloSenha}>Senha</Text>
-        <TextInput
-          style={stilos.placeholder}
-          secureTextEntry={hide}
-          placeholder="Senha"
-          autoCorrect={false}
-          onChangeText={value => SetSenha(value)}
-        />
-        <TouchableOpacity onPress={() => SetHide(!hide)} style={{ marginLeft: '70%' }}>
+      <KeyboardAvoidingView
+        style={stilos.background}
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}>
+        <View style={stilos.logoContainer}>
           <Image
-            style={stilos.eye}
-            source={require('../assets/images/olho.png')}
+            style={stilos.logo}
+            source={require('../assets/images/sougerente.png')}
+            resizeMode="contain"
           />
-        </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity>
-          <Text style={stilos.password}>Esqueci a Senha</Text>
-        </TouchableOpacity>
+        <View style={stilos.container}>
+          <Text style={stilos.welcome}>BEM-VINDO</Text>
+          <Text style={stilos.tituloUser}>Usuário</Text>
+          <TextInput
+            style={stilos.placeholder}
+            placeholder="Entre usando CPF, Email ou Telefone"
+            autoCorrect={false}
+            onChangeText={(valor) => SetUser(valor)}
+            value={user}
+          />
 
+          <Text style={stilos.tituloSenha}>Senha</Text>
+          <TextInput
+            style={stilos.placeholder}
+            secureTextEntry={hide}
+            placeholder="Senha"
+            autoCorrect={false}
+            onChangeText={(value) => SetSenha(value)}
+          />
+          <TouchableOpacity
+            onPress={() => SetHide(!hide)}
+            style={{marginLeft: '70%'}}>
+            <Image
+              style={stilos.eye}
+              source={require('../assets/images/olho.png')}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={stilos.btnEntrar} onPress={getUser}>
-          <Text style={stilos.entrar}
-          >ENTRAR</Text>
-        </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={stilos.password}>Esqueci a Senha</Text>
+          </TouchableOpacity>
 
-      </View>
-    </KeyboardAvoidingView >
-
+          <TouchableOpacity style={stilos.btnEntrar} onPress={getUser}>
+            <Text style={stilos.entrar}>ENTRAR</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </>
   );
 };
 
 export default Profile;
-
 
 const stilos = StyleSheet.create({
   background: {
@@ -136,12 +162,11 @@ const stilos = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-
   },
 
   shadowProp: {
     shadowColor: '#757575',
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: {width: 1, height: 3},
     shadowOpacity: 0.7,
     shadowRadius: 4,
   },
@@ -156,7 +181,7 @@ const stilos = StyleSheet.create({
   logo: {
     width: 450,
     height: 450,
-    marginLeft: '-10%'
+    marginLeft: '-10%',
   },
 
   eye: {
@@ -249,6 +274,6 @@ const stilos = StyleSheet.create({
     borderColor: 'black',
     width: '68%',
     marginRight: '15%',
-    marginTop: '-5%'
+    marginTop: '-5%',
   },
 });

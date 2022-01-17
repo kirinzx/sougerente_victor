@@ -19,8 +19,9 @@ export const Titulo = styled.Text`
 `;
 
 export const Icon = styled(Feather)`
-  color: green;
+  color: ${({name}) => (name == 'check-circle' ? 'green' : 'red')};
   font-size: 30px;
+  margin-right: 10px;
 `;
 
 export const ModalPosition = styled.View`

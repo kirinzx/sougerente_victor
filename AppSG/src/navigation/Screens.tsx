@@ -20,16 +20,27 @@ export default () => {
 
   return (
     <Stack.Navigator>
+<<<<<<< Updated upstream
       <Stack.Screen
         name="login"
         component={Login}
         options={{headerShown: false}}
       />
+=======
+
+
+      {/* <Stack.Screen
+        name="login"
+        component={Login}
+        options={{ headerShown: false, }}
+      /> */}
+>>>>>>> Stashed changes
 
       {/*       <Stack.Screen
         name="HomeADM"
         component={HomeADM}
         options={{ headerShown: false }}
+<<<<<<< Updated upstream
       /> */}
 
       {/* <Stack.Screen
@@ -43,6 +54,15 @@ export default () => {
         component={HomeGerente}
         options={{headerShown: false}}
       />
+=======
+      />
+
+      {/* <Stack.Screen
+        name="HomeGerente"
+        component={HomeGerente}
+        options={{ headerShown: false }}
+      /> */}
+>>>>>>> Stashed changes
 
       <Stack.Screen
         name="Profile"
@@ -61,6 +81,7 @@ export default () => {
         component={TarefasGerente}
         options={{headerShown: false}}
       />
+
 
       <Stack.Screen
         name="Indicadores"

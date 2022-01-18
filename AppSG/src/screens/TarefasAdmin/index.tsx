@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, FlatList} from 'react-native';
+import {View, Text, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import axios from 'axios';
-import {Container} from './styles';
+import {Container, Title} from './styles';
 import {CardAdmin} from '../../components/CardAdmin';
+import {Button, Image} from '../../components';
+import {useNavigation} from '@react-navigation/native';
+import {useTheme} from '../../navigation/hooks';
 
 export function TarefasAdmin() {
   const [canLoad, setCanLoad] = useState(false);
+  const navigation = useNavigation();
+  const {sizes, assets} = useTheme();
 
   useEffect(() => {
     loadTarefa();
@@ -44,6 +49,21 @@ export function TarefasAdmin() {
     <>
       {canLoad && (
         <Container>
+          <Button
+            row
+            style={{alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10}}
+            flex={0}
+            onPress={() => navigation.goBack()}>
+            <Image
+              radius={0}
+              width={10}
+              height={18}
+              color={'white'}
+              source={assets.arrow}
+              transform={[{rotate: '180deg'}]}
+            />
+            <Title>Voltar</Title>
+          </Button>
           <FlatList
             keyExtractor={(item, index) => index.toString()}
             style={{flexGrow: 1}}

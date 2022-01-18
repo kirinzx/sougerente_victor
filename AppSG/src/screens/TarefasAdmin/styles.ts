@@ -8,3 +8,10 @@ export const Container = styled.View`
   align-items: center;
   padding-top: ${RFValue(40)}px;
 `;
+
+export const Title = styled.Text`
+  color: white;
+  font-family: OpenSans-SemiBold;
+  margin-left: 6px;
+  font-size: 18px;
+`;

@@ -3,7 +3,6 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {Feather} from '@expo/vector-icons';
 
 export const Container = styled.View`
-  height: ${({height}) => RFValue(height + 5)}px;
   background-color: white;
   margin: 15px 5px;
   border-radius: 10px;
@@ -30,7 +29,7 @@ export const BlockInf = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: ${RFValue(70)}%;
+  width: 55%;
 `;
 
 export const Title = styled.Text`
@@ -47,7 +46,7 @@ export const Periodo = styled.Text`
 
 export const ContainerTime = styled.View`
   width: ${RFValue(80)}px;
-  height: ${RFValue(35)}px;
+  height: 100%;
   border-radius: 30px;
   border: 2px solid black;
   align-items: center;

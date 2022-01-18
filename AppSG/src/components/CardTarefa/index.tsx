@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Camera} from 'expo-camera';
+import React, { useState } from 'react';
+import { Camera } from 'expo-camera';
 import {
   View,
   Text,
@@ -9,8 +9,9 @@ import {
   Image as ReactImage,
 } from 'react-native';
 
-import {ModalObs} from '../ModalObs';
-import {ModalAlert} from '../ModalAlert';
+import { ModalObs } from '../ModalObs';
+import { ModalImage } from '../ModalImage';
+import { ModalAlert } from '../ModalAlert';
 import axios from 'axios';
 import {
   Container,
@@ -38,7 +39,7 @@ interface Props {
   loadTarefas: () => void;
 }
 
-export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
+export function CardTarefa({ dados, openCamera, loadTarefas }: Props) {
   const [configCard, setConfigCard] = useState({
     opacity: '0',
     extended: false,
@@ -46,6 +47,8 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
     height: 120,
   });
   const [obsVisible, setObsVisible] = useState(false);
+  const [imgVisible, setImgVisible] = useState(false);
+
   const [alert, setAlert] = useState(false);
 
   function handleDiv() {
@@ -61,7 +64,7 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
         opacity: '1',
         extended: true,
         degSeta: '90deg',
-        height: 340,
+        height: 300,
       });
     }
   }
@@ -96,7 +99,7 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
     }
     newp = newp.slice(0, newp.length - 1);
 
-    const {data} = await axios.get(
+    const { data } = await axios.get(
       `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
     );
 
@@ -113,8 +116,16 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
         id={dados.id}
         observacao={dados.observacao}
       />
+
+      <ModalImage
+        visible={imgVisible}
+        close={closeModal}
+        id={dados.id}
+        observacao={dados.observacao}
+      />
+
       <Container height={configCard.height}>
-        <View style={{paddingVertical: 7}}>
+        <View style={{ paddingVertical: 7 }}>
           <Text style={style.titleTask}>{dados.titulo}</Text>
 
           <ContainerInf>
@@ -136,8 +147,8 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
 
               <TouchableOpacity onPress={handleDiv}>
                 <Image
-                  style={{width: 25, height: 25, marginTop: 5, marginLeft: 5}}
-                  transform={[{rotate: configCard.degSeta}]}
+                  style={{ width: 25, height: 25, marginTop: 5, marginLeft: 5 }}
+                  transform={[{ rotate: configCard.degSeta }]}
                   source={require('../../assets/icons/seta.png')}
                 />
               </TouchableOpacity>
@@ -156,10 +167,10 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
             <Text style={stilos.textObs}>{dados.descricao}</Text>
           </View>
 
-          <View style={{flexDirection: 'row', marginTop: 17, marginLeft: 5}}>
+          <View style={{ flexDirection: 'row', marginTop: 17, marginLeft: 5 }}>
             <TouchableOpacity
-              style={{marginLeft: 15}}
-              onPress={() => setObsVisible(true)}>
+              style={{ marginLeft: 15 }}
+              onPress={() => setImgVisible(true)}>
               <ReactImage
                 style={[stilos.icons]}
                 source={require('../../assets/icons/editar.png')}
@@ -167,7 +178,7 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{marginTop: 0, marginLeft: 15}}
+              style={{ marginTop: 0, marginLeft: 15 }}
               onPress={openCamera}>
               <ReactImage
                 style={stilos.icons}
@@ -178,7 +189,7 @@ export function CardTarefa({dados, openCamera, loadTarefas}: Props) {
             <View style={stilos.containerConcluir}>
               <View style={[stilos.textCardSelect]}>
                 <TouchableOpacity onPress={() => concluirTarefa(dados.id)}>
-                  <Text style={[stilos.textRnd, {color: 'white'}]}>
+                  <Text style={[stilos.textRnd, { color: 'white' }]}>
                     Concluir
                   </Text>
                 </TouchableOpacity>

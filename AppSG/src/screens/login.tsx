@@ -51,7 +51,7 @@ const Profile = () => {
         usuarium.push(dado);
       }
 
-      if (usuarium[0].quantidade) {
+      if (usuarium[0].quantidade || usuarium[0].senha != usuarium[0].md5) {
         setMsg('Usuário ou senha incorreto!');
         SetModal(true);
         setTimeout(() => {

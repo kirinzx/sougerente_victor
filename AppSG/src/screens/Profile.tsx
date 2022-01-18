@@ -1,35 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import React, {useState, useEffect} from 'react';
+import {Platform, StyleSheet, Text} from 'react-native';
+import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
+import {Feather} from '@expo/vector-icons';
 
-
-import { Block, Image, Button } from '../components/';
+import {Block, Image, Button} from '../components/';
 import axios from 'axios';
-import { useData, useTheme, useTranslation } from '../hooks/';
-
+import {useData, useTheme, useTranslation} from '../hooks/';
 
 const isAndroid = Platform.OS === 'android';
 
-
-
 const Profile = () => {
   const navigation = useNavigation();
-  const { assets, colors, sizes } = useTheme();
+  const {assets, colors, sizes} = useTheme();
   const [user, setUser] = useState({});
+  const [foto, setFoto] = useState();
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');
-    const { data } = await axios.get(`http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario?p1=${user}`);
+    const {data} = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario?p1=${user}`,
+    );
     setUser(data[0]);
+    setFoto(data[0].foto);
+  }
+
+  let fotinha = '';
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 0.3,
+    });
+
+    if (!result.cancelled) {
+      fotinha = result;
+      uploadImage();
+    } else {
+      return;
+    }
   };
 
+  async function uploadImage() {
+    var iduser = await AsyncStorage.getItem('iduser');
 
+    let nome = '';
+    await loadAPI('profile_usuario', [iduser]).then((result) => {
+      nome = result[0].nome_completo.slice(
+        0,
+        result[0].nome_completo.indexOf(' '),
+      );
+    });
+
+    const path = fotinha.uri.split('/');
+    const data = new FormData();
+    data.append('arquivo', {
+      name: `${nome}.jpg`,
+      uri: fotinha.uri,
+      type: fotinha.type,
+    });
+
+    await axios.post(
+      'http://192.168.1.6/8LIGHT/api_goauditt/sg_fotos.php',
+      data,
+    );
+
+    setFoto(fotinha.uri);
+  }
+
+  async function loadAPI(api, param) {
+    let newp = '';
+    if (param) {
+      if (param.length != 0) {
+        for (let x = 0; x < param.length; x++) newp += `p${x + 1}=${param[x]}&`;
+      }
+    }
+    newp = newp.slice(0, newp.length - 1);
+
+    const {data} = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
+    );
+
+    return data;
+  }
 
   useEffect(() => {
     getUser();
   }, []);
-
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -37,7 +95,7 @@ const Profile = () => {
         scroll
         paddingHorizontal={sizes.s}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: sizes.padding }}>
+        contentContainerStyle={{paddingBottom: sizes.padding}}>
         <Block flex={1}>
           <Image
             background
@@ -56,36 +114,40 @@ const Profile = () => {
                 height={18}
                 color={'white'}
                 source={assets.arrow}
-                transform={[{ rotate: '180deg' }]}
+                transform={[{rotate: '180deg'}]}
               />
               <Text style={stilos.textVoltar}>Voltar</Text>
             </Button>
             <Block flex={1} align="center">
-              <Image
-                width={120}
-                height={120}
-                source={{ uri: user.foto }}
+              <Image width={120} height={120} source={{uri: foto}} />
+              <Feather
+                onPress={pickImage}
+                size={20}
+                name="edit"
+                style={{
+                  color: 'white',
+                  position: 'absolute',
+                  left: '75%',
+                  borderWidth: 2,
+                  borderColor: 'white',
+                  padding: 5,
+                  borderRadius: 5,
+                }}
               />
-              <Text style={stilos.nomePerfil}>
-                {user.nome_completo}
-              </Text>
-              <Text style={stilos.tituloPerfil}>
-                {user.email}
-              </Text>
-              <Block row marginVertical={sizes.m}>
-
-              </Block>
-            </Block >
-          </Image >
+              <Text style={stilos.nomePerfil}>{user.nome_completo}</Text>
+              <Text style={stilos.tituloPerfil}>{user.email}</Text>
+              <Block row marginVertical={sizes.m}></Block>
+            </Block>
+          </Image>
 
           {/* profile: stats */}
-          < Block
+          <Block
             flex={0}
             radius={sizes.sm}
             shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
-            marginTop={- sizes.l}
+            marginTop={-sizes.l}
             marginHorizontal="6%"
-            color="rgb(153, 153, 153)" >
+            color="rgb(153, 153, 153)">
             <Block
               row
               blur
@@ -110,7 +172,7 @@ const Profile = () => {
                 <Text style={stilos.numberText}>Metas</Text>
               </Block>
             </Block>
-          </Block >
+          </Block>
 
           <Block
             flex={0}
@@ -140,14 +202,13 @@ const Profile = () => {
               </Block>
             </Block>
           </Block>
-        </Block >
-      </Block >
-    </Block >
+        </Block>
+      </Block>
+    </Block>
   );
 };
 
 export default Profile;
-
 
 const stilos = StyleSheet.create({
   task: {
@@ -251,7 +312,7 @@ const stilos = StyleSheet.create({
 
   shadowProp: {
     shadowColor: '#757575',
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: {width: 1, height: 3},
     shadowOpacity: 0.7,
     shadowRadius: 4,
   },

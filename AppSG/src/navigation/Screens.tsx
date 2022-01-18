@@ -20,16 +20,16 @@ export default () => {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="login"
         component={Login}
         options={{headerShown: false}}
-      />
+      /> */}
 
-      {/*       <Stack.Screen
+      {/* <Stack.Screen
         name="HomeADM"
         component={HomeADM}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       /> */}
 
       {/* <Stack.Screen
@@ -38,11 +38,11 @@ export default () => {
         options={{ headerShown: false }}
       /> */}
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="HomeGerente"
         component={HomeGerente}
         options={{headerShown: false}}
-      />
+      /> */}
 
       <Stack.Screen
         name="Profile"

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 import {
+  Text,
   Image as ReactImage,
   View,
   TouchableOpacity,
@@ -12,8 +14,11 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { CardTarefa } from '../components/CardTarefa';
-import { Block, Image } from '../components';
+import { Block, Image, Button } from '../components';
 import { useTheme } from '../navigation/hooks';
 import axios from 'axios';
 import stilos from './stilos/TarefasGerente';
@@ -21,13 +26,11 @@ import stilos from './stilos/TarefasGerente';
 export default function TarefasGerente() {
   const [canLoad, setCanLoad] = useState(false);
   const [modalPic, setModalPic] = useState(false);
-  const [capturedPhoto, setCapturedPhoto] = useState(null);
-  const [displayCamera, setDisplayCamera] = useState('none');
-  const [hasPermission, setHasPermission] = useState(false);
-  const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.front);
-  const camRef = useRef(null);
-  const { sizes } = useTheme();
-  const [statusBar, setStatusBar] = useState(false);
+  const { sizes, assets } = useTheme();
+  const navigation = useNavigation();
+  //const [fotinha, setFotinha] = useState();
+
+  let fotinha = '';
 
   let dadosTerefa = [{}];
   useEffect(() => {
@@ -49,45 +52,41 @@ export default function TarefasGerente() {
     });
   }
 
-  function handleCamera() {
-    /*     (async () => {
-      const {status} = await Camera.requestPermissionsAsync();
-      setHasPermission(status == 'granted');
-    })(); */
-    let newDisplay = displayCamera == 'none' ? 'inline-block' : 'none';
-    setDisplayCamera(newDisplay);
-  }
-
-  function openCamera() {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      await setHasPermission(status == 'granted');
-      setDisplayCamera('inline-block');
-      setStatusBar(true);
-    })();
-  }
-
   function closeCamera() {
-    setStatusBar(false);
-    setDisplayCamera('none');
-    setCapturedPhoto(null);
+    setModalPic(false);
   }
 
-  function swapCamera() {
-    setTypeCamera(
-      typeCamera === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back,
-    );
+  async function uploadImage() {
+    const path = fotinha.uri.split('/');
+    const nome = path[path.length - 1];
+    const data = new FormData();
+    data.append('arquivo', {
+      name: nome,
+      uri: fotinha.uri,
+      type: fotinha.type,
+    })
+    console.log(data);
+    await axios.post('http://192.168.1.6/8LIGHT/api_goauditt/sg_fotos.php', data);
   }
 
-  async function takePicture() {
-    if (camRef) {
-      const data = await camRef.current.takePictureAsync();
-      setCapturedPhoto(data.uri);
-      setModalPic(true);
+
+
+  const pickImage = async () => {
+
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 0.3,
+    });
+
+
+    if (!result.cancelled) {
+      fotinha = (result);
+      uploadImage();
+    } else {
+      return;
     }
-  }
+  };
 
   async function loadAPI(api, param) {
     let newp = '';
@@ -105,175 +104,38 @@ export default function TarefasGerente() {
     return data;
   }
 
-  async function savePicture() {
-    /* const assets = await MediaLibrary.createAssetAsync(capturedPhoto).then(
-      () => {
-        alert('salvo com sucesso papai');
-      },
-    ); */
-    /*     const form = new FormData();
-    console.log(capturedPhoto);
-    let nameimage = capturedPhoto.slice(160);
-
-    form.append('image', {
-      uri: capturedPhoto,
-      type: 'image/jpg',
-      name: 'image.jpg',
-    });
-
-    console.log(form);
-
-    await fetch('https://goauditt.com.br/pages/php/sg_fotos.php', {
-      method: 'POST',
-      body: form,
-    });
-    console.log('xupetoviski'); */
-  }
 
   return (
     <>
       {canLoad && (
         <Block safe style={stilos.page}>
-          <View
-            style={{
-              top: -20,
-              width: '100%',
-              height: '103.7%',
-              display: displayCamera,
-            }}>
-            <Camera
-              style={{ width: '100%', height: '100%' }}
-              type={typeCamera}
-              ref={camRef}></Camera>
 
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={[
-                  {
-                    height: 100,
-                    bottom: 10,
-                    width: '100%',
-                    position: 'absolute',
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                  },
-                ]}>
-                <TouchableOpacity style={stilos.swapRow} onPress={closeCamera}>
-                  <ReactImage
-                    style={[
-                      stilos.icons,
-                      { left: '25%', top: '25%', height: 30, width: 30 },
-                    ]}
-                    source={require('../assets/icons/botao-voltar.png')}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity style={stilos.btnPic} onPress={takePicture}>
-                  <View style={stilos.iconPic}></View>
-                </TouchableOpacity>
-                <TouchableOpacity style={stilos.swapRow} onPress={swapCamera}>
-                  <ReactImage
-                    style={[
-                      stilos.icons,
-                      { left: '25%', top: '25%', height: 30, width: 30 },
-                    ]}
-                    source={require('../assets/icons/troca.png')}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              {capturedPhoto && (
-                <Modal
-                  animationType="slide"
-                  transparent={false}
-                  visible={modalPic}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        position: 'absolute',
-                        bottom: 30,
-                        zIndex: 1,
-                        justifyContent: 'space-around',
-                      }}>
-                      <TouchableOpacity
-                        style={[
-                          stilos.iconCamera,
-                          { backgroundColor: 'rgba(235, 61, 52, 0.5)' },
-                        ]}
-                        onPress={() => {
-                          setCapturedPhoto(null);
-                          setStatusBar(true);
-                        }}>
-                        <Feather
-                          size={35}
-                          name="x"
-                          color={'white'}
-                          style={{
-                            position: 'absolute',
-                            left: '20%',
-                            top: '18%',
-                          }}
-                        />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={[
-                          stilos.iconCamera,
-                          { backgroundColor: 'rgba(1, 152, 117, 0.5)' },
-                        ]}
-                        onPress={closeCamera}>
-                        <Feather
-                          size={35}
-                          name="check"
-                          color={'white'}
-                          style={{
-                            position: 'absolute',
-                            left: '20%',
-                            top: '18%',
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderTopLeftRadius: 0,
-                        borderTopRightRadius: 0,
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0,
-                      }}
-                      source={{ uri: capturedPhoto }}
-                    />
-                  </View>
-                </Modal>
-              )}
-            </View>
-          </View>
 
           <Block
             paddingHorizontal={sizes.s}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: sizes.padding }}>
+            <Button
+              row
+              flex={0}
+              justify="flex-start"
+              onPress={() => navigation.goBack()}>
+              <Image
+                radius={0}
+                width={10}
+                height={18}
+                color={'white'}
+                source={assets.arrow}
+                transform={[{ rotate: '180deg' }]}
+              />
+              <Text style={stilos.textVoltar}>Voltar</Text>
+            </Button>
             <FlatList
               data={dadosTerefa}
               renderItem={({ item }) => (
                 <CardTarefa
                   dados={item}
-                  openCamera={openCamera}
+                  openCamera={pickImage}
                   loadTarefas={loadTarefas}
                 />
               )}

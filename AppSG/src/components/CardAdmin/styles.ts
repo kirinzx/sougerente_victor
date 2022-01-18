@@ -3,7 +3,7 @@ import {RFValue, RFPercentage} from 'react-native-responsive-fontsize';
 
 export const Card = styled.View`
   background-color: white;
-  width: ${RFPercentage(50)}px;
+  width: ${RFPercentage(47)}px;
   height: ${RFValue(200)}px;
   border-radius: 10px;
   padding: 10px 15px;

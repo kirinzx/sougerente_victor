@@ -1,6 +1,12 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const stilos = StyleSheet.create({
+  textVoltar: {
+    color: 'white',
+    fontFamily: 'OpenSans-SemiBold',
+    marginLeft: 6,
+    fontSize: 18,
+  },
   page: {
     backgroundColor: '#CB8D00',
     flex: 1,
@@ -144,7 +150,7 @@ const stilos = StyleSheet.create({
 
   shadowProp: {
     shadowColor: '#757575',
-    shadowOffset: {width: 1, height: 3},
+    shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 4,
   },
@@ -177,6 +183,22 @@ const stilos = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+
+  modalFotinha: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    height: '90%',
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
   button: {
     borderRadius: 20,
     padding: 10,

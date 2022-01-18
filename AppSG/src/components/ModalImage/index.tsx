@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import axios from 'axios';
 
@@ -16,7 +17,7 @@ interface Props {
   close: () => void;
 }
 
-export function ModalObs({ visible, id, close, observacao }: Props) {
+export function ModalImage({ visible, id, close, observacao }: Props) {
   const [valueObs, setValueObs] = useState(observacao);
 
   function saveObs() {
@@ -50,15 +51,10 @@ export function ModalObs({ visible, id, close, observacao }: Props) {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <View style={stilos.centeredView}>
-        <View style={stilos.modalView}>
-          <Text style={[stilos.textTitleObs, { marginTop: 10 }]}>Observação</Text>
-          <TextInput
-            style={stilos.inputModal}
-            multiline
-            numberOfLines={4}
-            maxLength={45}
-            onChangeText={(text) => setValueObs(text)}
-            value={valueObs}
+        <View style={stilos.modalFotinha}>
+          <Image
+            style={{ width: '100%', height: '100%', borderRadius: 20 }}
+            source={require('../../assets/images/victor.jpeg')}
           />
         </View>
 

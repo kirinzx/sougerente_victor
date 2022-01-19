@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import {Feather} from '@expo/vector-icons';
 import axios from 'axios';
 import {useData, useTheme, useTranslation} from '../../hooks';
-import {loadAPI} from '../../global/Funcoes';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {
   Container,
@@ -25,7 +25,8 @@ import {
   Periodo,
   Status,
   ContainerStatus,
-  ContainerFoto,
+  Background,
+  Icon,
 } from './styles';
 
 const isAndroid = Platform.OS === 'android';
@@ -38,15 +39,16 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [dataArr, setDataArr] = useState([{}]);
   let fotinha = '';
-  let idusuario = 0;
+
+  let idusuario;
 
   async function getUser() {
     idusuario = 3; //await AsyncStorage.getItem('iduser');
-    const {data} = await loadAPI('load_usuario', [idusuario]);
-
-    console.log(data[0]);
-    //setUser(data[0]);
-    //setFoto(data[0].forto);
+    const {data} = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/load_usuario?p1=${idusuario}`,
+    );
+    setUser(data[0]);
+    setFoto(data[0].foto);
   }
 
   const pickImage = async () => {
@@ -58,14 +60,14 @@ export default function Profile() {
 
     if (!result.cancelled) {
       fotinha = result;
-      //uploadImage();
+      uploadImage();
     } else {
       return;
     }
   };
 
   async function uploadImage() {
-    /*  var iduser = await AsyncStorage.getItem('iduser');
+    var iduser = await AsyncStorage.getItem('iduser');
 
     let nome = '';
     await loadAPI('profile_usuario', [iduser]).then((result) => {
@@ -88,7 +90,23 @@ export default function Profile() {
       data,
     );
 
-    setFoto(fotinha.uri); */
+    setFoto(fotinha.uri);
+  }
+
+  async function loadAPI(api, param) {
+    let newp = '';
+    if (param) {
+      if (param.length != 0) {
+        for (let x = 0; x < param.length; x++) newp += `p${x + 1}=${param[x]}&`;
+      }
+    }
+    newp = newp.slice(0, newp.length - 1);
+
+    const {data} = await axios.get(
+      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
+    );
+
+    return data;
   }
 
   async function loadCard() {
@@ -111,13 +129,12 @@ export default function Profile() {
     !loading && (
       <>
         <Container>
+          <Background></Background>
           <ContainerUser>
-            <ContainerFoto>
-              <Foto source={{uri: foto}} resizeMode="cover" />
-            </ContainerFoto>
+            <Foto source={{uri: foto}} resizeMode="cover" />
             <ViewInf>
-              <Nome>{user.nome_completo}</Nome>
-              <Email>Gerente</Email>
+              <Nome>Inan Brunelli Brandão</Nome>
+              <Email>Administrativo</Email>
             </ViewInf>
           </ContainerUser>
           <ContainerTarefas>
@@ -137,7 +154,7 @@ export default function Profile() {
 
           <FlatList
             showsVerticalScrollIndicator={false}
-            style={{height: '100%', width: '100%', marginTop: '15%'}}
+            style={{height: '100%', width: '100%', marginTop: '10%'}}
             data={dataArr}
             keyExtractor={(item) => String(item.id)}
             renderItem={({item}) => <Card data={item} />}

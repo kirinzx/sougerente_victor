@@ -5,9 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import {Feather} from '@expo/vector-icons';
 
-import {Block, Image, Button} from '../components/';
+import {Block, Image, Button} from '../../components';
 import axios from 'axios';
-import {useData, useTheme, useTranslation} from '../hooks/';
+import {useData, useTheme, useTranslation} from '../../hooks';
+
+import {Card} from './styles';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -90,116 +92,115 @@ const Profile = () => {
   }, []);
 
   return (
-    <Block safe marginTop={sizes.md}>
+    <Block safe marginTop={sizes.md} scroll>
       <Block
         scroll
         paddingHorizontal={sizes.s}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: sizes.padding}}>
-        <Block flex={1}>
-          <Image
-            background
-            resizeMode="cover"
-            padding={sizes.sm}
-            radius={sizes.cardRadius}
-            source={require('../assets/images/card.png')}>
-            <Button
-              row
-              flex={0}
-              justify="flex-start"
-              onPress={() => navigation.goBack()}>
-              <Image
-                radius={0}
-                width={10}
-                height={18}
-                color={'white'}
-                source={assets.arrow}
-                transform={[{rotate: '180deg'}]}
-              />
-              <Text style={stilos.textVoltar}>Voltar</Text>
-            </Button>
-            <Block flex={1} align="center">
-              <Image width={120} height={120} source={{uri: foto}} />
-              <Feather
-                onPress={pickImage}
-                size={20}
-                name="edit"
-                style={{
-                  color: 'white',
-                  position: 'absolute',
-                  left: '75%',
-                  borderWidth: 2,
-                  borderColor: 'white',
-                  padding: 5,
-                  borderRadius: 5,
-                }}
-              />
-              <Text style={stilos.nomePerfil}>{user.nome_completo}</Text>
-              <Text style={stilos.tituloPerfil}>{user.email}</Text>
-              <Block row marginVertical={sizes.m}></Block>
-            </Block>
-          </Image>
-
-          {/* profile: stats */}
-          <Block
+        <Image
+          background
+          resizeMode="cover"
+          padding={sizes.sm}
+          radius={sizes.cardRadius}
+          source={require('../../assets/images/card.png')}>
+          <Button
+            row
             flex={0}
+            justify="flex-start"
+            onPress={() => navigation.goBack()}>
+            <Image
+              radius={0}
+              width={10}
+              height={18}
+              color={'white'}
+              source={assets.arrow}
+              transform={[{rotate: '180deg'}]}
+            />
+            <Text style={stilos.textVoltar}>Voltar</Text>
+          </Button>
+          <Block flex={1} align="center">
+            <Image width={120} height={120} source={{uri: foto}} />
+            <Feather
+              onPress={pickImage}
+              size={20}
+              name="edit"
+              style={{
+                color: 'white',
+                position: 'absolute',
+                left: '75%',
+                borderWidth: 2,
+                borderColor: 'white',
+                padding: 5,
+                borderRadius: 5,
+              }}
+            />
+            <Text style={stilos.nomePerfil}>{user.nome_completo}</Text>
+            <Text style={stilos.tituloPerfil}>{user.email}</Text>
+            <Block row marginVertical={sizes.m}></Block>
+          </Block>
+        </Image>
+
+        {/* profile: stats */}
+        <Block
+          flex={1}
+          scroll
+          radius={sizes.sm}
+          shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
+          marginTop={-sizes.l}
+          marginHorizontal="6%"
+          color="rgb(153, 153, 153)">
+          <Block
+            row
+            blur
+            flex={0}
+            intensity={100}
             radius={sizes.sm}
-            shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
-            marginTop={-sizes.l}
-            marginHorizontal="6%"
-            color="rgb(153, 153, 153)">
-            <Block
-              row
-              blur
-              flex={0}
-              intensity={100}
-              radius={sizes.sm}
-              overflow="hidden"
-              tint={colors.blurTint}
-              justify="space-evenly"
-              paddingVertical={sizes.sm}
-              renderToHardwareTextureAndroid>
-              <Block align="center">
-                <Text style={stilos.numberPerfil}> 10</Text>
-                <Text style={stilos.numberText}> Concluídas</Text>
-              </Block>
-              <Block align="center">
-                <Text style={stilos.numberPerfil}>2</Text>
-                <Text style={stilos.numberText}>Pendente</Text>
-              </Block>
-              <Block align="center">
-                <Text style={stilos.numberPerfil}>3</Text>
-                <Text style={stilos.numberText}>Metas</Text>
-              </Block>
+            overflow="hidden"
+            tint={colors.blurTint}
+            justify="space-evenly"
+            paddingVertical={sizes.sm}
+            renderToHardwareTextureAndroid>
+            <Block align="center">
+              <Text style={stilos.numberPerfil}> 10</Text>
+              <Text style={stilos.numberText}> Concluídas</Text>
+            </Block>
+            <Block align="center">
+              <Text style={stilos.numberPerfil}>2</Text>
+              <Text style={stilos.numberText}>Pendente</Text>
+            </Block>
+            <Block align="center">
+              <Text style={stilos.numberPerfil}>3</Text>
+              <Text style={stilos.numberText}>Metas</Text>
             </Block>
           </Block>
+        </Block>
 
+        <Block
+          flex={0}
+          radius={sizes.sm}
+          marginTop={sizes.l}
+          marginHorizontal="5%"
+          color="#CB8D00"
+          style={stilos.shadowProp}>
+          <Block align="center" style={stilos.task}>
+            <Text style={stilos.titleTask}> Checar Geladeiras </Text>
+          </Block>
           <Block
+            row
             flex={0}
+            intensity={10}
             radius={sizes.sm}
-            marginTop={sizes.l}
-            marginHorizontal="5%"
-            color="#CB8D00"
-            style={stilos.shadowProp}>
-            <Block align="center" style={stilos.task}>
-              <Text style={stilos.titleTask}> Checar Geladeiras </Text>
+            overflow="hidden"
+            tint={colors.blurTint}
+            justify="space-evenly"
+            paddingVertical={sizes.sm}
+            renderToHardwareTextureAndroid>
+            <Block align="center" style={stilos.textEsquerda}>
+              <Text style={stilos.textRnd}>Diária</Text>
             </Block>
-            <Block
-              row
-              flex={0}
-              intensity={10}
-              radius={sizes.sm}
-              overflow="hidden"
-              tint={colors.blurTint}
-              justify="space-evenly"
-              paddingVertical={sizes.sm}
-              renderToHardwareTextureAndroid>
-              <Block align="center" style={stilos.textEsquerda}>
-                <Text style={stilos.textRnd}>Diária</Text>
-              </Block>
-              <Block align="center" style={stilos.textConcluido}>
-                <Text style={stilos.textRnd}>Concluída</Text>
-              </Block>
+            <Block align="center" style={stilos.textConcluido}>
+              <Text style={stilos.textRnd}>Concluída</Text>
             </Block>
           </Block>
         </Block>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <script>
+        // Ignore this in your implementation
+        //window.isMbscDemo = true;
+    </script>
+
+    <title>Configure the timeline</title>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <!-- Mobiscroll JS and CSS Includes -->
+    <link rel="stylesheet" href="css/mobiscroll.jquery.min.css">
+    <script src="js/mobiscroll.jquery.min.js"></script>
+
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            height: 100%;
+        }
+
+        .demo-daily-weekly-timeline {
+            height: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div mbsc-page class="demo-daily-weekly-monthly-yearly-timeline">
+        <div style="height:100%">
+            <div id="demo-daily-weekly-timeline"></div>
+        </div>
+    </div>
+
+    <script>
+
+        mobiscroll.setOptions({
+            locale: mobiscroll.localePtBR,  // Specify language like: locale: mobiscroll.localePl or omit setting to use default
+            theme: 'ios',                   // Specify theme like: theme: 'ios' or omit setting to use default
+            themeVariant: 'light'       // More info about themeVariant: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-themeVariant
+        });
+
+        $(function () {
+            var inst = $('#demo-daily-weekly-timeline').mobiscroll().eventcalendar({
+
+                view: {       // More info about view: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-view
+                    timeline: {
+                        type: 'week',
+                        startDay: 1,
+                        endDay: 7,
+                        timeCellStep: 60,
+                        timeLabelStep: 60
+                    }
+                },
+                resources: [{               // More info about resources: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-resources
+                    id: 1,
+                    name: 'LOJA 1',
+                    color: '#fdf500'
+                }, {
+                    id: 2,
+                    name: 'LOJA 2',
+                    color: '#ff0101'
+                }, {
+                    id: 3,
+                    name: 'LOJA 3',
+                    color: '#01adff'
+                }, {
+                    id: 4,
+                    name: 'LOJA 4',
+                    color: '#239a21'
+                }, {
+                    id: 5,
+                    name: 'LOJA 5',
+                    color: '#ff4600'
+                }, {
+                    id: 6,
+                    name: 'LOJA 6',
+                    color: '#8f1ed6'
+                }],
+                data: [{
+                    start: new Date(2022, 1, 1),
+                    end: new Date(2022, 1, 30),
+                    title: 'Conference',
+                    allDay: true,
+                    color: 'red'
+                }, {
+                    title: 'Work project',
+                    recurring: {
+                        repeat: 'daily',
+                        until: '2022-04-01'
+                    },
+                    recurringException: ['2021-03-15', '2021-03-25'],
+                    recurringExceptionRule: {
+                        repeat: 'weekly',
+                        weekDays: 'SA,SU'
+                    }
+                }],
+            })
+
+
+
+
+        });
+    </script>
+
+</body>
+
+</html>

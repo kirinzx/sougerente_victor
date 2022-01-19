@@ -4,10 +4,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../../../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../../../assets/img/Group3.png">
+  <link rel="icon" type="image/png" href="../../../assets/img/sou_gerente_mini.png">
   <title>
-    SOU Gerente | Vincular Tarefa
+    SOU Gerente | Vinc. Tarefas
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -21,12 +20,19 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- CSS Files -->
   <link id="pagestyle" href="../../../assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mobiscroll.jquery.min.css">
 
 
 
   <link rel="stylesheet" href="../../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" />
   <link rel="stylesheet" href="../../../plugins/sweetalert2/sweetalert2.min.css" />
 
+  <style>
+    .work-order-checkbox-label.mbsc-checkbox {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+  </style>
   <script type="text/javascript">
 
     function carregarPagina() {
@@ -36,14 +42,8 @@
       loadPeriodo();
     }
 
-
-    function salvarMentoria() {
-
-      let desc = $('#descricao').val();
-      newloadAPI('insert_mentoria', [desc])
-      $('#descricao').val('');
-      $('#btn-sucesso').click();
-
+    function openVinculoTarefa() {
+      $('#vincular-tarefa').modal('show');
     }
 
     function loadTarefa() {
@@ -81,16 +81,7 @@
         $('#periodo').append(item);
       });
     }
-
   </script>
-
-
-
-
-
-
-
-
 
 </head>
 
@@ -100,9 +91,8 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
         aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href="../../../pages/pages/projects/home.html">
-        <img src="../../../assets/img/Group3.png" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold">SOU Gerente</span>
+      <a class="m-0" href="../../../pages/pages/projects/home.html">
+        <img src="../../../assets/img/sou_gerente_logo1.png" alt="main_logo" style="height: 6rem; margin-top: -5%;">
       </a>
     </div>
     <hr class="horizontal dark mt-0">
@@ -151,6 +141,11 @@
               <li class="nav-item ">
                 <a class="nav-link " href="../../../pages/pages/projects/departamento.html">
                   <span class="sidenav-normal"> Departamento</span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../../pages/pages/projects/agenda.html">
+                  <span class="sidenav-normal">Vincular Tarefas</span>
                 </a>
               </li>
             </ul>
@@ -214,9 +209,8 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Tarefas</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Vinculo de Tarefas</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Visualizar / Vincular Tarefas</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">Vincular Tarefa</h6>
         </nav>
         <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
           <a href="javascript:;" class="nav-link text-body p-0">
@@ -231,42 +225,13 @@
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-lg-9 col-12 mx-auto">
-          <div class="card card-body mt-4">
-            <h6 class="mb-0">Novo Vinculo</h6>
-            <p class="text-sm mb-0">Vincular nova tarefa</p>
-            <hr class="horizontal dark my-3">
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Tarefa</label>
-              <select class="form-control" id="tarefa">
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Responsável</label>
-              <select class="form-control" id="funcionarios">
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Repetição</label>
-              <select class="form-control" id="periodo">
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-control-label">Prazo Limite de Conclusão</label>
-              <input class="form-control" type="time" value="10:30:00" id="horario">
-            </div>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Loja</label>
-              <select class="form-control" id="loja">
-              </select>
-            </div>
-            <div class="d-flex justify-content-end mt-4">
-              <button type="button" name="button" class="btn btn-light m-0">Cancelar</button>
-              <button type="button" name="button" class="btn bg-gradient-primary m-0 ms-2"
-                onclick="salvarMentoria();">Criar Vinculo</button>
-            </div>
-          </div>
+      <span class="material-icons ms-2 font-weight" style="font-size: 250%; align-items: left;" type="button"
+        onclick="openVinculoTarefa();">
+        control_point
+      </span>
+      <div mbsc-page class="demo-work-order-scheduling">
+        <div style="height:100%; width: 100%;">
+          <div id="demo-work-order-scheduling"></div>
         </div>
       </div>
 
@@ -318,7 +283,58 @@
     </div>
   </main>
 
-  <button class="btn bg-gradient-success w-100 mb-0 toast-btn" type="button" data-target="successToast"
+  <div class="modal fade" id="vincular-tarefa" tabindex="-1" role="dialog" aria-labelledby="exampleModalMessageTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Vincular Tarefa</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-9 col-12 mx-auto">
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Tarefa</label>
+                <select class="form-control" id="tarefa">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Responsável</label>
+                <select class="form-control" id="funcionarios">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Repetição</label>
+                <select class="form-control" id="periodo">
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="example-datetime-local-input" class="form-control-label">Data Inicio</label>
+                <input class="form-control" type="datetime-local" id="data_inicio">
+              </div>
+              <div class="form-group">
+                <label for="example-datetime-local-input" class="form-control-label">Data Limite</label>
+                <input class="form-control" type="datetime-local" id="data_limite">
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Loja</label>
+                <select class="form-control" id="loja">
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" name="button" class="btn btn-light m-0">Cancelar</button>
+          <button type="button" name="button" class="btn bg-gradient-primary m-0 ms-2">Criar
+            Vinculo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <button class=" btn bg-gradient-success w-100 mb-0 toast-btn" type="button" data-target="successToast"
     style="display: none;" id="btn-sucesso">Success
     Notification</button>
 
@@ -335,6 +351,9 @@
   <script src="../../../assets/js/plugins/flatpickr.min.js"></script>
   <script src="../../../assets/js/plugins/dropzone.min.js"></script>
   <script src="../../../plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="../js/mobiscroll.jquery.min.js"></script>
+
+
   <script>
     if (document.getElementById('editor')) {
       var quill = new Quill('#editor', {
@@ -381,6 +400,77 @@
     var myDropzone = new Dropzone(drop, {
       url: "/file/post",
       addRemoveLinks: true
+
+    });
+  </script>
+  <script>
+
+    mobiscroll.setOptions({
+      locale: mobiscroll.localePtBR,
+      theme: 'ios',
+      themeVariant: 'light'
+    });
+
+    $(function () {
+      var calendar,
+        $resources = $('#work-order-resources'),
+        myResources = [{
+          id: 1,
+          name: 'Checar Anuncio',
+          color: '#fdf500'
+        }, {
+          id: 2,
+          name: 'Alinhar Estoque',
+          color: '#ff0101'
+        }, {
+          id: 3,
+          name: 'Limpar Geladeira Embutidos',
+          color: '#01adff'
+        }, {
+          id: 4,
+          name: 'Checar Açougue',
+          color: '#8f1ed6'
+        }];
+
+
+      calendar = $('#demo-work-order-scheduling').mobiscroll().eventcalendar({
+
+        view: {
+          timeline: {
+            type: 'day',
+            startDay: 1,
+            endDay: 5
+          }
+        },
+        clickToCreate: false,
+        dragToCreate: false,
+        dragToMove: true,
+        dragToResize: true,
+        data: [{
+          start: '2022-01-20T09:00',
+          end: '2022-01-20T10:00',
+          title: 'Victor Pavani',
+          resource: ['3'],
+          color: '#cf49d8'
+        }],
+        renderHeader: function () {
+          return `
+                      <div className="my-custom-title">JANEIRO</div>
+                      <button mbsc-calendar-prev></button>
+                      <button mbsc-calendar-today></button>
+                      <button mbsc-calendar-next></button>`;
+
+
+        },
+        resources: myResources,             // More info about resources: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-resources
+        extendDefaultEvent: function () {   // More info about extendDefaultEvent: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-extendDefaultEvent
+          return {
+            title: 'Work order',
+            location: ''
+          };
+        },
+
+      })
 
     });
   </script>

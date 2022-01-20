@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Platform, ScrollView, FlatList} from 'react-native';
+import {Platform, ScrollView, FlatList, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,6 +7,7 @@ import {Feather} from '@expo/vector-icons';
 import axios from 'axios';
 import {useData, useTheme, useTranslation} from '../../hooks';
 import {loadAPI} from '../../global/Funcoes';
+import {Image} from '../../components';
 
 import {
   Container,
@@ -26,6 +27,9 @@ import {
   Status,
   ContainerStatus,
   ContainerFoto,
+  ContainerBack,
+  TitleBack,
+  ButtonPhoto,
 } from './styles';
 
 const isAndroid = Platform.OS === 'android';
@@ -41,31 +45,35 @@ export default function Profile() {
   let idusuario = 0;
 
   async function getUser() {
-    idusuario = 3; //await AsyncStorage.getItem('iduser');
-    const {data} = await loadAPI('load_usuario', [idusuario]);
-
-    console.log(data[0]);
-    //setUser(data[0]);
-    //setFoto(data[0].forto);
+    AsyncStorage.setItem('iduser', '3');
+    idusuario = await AsyncStorage.getItem('iduser');
+    const data = await loadAPI('load_usuario', [idusuario]);
+    setUser(data[0]);
+    setFoto(data[0].foto);
   }
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
       quality: 0.3,
     });
 
     if (!result.cancelled) {
       fotinha = result;
-      //uploadImage();
+      Alert.alert('Confirmar seleção de imagem?', '', [
+        {
+          text: 'Cancelar',
+        },
+        {text: 'OK', onPress: () => uploadImage()},
+      ]);
     } else {
       return;
     }
   };
 
   async function uploadImage() {
-    /*  var iduser = await AsyncStorage.getItem('iduser');
+    var iduser = await AsyncStorage.getItem('iduser');
 
     let nome = '';
     await loadAPI('profile_usuario', [iduser]).then((result) => {
@@ -88,16 +96,14 @@ export default function Profile() {
       data,
     );
 
-    setFoto(fotinha.uri); */
+    setFoto(fotinha.uri);
   }
 
   async function loadCard() {
+    idusuario = await AsyncStorage.getItem('iduser');
     if (loading) return;
     setLoading(true);
-
-    const {data} = await axios.get(
-      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/profile_tarefas?p1=${idusuario}`,
-    );
+    const data = await loadAPI('profile_tarefas', [idusuario]);
     setDataArr(data);
     setLoading(false);
   }
@@ -112,8 +118,22 @@ export default function Profile() {
       <>
         <Container>
           <ContainerUser>
+            <ContainerBack onPress={() => navigation.goBack()}>
+              <Image
+                radius={0}
+                width={10}
+                height={18}
+                color={'white'}
+                source={assets.arrow}
+                transform={[{rotate: '180deg'}]}
+              />
+              <TitleBack>Voltar</TitleBack>
+            </ContainerBack>
+
             <ContainerFoto>
-              <Foto source={{uri: foto}} resizeMode="cover" />
+              <ButtonPhoto onPress={() => pickImage()}>
+                <Foto source={{uri: foto}} resizeMode="cover" />
+              </ButtonPhoto>
             </ContainerFoto>
             <ViewInf>
               <Nome>{user.nome_completo}</Nome>

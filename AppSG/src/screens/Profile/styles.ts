@@ -28,8 +28,10 @@ export const ContainerFoto = styled.View`
 export const Foto = styled.Image`
   width: ${RFValue(160)}px;
   height: ${RFValue(160)}px;
-  border-radius: ${RFValue(80)}px;
+  border-radius: ${RFValue(77)}px;
 `;
+
+export const ButtonPhoto = styled.TouchableOpacity``;
 
 export const ViewInf = styled.View`
   height: 28%;
@@ -127,4 +129,20 @@ export const ContainerStatus = styled.View`
   border: 2px solid white;
   border-radius: 15px;
   width: 45%;
+`;
+
+export const ContainerBack = styled.TouchableOpacity`
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  flex-direction: row;
+  color: white;
+  align-items: center;
+`;
+
+export const TitleBack = styled.Text`
+  font-weight: bold;
+  color: white;
+  font-size: ${RFValue(18)}px;
+  margin-left: 10px;
 `;

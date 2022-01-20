@@ -17,7 +17,6 @@ export async function loadAPI(api, param) {
     `http://${conexao}/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
   );
 
-  //console.log(data);
   return data;
 }
 

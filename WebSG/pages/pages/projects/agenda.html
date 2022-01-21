@@ -34,6 +34,9 @@
     }
   </style>
   <script type="text/javascript">
+    const colors = ['#1cb83b', '#ff0101', '#0070a6', '#8f1ed6'];
+    let cadVinculo = false;
+    let currentEvent = '';
 
     function carregarPagina() {
       loadTarefa();
@@ -42,13 +45,15 @@
       loadPeriodo();
     }
 
-    function openVinculoTarefa() {
+    function modalVinculo(bool) {
+      let text = bool ? 'Criar vinculo' : 'Editar vinculo';
+      $('#btn-vinculo').html(text);
+      cadVinculo = bool;
       $('#vincular-tarefa').modal('show');
     }
 
     function loadTarefa() {
       $('#tarefa').empty();
-      var task = newloadAPI('load_grid_tarefas', []);
       $.each(newloadAPI('load_grid_tarefas', []), function (indice, valor) {
         let item = "<option value='" + valor.iddefinicao_tarefas + "'>" + valor.descricao + "</option>";
         $('#tarefa').append(item);
@@ -57,7 +62,6 @@
 
     function loadFuncionario() {
       $('#funcionarios').empty();
-      var funcionario = newloadAPI('load_funcionario', []);
       $.each(newloadAPI('load_funcionario', []), function (indice, valor) {
         let item = "<option value='" + valor.idusuario + "'>" + valor.nome_completo + "</option>";
         $('#funcionarios').append(item);
@@ -66,7 +70,6 @@
 
     function loadLoja() {
       $('#loja').empty();
-      var loja = newloadAPI('load_loja', []);
       $.each(newloadAPI('load_loja', []), function (indice, valor) {
         let item = "<option value='" + valor.idparceiro + "'>" + valor.apelido_parceiro + "</option>";
         $('#loja').append(item);
@@ -75,11 +78,122 @@
 
     function loadPeriodo() {
       $('#periodo').empty();
-      var periodo = newloadAPI('load_periodo', []);
       $.each(newloadAPI('load_periodo', []), function (indice, valor) {
         let item = "<option value='" + valor.idperiodo + "'>" + valor.descricao + "</option>";
         $('#periodo').append(item);
       });
+    }
+
+    function getResources() {
+      let tarefasResources = [];
+      $.each(newloadAPI('agenda_tarefas', []), (i, dado) => {
+        let newobj = {
+          id: dado.id,
+          name: dado.descricao,
+          //color: colors[i]
+        }
+        tarefasResources.push(newobj);
+      });
+      return tarefasResources;
+    }
+
+    function getEventos() {
+      let tarefasEventos = [];
+      $.each(newloadAPI('agenda_loadagenda', []), (i, dado) => {
+        let newobj = {
+          start: `${dado.data}T${dado.hora_inicio.slice(0, 5)}`,
+          end: `${dado.data}T${dado.hora_final.slice(0, 5)}`,
+          title: dado.nome_completo,
+          resource: [dado.idtarefa],
+          id: dado.id,
+          color: dado.color,
+        }
+        tarefasEventos.push(newobj);
+      });
+      return tarefasEventos;
+    }
+
+    function returnTime(date) {
+      return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0') + ':00';
+    }
+
+    function saveTarefas(event) {
+      let horaInicio, horaFinal;
+
+      let newinicio = new Date(event.event.start);
+      horaInicio = returnTime(newinicio);
+
+      let newfinal = new Date(event.event.end);
+      horaFinal = returnTime(newfinal);
+
+      let newarr = [event.event.id, event.event.resource[0], horaInicio, horaFinal];
+      newloadAPI('agenda_updaretarefa', newarr);
+    }
+
+    function btnVinculo() {
+      let data = $('#data_inicio').val().slice(0, 10);
+      let hora_inicio = $('#data_inicio').val().slice(11) + ':00';
+      let hora_limite = $('#data_limite').val().slice(11) + ':00';
+      let arr = [
+        $('#tarefa').val(),
+        $('#funcionarios').val(),
+        $('#loja').val(),
+        data,
+        hora_inicio,
+        hora_limite]
+
+      for (const item of arr) {
+        if (!item) {
+          alert('campos obrigatorios')
+          return
+        }
+      }
+
+      var inst = $('#demo-work-order-scheduling').mobiscroll('getInst');
+      if (cadVinculo) {
+        inst.addEvent({
+          start: $('#data_inicio').val(),
+          end: $('#data_limite').val(),
+          title: $("#funcionarios option:selected").text(),
+          resource: [$('#tarefa').val()],
+          id: newloadAPI('agenda_inserttarefa_executadas', arr)[0].id,
+          color: newloadAPI('agenda_getcolor', [$("#funcionarios").val()])[0].color,
+        });
+      }
+      else newloadAPI('agenda_updatetarefa_executadas', arr);
+      $('#vincular-tarefa').modal('hide');
+
+      /* let iddefinicao_tarefas_lojas = newloadAPI('agenda_inserttarefa_lojas', [$('#tarefa').val(), $('#loja').val()]);
+      iddefinicao_tarefas_lojas = iddefinicao_tarefas_lojas[0].id;
+
+      let iddefinicao_tarefas_lojas_usuarios = newloadAPI('agenda_inserttarefa_usuarios', [iddefinicao_tarefas_lojas, $('#funcionarios').val()]);
+      iddefinicao_tarefas_lojas_usuarios = iddefinicao_tarefas_lojas_usuarios[0].id;
+
+      let idcronograma_tarefas = newloadAPI('agenda_inserttarefa_cronograma', [iddefinicao_tarefas_lojas_usuarios, $('#periodo').val()]);
+      idcronograma_tarefas = idcronograma_tarefas[0].id; 
+      arr.push(idcronograma_tarefas);*/
+    }
+
+    function editTarefa(event) {
+      let idtarefa = event.event.id;
+      let dados = newloadAPI('agenda_edittarefa', [idtarefa]);
+      dados = dados[0];
+
+      $('#tarefa').val(dados.iddefinicao_tarefas);
+      $('#funcionarios').val(dados.idusuario);
+      $('#loja').val(dados.idparceiro);
+      $('#data_inicio').val(dados.hora_inicial);
+      $('#data_limite').val(dados.hora_final);
+
+      modalVinculo(false);
+    }
+
+    function deleteEvent() {
+      if (currentEvent) {
+        let inst = $('#demo-work-order-scheduling').mobiscroll('getInst');
+        newloadAPI('agenda_deletetarefa', [currentEvent.event.id]);
+        inst.removeEvent([currentEvent.event.id]);
+      }
     }
   </script>
 
@@ -194,6 +308,11 @@
                   <span class="sidenav-normal">Novo Usuario</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <button class="nav-link" onclick="catchTarefa();">
+                  <span class="sidenav-normal">oi</span>
+                </button>
+              </li>
             </ul>
           </div>
         </li>
@@ -226,8 +345,12 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <span class="material-icons ms-2 font-weight" style="font-size: 250%; align-items: left;" type="button"
-        onclick="openVinculoTarefa();">
+        onclick="modalVinculo(true);">
         control_point
+      </span>
+      <span class="material-icons ms-2 font-weight" style="font-size: 250%; align-items: left;" type="button"
+        id="btn-del" onclick="deleteEvent();">
+        delete
       </span>
       <div mbsc-page class="demo-work-order-scheduling">
         <div style="height:100%; width: 100%;">
@@ -325,9 +448,10 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" name="button" class="btn btn-light m-0">Cancelar</button>
-          <button type="button" name="button" class="btn bg-gradient-primary m-0 ms-2">Criar
-            Vinculo</button>
+          <button type="button" name="button" class="btn btn-light m-0"
+            onclick="$('#vincular-tarefa').modal('hide')">Cancelar</button>
+          <button type="button" name="button" class="btn bg-gradient-primary m-0 ms-2" onclick="btnVinculo()"
+            id='btn-vinculo'></button>
         </div>
       </div>
     </div>
@@ -411,29 +535,29 @@
       themeVariant: 'light'
     });
 
-    $(function () {
-      var calendar,
-        $resources = $('#work-order-resources'),
-        myResources = [{
-          id: 1,
-          name: 'Checar Anuncio',
-          color: '#fdf500'
-        }, {
-          id: 2,
-          name: 'Alinhar Estoque',
-          color: '#ff0101'
-        }, {
-          id: 3,
-          name: 'Limpar Geladeira Embutidos',
-          color: '#01adff'
-        }, {
-          id: 4,
-          name: 'Checar Açougue',
-          color: '#8f1ed6'
-        }];
-
+    $(async function () {
+      let calendar;
+      let $resources = $('#work-order-resources');
+      let myResources = await getResources();
 
       calendar = $('#demo-work-order-scheduling').mobiscroll().eventcalendar({
+        onEventDoubleClick: function (event, inst) {
+          editTarefa(event)
+        },
+
+        onEventUpdated: function (event, inst) {
+          saveTarefas(event);
+        },
+
+        onEventClick: function (event, inst) {
+          currentEvent = event;
+          $('#btn-del').css('color', 'red');
+        },
+
+        onCellClick: function (event, inst) {
+          currentEvent = '';
+          $('#btn-del').css('color', '#67748E');
+        },
 
         view: {
           timeline: {
@@ -446,21 +570,13 @@
         dragToCreate: false,
         dragToMove: true,
         dragToResize: true,
-        data: [{
-          start: '2022-01-20T09:00',
-          end: '2022-01-20T10:00',
-          title: 'Victor Pavani',
-          resource: ['3'],
-          color: '#cf49d8'
-        }],
+        data: await getEventos(),
         renderHeader: function () {
           return `
-                      <div className="my-custom-title">JANEIRO</div>
-                      <button mbsc-calendar-prev></button>
-                      <button mbsc-calendar-today></button>
-                      <button mbsc-calendar-next></button>`;
-
-
+          <div className="my-custom-title">JANEIRO</div>
+          <button mbsc-calendar-prev></button>
+          <button mbsc-calendar-today></button>
+          <button mbsc-calendar-next></button>`;
         },
         resources: myResources,             // More info about resources: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-resources
         extendDefaultEvent: function () {   // More info about extendDefaultEvent: https://docs.mobiscroll.com/5-13-4/eventcalendar#opt-extendDefaultEvent

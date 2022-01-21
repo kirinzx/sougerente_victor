@@ -1,4 +1,6 @@
 function newloadAPI(nomeAPI, param) {
+    if (!localStorage.getItem("conexao_geral")) localStorage.setItem('conexao_geral', '192.168.1.6');
+
     let newobj = {};
 
     if (param) {

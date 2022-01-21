@@ -44,11 +44,16 @@ export default () => {
         options={{headerShown: false}}
       /> */}
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Profile"
         component={Profile}
+<<<<<<< Updated upstream
         options={{headerShown: false}}
       />
+=======
+        options={{ headerShown: false }}
+      /> */}
+>>>>>>> Stashed changes
 
       <Stack.Screen
         name="TarefasAdmin"

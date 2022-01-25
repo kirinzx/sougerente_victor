@@ -11,6 +11,7 @@ import HomeADM from '../screens/HomeADM';
 import agenda from '../screens/agenda';
 import Login from '../screens/login';
 import indicadores from '../screens/indicadores';
+import Perfil from '../screens/Profile/index';
 import { NavigationContext } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
@@ -20,6 +21,7 @@ export default () => {
 
   return (
     <Stack.Navigator>
+<<<<<<< Updated upstream
       {/* <Stack.Screen
         name="login"
         component={Login}
@@ -31,18 +33,34 @@ export default () => {
         component={HomeADM}
         options={{headerShown: false}}
       /> */}
-
-      {/* <Stack.Screen
-        name="Agenda"
-        component={agenda}
+=======
+      <Stack.Screen
+        name="login"
+        component={Login}
         options={{ headerShown: false }}
-      /> */}
+      />
 
+      <Stack.Screen
+        name="HomeADM"
+        component={HomeADM}
+        options={{ headerShown: false }}
+      />
+>>>>>>> Stashed changes
+
+
+<<<<<<< Updated upstream
       {/* <Stack.Screen
         name="HomeGerente"
         component={HomeGerente}
         options={{headerShown: false}}
       /> */}
+=======
+      <Stack.Screen
+        name="HomeGerente"
+        component={HomeGerente}
+        options={{ headerShown: false }}
+      />
+>>>>>>> Stashed changes
 
       {/* <Stack.Screen
         name="Profile"

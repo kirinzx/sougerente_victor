@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text, Dimensions, Image } from 'react-native';
+import { Platform, StyleSheet, Text, Dimensions, Image, View, TextInput, TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,7 +9,7 @@ import { Block, Button } from '../components/';
 import axios from 'axios';
 import { useData, useTheme } from '../hooks/';
 import { LineChart, Path, Grid } from 'react-native-svg-charts';
-import * as shape from 'd3-shape';
+import Modal from 'react-native-modal';
 
 
 
@@ -19,10 +19,17 @@ const isAndroid = Platform.OS === 'android';
 
 
 
+
 const indicadores = () => {
   const navigation = useNavigation();
   const { assets, colors, sizes } = useTheme();
   const [user, setUser] = useState({});
+
+  const [isModalVisible, setModalVisible] = useState(true);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');
@@ -37,6 +44,46 @@ const indicadores = () => {
   };
 
   const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+
+  /* RATING */
+  const [defaultRating, setDefaultRating] = useState(2);
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+
+  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png'
+  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png'
+
+  const CustomRatingBar = () => {
+    return (
+      <View style={stilos.customRatingBarStyle}>
+        {
+          maxRating.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => setDefaultRating(item)}
+              >
+                <Image
+                  style={stilos.starImgStyle}
+                  source={
+                    item <= defaultRating
+                      ? { uri: starImgFilled }
+                      : { uri: starImgCorner }
+                  }
+                />
+
+              </TouchableOpacity>
+            )
+          })
+        }
+      </View>
+    )
+
+
+  }
+
+  /* RATING */
+
 
   const Line = ({ line }) => (
     <Path
@@ -63,6 +110,7 @@ const indicadores = () => {
             row
             flex={0}
             justify="flex-start"
+            marginTop={'7%'}
             onPress={() => navigation.goBack()}>
             <Image
               style={stilos.voltar}
@@ -281,6 +329,39 @@ const indicadores = () => {
           </Block>
         </Block >
       </Block >
+      <Modal isVisible={isModalVisible} style={stilos.modal}>
+        <View style={stilos.modalContent}>
+
+          <View style={stilos.vwTitulos}>
+            <Text style={stilos.tituloTarefa}>Checar Geladeiras</Text>
+            <Text style={stilos.usuarioTarefa}>Victor Pavani</Text>
+          </View>
+
+          <View style={stilos.vwEstrelas}>
+            <Text style={stilos.titleAvaliar}> Avaliar Execução da Tarefa</Text>
+            <Text style={stilos.titleAvaliar}>(Sendo 1 Muito Ruim e 5 Muito Bom)</Text>
+            <CustomRatingBar />
+            <Text style={stilos.starCounter}>
+              {defaultRating + '/' + maxRating.length}
+            </Text>
+          </View>
+
+
+          <View style={stilos.vwBtn}>
+            <TouchableOpacity style={stilos.btnAvaliar} onPress={() => alert(defaultRating)}>
+              <Text style={stilos.txtAvaliar}> Confirmar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={stilos.btnCancelar} onPress={() => setModalVisible(false)}>
+              <Text style={stilos.txtCancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+
+
+        </View>
+
+
+      </Modal>
     </Block >
 
 
@@ -346,8 +427,117 @@ const stilos = StyleSheet.create({
   voltar: {
     width: 20,
     height: 20,
-    marginRight: '-2%'
+    marginRight: '-2%',
+  },
 
+  tituloTarefa: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 30,
+    color: 'black',
+  },
+
+  usuarioTarefa: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: 'black',
 
   },
+
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    height: '60%',
+    borderTopLeftRadius: 60,
+    borderTopRightRadius: 60,
+  },
+
+  btnAvaliar: {
+    backgroundColor: '#39AF31',
+    width: '45%',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '30%',
+    borderRadius: 20,
+  },
+
+  txtAvaliar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  txtCancelar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  btnCancelar: {
+    backgroundColor: 'red',
+    width: '45%',
+    height: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    borderRadius: 20,
+    marginRight: '5%',
+  },
+
+  vwBtn: {
+    width: '80%',
+    height: '25%',
+    flexDirection: 'row-reverse',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '-80%',
+    marginTop: '5%',
+  },
+
+  vwTitulos: {
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '-70%',
+  },
+
+  vwEstrelas: {
+    marginTop: 30,
+  },
+
+  customRatingBarStyle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+
+  starImgStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: 'cover',
+  },
+
+  starCounter: {
+    textAlign: 'center',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    marginTop: 30,
+  },
+
+  titleAvaliar: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+
 });

@@ -35,34 +35,42 @@ const HomeADM = () => {
         <Text style={stilos.bemvindo}>{nome.nome_completo}</Text>
       </View>
       <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Profile')}>
-          <Image
-            source={require('../assets/images/usuario.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Perfil
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={stilos.tcBlock}>
+            <Image
+              source={require('../assets/images/usuario.png')}
+              style={stilos.icon}
+            />
+            <Text style={stilos.titulo}>
+              Perfil
+            </Text>
+          </TouchableOpacity>
+
         </Block>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('TarefasAdmin')}>
-          <Image
-            source={require('../assets/images/avaliacao.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Tarefas
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card}>
+          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('TarefasAdmin')}>
+            <Image
+              source={require('../assets/images/avaliacao.png')}
+              style={stilos.icon}
+            />
+            <Text style={stilos.titulo}>
+              Tarefas
+            </Text>
+          </TouchableOpacity>
         </Block>
       </Block>
       <Block row style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Indicadores')}>
-          <Image
-            source={require('../assets/images/usabilidade.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Indicadores
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card} >
+          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('Indicadores')}>
+            <Image
+              source={require('../assets/images/usabilidade.png')}
+              style={stilos.icon}
+            />
+            <Text style={stilos.titulo}>
+              Indicadores
+            </Text>
+          </TouchableOpacity>
+
         </Block>
         <Block marginRight={sizes.sm}>
         </Block>
@@ -125,6 +133,11 @@ const stilos = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',
+  },
+
+  tcBlock: {
+    height: '100%',
+
   },
 
 });

@@ -10,6 +10,8 @@ const stilos = StyleSheet.create({
   page: {
     backgroundColor: '#CB8D00',
     flex: 1,
+    height: '100%',
+    marginTop: '15%',
   },
 
   icons: {
@@ -151,7 +153,7 @@ const stilos = StyleSheet.create({
   shadowProp: {
     shadowColor: '#757575',
     shadowOffset: { width: 1, height: 3 },
-    shadowOpacity: 0.7,
+    //shadowOpacity: 0.7,
     shadowRadius: 4,
   },
 
@@ -179,7 +181,7 @@ const stilos = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
+    //shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
@@ -194,7 +196,7 @@ const stilos = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
+    //shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
@@ -237,7 +239,7 @@ const stilos = StyleSheet.create({
       height: 2,
     },
 
-    shadowOpacity: 0.25,
+    //shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },

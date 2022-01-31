@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Button } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import axios from 'axios';
 import { Container, Title } from './styles';
 import { CardAdmin } from '../../components/CardAdmin';
-//import { Button } from '../../components';
+import { Button } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput } from 'react-native-gesture-handler';
 import { useTheme } from '../../navigation/hooks';
@@ -73,6 +73,7 @@ export function TarefasAdmin() {
     setModalVisible(!isModalVisible);
   };
 
+
   useEffect(() => {
     loadTarefa();
   });
@@ -133,7 +134,7 @@ export function TarefasAdmin() {
   return (
     <>
       {canLoad && (
-        <Container>
+        <Container style={{ marginTop: 20 }}>
           {/* <Button
             style={stilos.btnMais}
             //style={stilos.btnMais}
@@ -142,7 +143,7 @@ export function TarefasAdmin() {
               style={stilos.mais}
               source={require('../../assets/images/mais.png')}
             />
-          </Button>
+          </Button> */}
           <Button
             row
             style={{ alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10 }}
@@ -153,9 +154,9 @@ export function TarefasAdmin() {
               source={require('../../assets/images/seta-branca.png')}
             />
             <Title>Voltar</Title>
-          </Button> */}
+          </Button>
 
-          <View style={stilos.container1}>
+          {/* <View style={stilos.container1}>
             <Form ref={formRef} onSubmit={handleSubmit}>
               <Text style={stilos.formTitle}>Tarefa</Text>
               <RNPickerSelect name="user" items={tarefas} onValueChange={(valor) => console.log(valor)} />
@@ -240,33 +241,19 @@ export function TarefasAdmin() {
                 <Text style={stilos.submitButtonText}>Send</Text>
               </TouchableOpacity>
             </Form>
-          </View>
+          </View> */}
 
-          {/* <FlatList
+          <FlatList
             keyExtractor={(item, index) => index.toString()}
             style={{ flexGrow: 1 }}
             contentContainerStyle={{ alignItems: 'center' }}
             data={dados}
             renderItem={({ item }) => <CardAdmin dados={item} />}
             showsVerticalScrollIndicator={false}
-          /> */}
+          />
 
 
 
-
-          <KeyboardAvoidingView>
-            <Modal isVisible={isModalVisible} style={stilos.modal}>
-              <View style={stilos.modalContent}>
-                <TextInput
-                  style={stilos.placeholder}
-                  placeholder="Entre usando CPF, Email ou Telefone"
-                  autoCorrect={false}
-                />
-              </View>
-
-
-            </Modal>
-          </KeyboardAvoidingView>
 
         </Container>
       )}
@@ -326,6 +313,17 @@ const stilos = StyleSheet.create({
     marginRight: '3%',
   },
 
+  placeholder: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
+    marginTop: '4%',
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    width: '80%',
+    marginBottom: '4%',
+  },
+
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
@@ -343,15 +341,97 @@ const stilos = StyleSheet.create({
     borderTopRightRadius: 60,
   },
 
-  placeholder: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'OpenSans-Bold',
-    marginTop: '4%',
-    borderBottomWidth: 1,
-    borderColor: 'black',
+  btnAvaliar: {
+    backgroundColor: '#39AF31',
+    width: '45%',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '30%',
+    borderRadius: 20,
+  },
+
+  txtAvaliar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  txtCancelar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  btnCancelar: {
+    backgroundColor: 'red',
+    width: '45%',
+    height: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    borderRadius: 20,
+    marginRight: '5%',
+  },
+
+  vwBtn: {
     width: '80%',
-    marginBottom: '4%',
+    height: '25%',
+    flexDirection: 'row-reverse',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '-80%',
+    marginTop: '5%',
+  },
+
+  vwTitulos: {
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '-70%',
+  },
+
+  vwEstrelas: {
+    marginTop: 30,
+  },
+
+  customRatingBarStyle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+
+  starImgStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: 'cover',
+  },
+
+  starCounter: {
+    textAlign: 'center',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    marginTop: 30,
+  },
+
+  titleAvaliar: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+
+  tituloTarefa: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 30,
+    color: 'black',
+  },
+
+  usuarioTarefa: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: 'black',
+
   },
 
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -10,8 +10,9 @@ import {
   AsyncStorageStatic,
 } from 'react-native';
 
+import { loadAPI } from '../global/Funcoes';
 import axios from 'axios';
-import {TextInput} from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 import {
   NavigationContext,
   NavigationHelpersContext,
@@ -20,7 +21,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ModalAlert} from '../components/ModalAlert';
+import { ModalAlert } from '../components/ModalAlert';
 
 let cpf = false;
 let usuarium = [{}];
@@ -34,7 +35,7 @@ const Profile = () => {
   const [msg, setMsg] = useState('');
   const navigation = useNavigation();
 
-  const getUser = () => {
+  async function getUser() {
     usuarium.splice(0, 1);
 
     if (!user || !senha) {
@@ -46,7 +47,7 @@ const Profile = () => {
       return;
     }
 
-    loadAPI('load_usuario_login', [user, senha]).then((result) => {
+    await loadAPI('load_usuario_login', [user, senha]).then((result) => {
       for (const dado of result) {
         usuarium.push(dado);
       }
@@ -60,17 +61,17 @@ const Profile = () => {
         return;
       }
 
-      if (usuarium[0].idusuario == 9) {
+      if (usuarium[0].idusuario == 3) {
         navigation.reset({
           index: 0,
-          routes: [{name: 'HomeADM'}],
+          routes: [{ name: 'HomeADM' }],
         });
         AsyncStorage.setItem('iduser', usuarium[0].idusuario);
         AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
       } else {
         navigation.reset({
           index: 0,
-          routes: [{name: 'HomeGerente'}],
+          routes: [{ name: 'HomeGerente' }],
         });
         AsyncStorage.clear();
         AsyncStorage.setItem('iduser', usuarium[0].idusuario);
@@ -81,21 +82,6 @@ const Profile = () => {
     });
   };
 
-  async function loadAPI(api, param) {
-    let newp = '';
-    if (param) {
-      if (param.length != 0) {
-        for (let x = 0; x < param.length; x++) newp += `p${x + 1}=${param[x]}&`;
-      }
-    }
-    newp = newp.slice(0, newp.length - 1);
-
-    const {data} = await axios.get(
-      `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
-    );
-
-    return data;
-  }
 
   return (
     <>
@@ -134,7 +120,7 @@ const Profile = () => {
           />
           <TouchableOpacity
             onPress={() => SetHide(!hide)}
-            style={{marginLeft: '70%'}}>
+            style={{ marginLeft: '70%' }}>
             <Image
               style={stilos.eye}
               source={require('../assets/images/olho.png')}
@@ -166,7 +152,7 @@ const stilos = StyleSheet.create({
 
   shadowProp: {
     shadowColor: '#757575',
-    shadowOffset: {width: 1, height: 3},
+    shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 4,
   },

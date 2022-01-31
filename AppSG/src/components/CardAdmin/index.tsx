@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
-import {View, Text, ScrollView, FlatList} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, FlatList, Image } from 'react-native';
+import { Icon } from '../ModalAlert/styles';
 
 import {
   Card,
@@ -32,10 +33,11 @@ interface Props {
   };
 }
 
-export function CardAdmin({dados}: Props) {
+export function CardAdmin({ dados }: Props) {
   return (
     <Card>
       <Title>{dados.descricao}</Title>
+      <Image />
       <ContainerFlex>
         <Departamento>{dados.departamento}</Departamento>
         <ContainerStatus type={dados.status}>
@@ -48,7 +50,7 @@ export function CardAdmin({dados}: Props) {
       </Dados>
       <User>
         <ContainerPhoto>
-          <Photos source={{uri: dados.foto}}></Photos>
+          <Photos source={{ uri: dados.foto }}></Photos>
         </ContainerPhoto>
         <Time>
           <IconClock source={require('../../assets/icons/tempo.png')} />

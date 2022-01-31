@@ -110,7 +110,7 @@ const indicadores = () => {
             row
             flex={0}
             justify="flex-start"
-            marginTop={'7%'}
+            marginTop={'17%'}
             onPress={() => navigation.goBack()}>
             <Image
               style={stilos.voltar}

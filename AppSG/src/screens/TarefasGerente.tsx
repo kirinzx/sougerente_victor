@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Camera} from 'expo-camera';
-import {Feather} from '@expo/vector-icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { Camera } from 'expo-camera';
+import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import {
@@ -15,18 +15,18 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {CardTarefa} from '../components/CardTarefa';
-import {Block, Image, Button} from '../components';
-import {useTheme} from '../navigation/hooks';
+import { CardTarefa } from '../components/CardTarefa';
+import { Block, Image, Button } from '../components';
+import { useTheme } from '../navigation/hooks';
 import axios from 'axios';
 import stilos from './stilos/TarefasGerente';
 
 export default function TarefasGerente() {
   const [canLoad, setCanLoad] = useState(false);
   const [modalPic, setModalPic] = useState(false);
-  const {sizes, assets} = useTheme();
+  const { sizes, assets } = useTheme();
   const navigation = useNavigation();
   //const [fotinha, setFotinha] = useState();
 
@@ -59,16 +59,16 @@ export default function TarefasGerente() {
   async function uploadImage() {
     const path = fotinha.uri.split('/');
     const nome = path[path.length - 1];
-    const data = new FormData();
-    data.append('arquivo', {
+    const data2 = new FormData();
+    data2.append('arquivo', {
       name: nome,
       uri: fotinha.uri,
       type: fotinha.type,
     });
-    console.log(data);
+    console.log(data2);
     await axios.post(
       'http://192.168.1.6/8LIGHT/api_goauditt/sg_fotos.php',
-      data,
+      data2,
     );
   }
 
@@ -96,7 +96,7 @@ export default function TarefasGerente() {
     }
     newp = newp.slice(0, newp.length - 1);
 
-    const {data} = await axios.get(
+    const { data } = await axios.get(
       `http://192.168.1.6/8LIGHT/api_sougerente/index.php/${api}?${newp}`,
     );
 
@@ -110,7 +110,7 @@ export default function TarefasGerente() {
           <Block
             paddingHorizontal={sizes.s}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: sizes.padding}}>
+            contentContainerStyle={{ paddingBottom: sizes.padding }}>
             <Button
               row
               flex={0}
@@ -122,13 +122,13 @@ export default function TarefasGerente() {
                 height={18}
                 color={'white'}
                 source={assets.arrow}
-                transform={[{rotate: '180deg'}]}
+                transform={[{ rotate: '180deg' }]}
               />
               <Text style={stilos.textVoltar}>Voltar</Text>
             </Button>
             <FlatList
               data={dadosTerefa}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <CardTarefa
                   dados={item}
                   openCamera={pickImage}

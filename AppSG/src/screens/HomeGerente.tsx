@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../navigation/hooks/';
 import axios from 'axios';
 import { Block } from '../components/';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const HomeGerente = () => {
@@ -31,34 +32,44 @@ const HomeGerente = () => {
         <Text style={stilos.bemvindo}>{nome.nome_completo}</Text>
       </View>
       <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card2} onTouchStart={() => navigation.navigate('Profile')}>
-          <Image
-            source={require('../assets/images/erro.png')}
-            style={stilos.iconC2}
-          />
-          <Text style={stilos.tituloC2}>
-            7 Tarefas Pendentes
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card2} >
+          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('Profile')}>
+            <Image
+              source={require('../assets/images/erro.png')}
+              style={stilos.iconC2}
+            />
+            <Text style={stilos.tituloC2}>
+              7 Tarefas Pendentes
+            </Text>
+          </TouchableOpacity>
+
         </Block>
       </Block>
       <Block row style={{ marginBottom: '-70%' }}>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('Profile')}>
-          <Image
-            source={require('../assets/images/usuario.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Perfil
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card} >
+          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('Profile')}>
+            <Image
+              source={require('../assets/images/usuario.png')}
+              style={stilos.icon}
+            />
+            <Text style={stilos.titulo}>
+              Perfil
+            </Text>
+          </TouchableOpacity>
+
         </Block>
-        <Block marginRight={sizes.sm} style={stilos.card} onTouchStart={() => navigation.navigate('TarefasGerente')}>
-          <Image
-            source={require('../assets/images/avaliacao.png')}
-            style={stilos.icon}
-          />
-          <Text style={stilos.titulo}>
-            Tarefas
-          </Text>
+        <Block marginRight={sizes.sm} style={stilos.card}>
+          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('TarefasGerente')}>
+            <Image
+              source={require('../assets/images/avaliacao.png')}
+              style={stilos.icon}
+            />
+            <Text style={stilos.titulo}>
+              Tarefas
+            </Text>
+          </TouchableOpacity>
+
+
         </Block>
       </Block>
       <Block row>
@@ -135,6 +146,10 @@ const stilos = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',
+  },
+
+  tcBlock: {
+    height: '100%',
   },
 
 });

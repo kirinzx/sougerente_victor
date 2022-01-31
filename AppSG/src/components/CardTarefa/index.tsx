@@ -35,13 +35,13 @@ interface Props {
     loja: string;
     id: string;
   };
-  openCamera: () => void;
+  //openCamera: () => void;
   loadTarefas: () => void;
 }
 
 export function CardTarefa({ dados, openCamera, loadTarefas }: Props) {
   const [configCard, setConfigCard] = useState({
-    opacity: '0',
+    opacity: 0,
     extended: false,
     degSeta: '270deg',
     height: 120,
@@ -54,14 +54,14 @@ export function CardTarefa({ dados, openCamera, loadTarefas }: Props) {
   function handleDiv() {
     if (configCard.extended) {
       setConfigCard({
-        opacity: '0',
+        opacity: 0,
         extended: false,
         degSeta: '270deg',
         height: 120,
       });
     } else {
       setConfigCard({
-        opacity: '1',
+        opacity: 1,
         extended: true,
         degSeta: '90deg',
         height: 300,

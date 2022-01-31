@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {Platform, ScrollView, FlatList, Alert} from 'react-native';
-import {useNavigation} from '@react-navigation/core';
+import React, { useState, useEffect } from 'react';
+import { Platform, ScrollView, FlatList, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import {Feather} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
-import {useData, useTheme, useTranslation} from '../../hooks';
-import {loadAPI} from '../../global/Funcoes';
-import {Image} from '../../components';
+import { useData, useTheme, useTranslation } from '../../hooks';
+import { loadAPI } from '../../global/Funcoes';
+import { Image } from '../../components';
 
 import {
   Container,
@@ -36,7 +36,7 @@ const isAndroid = Platform.OS === 'android';
 
 export default function Profile() {
   const navigation = useNavigation();
-  const {assets, colors, sizes} = useTheme();
+  const { assets, colors, sizes } = useTheme();
   const [user, setUser] = useState({});
   const [foto, setFoto] = useState();
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ export default function Profile() {
         {
           text: 'Cancelar',
         },
-        {text: 'OK', onPress: () => uploadImage()},
+        { text: 'OK', onPress: () => uploadImage() },
       ]);
     } else {
       return;
@@ -103,7 +103,7 @@ export default function Profile() {
     idusuario = await AsyncStorage.getItem('iduser');
     if (loading) return;
     setLoading(true);
-    const data = await loadAPI('profile_tarefas', [idusuario]);
+    const data = await loadAPI('profile_tarefas', [1]);
     setDataArr(data);
     setLoading(false);
   }
@@ -117,7 +117,7 @@ export default function Profile() {
     !loading && (
       <>
         <Container>
-          <ContainerUser>
+          <ContainerUser style={{ marginTop: 25 }}>
             <ContainerBack onPress={() => navigation.goBack()}>
               <Image
                 radius={0}
@@ -125,14 +125,14 @@ export default function Profile() {
                 height={18}
                 color={'white'}
                 source={assets.arrow}
-                transform={[{rotate: '180deg'}]}
+                transform={[{ rotate: '180deg' }]}
               />
               <TitleBack>Voltar</TitleBack>
             </ContainerBack>
 
             <ContainerFoto>
               <ButtonPhoto onPress={() => pickImage()}>
-                <Foto source={{uri: foto}} resizeMode="cover" />
+                <Foto source={{ uri: foto }} resizeMode="cover" />
               </ButtonPhoto>
             </ContainerFoto>
             <ViewInf>
@@ -157,10 +157,10 @@ export default function Profile() {
 
           <FlatList
             showsVerticalScrollIndicator={false}
-            style={{height: '100%', width: '100%', marginTop: '15%'}}
+            style={{ height: '100%', width: '100%', marginTop: '15%' }}
             data={dataArr}
             keyExtractor={(item) => String(item.id)}
-            renderItem={({item}) => <Card data={item} />}
+            renderItem={({ item }) => <Card data={item} />}
           />
         </Container>
       </>
@@ -168,7 +168,7 @@ export default function Profile() {
   );
 }
 
-function Card({data}) {
+function Card({ data }) {
   return (
     <ContainerCard>
       <Title>{data.tarefa}</Title>

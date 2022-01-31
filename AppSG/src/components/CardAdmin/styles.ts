@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {RFValue, RFPercentage} from 'react-native-responsive-fontsize';
+import { RFValue, RFPercentage } from 'react-native-responsive-fontsize';
 
 export const Card = styled.View`
   background-color: white;
@@ -45,7 +45,7 @@ export const ContainerStatus = styled.View`
   border: 1px solid black;
   border-radius: 10px;
   width: 35%;
-  background-color: ${({type}) =>
+  background-color: ${({ type }) =>
     type == 'Concluido' ? 'green' : type == 'Executando' ? '#FF8409' : 'red'}
   justify-content: center;
 `;
@@ -58,6 +58,13 @@ export const IconLocal = styled.Image`
 export const IconClock = styled.Image`
   width: 28px;
   height: 28px;
+`;
+
+export const IconAvaliar = styled.Image`
+  width: 30px;
+  height: 30px;
+  margin-left: 40px;
+  margin-top: 10px;
 `;
 
 export const Dados = styled.View`

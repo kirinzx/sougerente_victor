@@ -27,13 +27,13 @@ export default () => {
         name="login"
         component={Login}
         options={{ headerShown: false }}
-      />
+      /> */}
 
       <Stack.Screen
         name="HomeADM"
         component={HomeADM}
         options={{ headerShown: false }}
-      /> */}
+      />
 
 
       {/* <Stack.Screen

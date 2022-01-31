@@ -10,7 +10,7 @@ import { useTheme } from '../../navigation/hooks';
 import Modal from "react-native-modal";
 import { Form } from '@unform/mobile';
 import RNPickerSelect from 'react-native-picker-select';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 
 export function TarefasAdmin() {
@@ -54,16 +54,9 @@ export function TarefasAdmin() {
     { value: 'L02', label: 'Loja 2' },
   ];
 
-  function handleSubmit(data, { reset }) {
-    console.log(data);
-    reset();
-  }
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
+
+
 
 
 
@@ -113,18 +106,9 @@ export function TarefasAdmin() {
 
 
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
 
-  const showTimepicker = () => {
-    showMode('time');
-  };
+
 
 
 
@@ -134,7 +118,7 @@ export function TarefasAdmin() {
   return (
     <>
       {canLoad && (
-        <Container style={{ marginTop: 20 }}>
+        <Container>
           {/* <Button
             style={stilos.btnMais}
             //style={stilos.btnMais}
@@ -146,7 +130,7 @@ export function TarefasAdmin() {
           </Button> */}
           <Button
             row
-            style={{ alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10 }}
+            style={{ alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10, marginTop: 20 }}
             flex={0}
             onPress={() => navigation.goBack()}>
             <Image

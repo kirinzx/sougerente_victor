@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, FlatList, Image } from 'react-native';
+import { View, Text, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import { Icon } from '../ModalAlert/styles';
 
 import {
@@ -19,6 +19,7 @@ import {
   Dia,
   Hora,
   IconClock,
+  IconAvaliar,
 } from './styles';
 
 interface Props {
@@ -37,9 +38,11 @@ export function CardAdmin({ dados }: Props) {
   return (
     <Card>
       <Title>{dados.descricao}</Title>
-      <Image />
       <ContainerFlex>
         <Departamento>{dados.departamento}</Departamento>
+        <TouchableOpacity>
+          <IconAvaliar source={require('../../assets/icons/metro.png')} />
+        </TouchableOpacity>
         <ContainerStatus type={dados.status}>
           <Status>{dados.status}</Status>
         </ContainerStatus>

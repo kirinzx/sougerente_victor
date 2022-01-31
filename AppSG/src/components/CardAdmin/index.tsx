@@ -69,7 +69,6 @@ export function CardAdmin({ dados }: Props) {
                       : { uri: starImgCorner }
                   }
                 />
-
               </TouchableOpacity>
             )
           })

@@ -11,7 +11,7 @@ const stilos = StyleSheet.create({
     backgroundColor: '#CB8D00',
     flex: 1,
     height: '100%',
-    marginTop: '15%',
+
   },
 
   icons: {

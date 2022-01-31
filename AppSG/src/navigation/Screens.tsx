@@ -36,7 +36,7 @@ export default () => {
       />
 
 
-      {/* <Stack.Screen
+      <Stack.Screen
         name="HomeGerente"
         component={HomeGerente}
         options={{ headerShown: false }}
@@ -47,7 +47,7 @@ export default () => {
         component={Profile}
         options={{ headerShown: false }}
       />
- */}
+
       <Stack.Screen
         name="TarefasAdmin"
         component={TarefasAdmin}

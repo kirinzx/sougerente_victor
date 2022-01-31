@@ -140,7 +140,7 @@ export default function Profile() {
               <Email>Gerente</Email>
             </ViewInf>
           </ContainerUser>
-          <ContainerTarefas>
+          <ContainerTarefas style={{ marginTop: 15 }}>
             <ContainerText>
               <TextNum>10</TextNum>
               <TextDesc>Concluidas</TextDesc>

@@ -110,7 +110,9 @@ export default function TarefasGerente() {
           <Block
             paddingHorizontal={sizes.s}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: sizes.padding }}>
+            contentContainerStyle={{ paddingBottom: sizes.padding }}
+            marginTop={20}
+          >
             <Button
               row
               flex={0}

@@ -104,17 +104,6 @@ export function TarefasAdmin() {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
-
-
-
-
-
-
-
-
-
-
-
   return (
     <>
       {canLoad && (
@@ -130,7 +119,7 @@ export function TarefasAdmin() {
           </Button> */}
           <Button
             row
-            style={{ alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10, marginTop: 20 }}
+            style={{ alignSelf: 'flex-start', marginLeft: 20, marginBottom: 10, marginTop: 5 }}
             flex={0}
             onPress={() => navigation.goBack()}>
             <Image

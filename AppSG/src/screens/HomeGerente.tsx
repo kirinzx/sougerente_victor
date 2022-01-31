@@ -33,7 +33,7 @@ const HomeGerente = () => {
       </View>
       <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
         <Block marginRight={sizes.sm} style={stilos.card2} >
-          <TouchableOpacity style={stilos.tcBlock} onPress={() => navigation.navigate('Profile')}>
+          <TouchableOpacity style={stilos.tcBlock}>
             <Image
               source={require('../assets/images/erro.png')}
               style={stilos.iconC2}
@@ -133,11 +133,11 @@ const stilos = StyleSheet.create({
   },
 
   tituloC2: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',
     color: 'white',
-    marginTop: '-13%',
+    marginTop: '-12.5%',
     marginLeft: '26%'
   },
 
@@ -150,6 +150,7 @@ const stilos = StyleSheet.create({
 
   tcBlock: {
     height: '100%',
+    width: '100%'
   },
 
 });

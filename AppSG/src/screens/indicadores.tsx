@@ -9,7 +9,7 @@ import { Block, Button } from '../components/';
 import axios from 'axios';
 import { useData, useTheme } from '../hooks/';
 import { LineChart, Path, Grid } from 'react-native-svg-charts';
-import Modal from 'react-native-modal';
+
 
 
 
@@ -25,11 +25,7 @@ const indicadores = () => {
   const { assets, colors, sizes } = useTheme();
   const [user, setUser] = useState({});
 
-  const [isModalVisible, setModalVisible] = useState(true);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');
@@ -45,44 +41,6 @@ const indicadores = () => {
 
   const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
 
-  /* RATING */
-  const [defaultRating, setDefaultRating] = useState(2);
-  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
-
-  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png'
-  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png'
-
-  const CustomRatingBar = () => {
-    return (
-      <View style={stilos.customRatingBarStyle}>
-        {
-          maxRating.map((item, key) => {
-            return (
-              <TouchableOpacity
-                activeOpacity={0.7}
-                key={item}
-                onPress={() => setDefaultRating(item)}
-              >
-                <Image
-                  style={stilos.starImgStyle}
-                  source={
-                    item <= defaultRating
-                      ? { uri: starImgFilled }
-                      : { uri: starImgCorner }
-                  }
-                />
-
-              </TouchableOpacity>
-            )
-          })
-        }
-      </View>
-    )
-
-
-  }
-
-  /* RATING */
 
 
   const Line = ({ line }) => (
@@ -93,10 +51,6 @@ const indicadores = () => {
       fill={'none'}
     />
   )
-
-
-
-
 
   return (
     <Block safe style={stilos.bck}>
@@ -110,7 +64,7 @@ const indicadores = () => {
             row
             flex={0}
             justify="flex-start"
-            marginTop={'17%'}
+            marginTop={'8%'}
             onPress={() => navigation.goBack()}>
             <Image
               style={stilos.voltar}
@@ -329,39 +283,6 @@ const indicadores = () => {
           </Block>
         </Block >
       </Block >
-      <Modal isVisible={isModalVisible} style={stilos.modal}>
-        <View style={stilos.modalContent}>
-
-          <View style={stilos.vwTitulos}>
-            <Text style={stilos.tituloTarefa}>Checar Geladeiras</Text>
-            <Text style={stilos.usuarioTarefa}>Victor Pavani</Text>
-          </View>
-
-          <View style={stilos.vwEstrelas}>
-            <Text style={stilos.titleAvaliar}> Avaliar Execução da Tarefa</Text>
-            <Text style={stilos.titleAvaliar}>(Sendo 1 Muito Ruim e 5 Muito Bom)</Text>
-            <CustomRatingBar />
-            <Text style={stilos.starCounter}>
-              {defaultRating + '/' + maxRating.length}
-            </Text>
-          </View>
-
-
-          <View style={stilos.vwBtn}>
-            <TouchableOpacity style={stilos.btnAvaliar} onPress={() => alert(defaultRating)}>
-              <Text style={stilos.txtAvaliar}> Confirmar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={stilos.btnCancelar} onPress={() => setModalVisible(false)}>
-              <Text style={stilos.txtCancelar}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
-
-
-        </View>
-
-
-      </Modal>
     </Block >
 
 

@@ -22,6 +22,7 @@ import {
 } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ModalAlert } from '../components/ModalAlert';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 let cpf = false;
 let usuarium = [{}];
@@ -34,6 +35,39 @@ const Profile = () => {
   const [modal, SetModal] = useState(false);
   const [msg, setMsg] = useState('');
   const navigation = useNavigation();
+
+  const [isbiometricsupported, setIsBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible)
+    };
+  });
+
+  const fallBacktoDefaultAuth = () => {
+    console.log('fall back to password authentication')
+  }
+
+  const alertComponent = (title, mess, btnText, btnFunc) => {
+    return Alert.alert(title, mess), [
+      {
+        text: btnText,
+        onPress: btnFunc
+      }
+    ]
+  }
+
+  const handleBiometricAuth = async () => {
+
+    const isbiometricAvaliable = await LocalAuthentication.hasHardwareAsync();
+
+    if (!isbiometricAvaliable) {
+      return alertComponent('please enter your password', () => fallBacktoDefaultAuth())
+    }
+
+  }
+
 
   async function getUser() {
     usuarium.splice(0, 1);
@@ -61,7 +95,7 @@ const Profile = () => {
         return;
       }
 
-      if (usuarium[0].idusuario == 3) {
+      if (usuarium[0].idusuario == 9) {
         navigation.reset({
           index: 0,
           routes: [{ name: 'HomeADM' }],

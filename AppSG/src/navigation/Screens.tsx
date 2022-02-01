@@ -23,11 +23,11 @@ export default () => {
   return (
     <Stack.Navigator>
 
-      {/* <Stack.Screen
+      <Stack.Screen
         name="login"
         component={Login}
         options={{ headerShown: false }}
-      /> */}
+      />
 
       <Stack.Screen
         name="HomeADM"

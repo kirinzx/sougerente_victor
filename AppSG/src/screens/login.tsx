@@ -8,6 +8,8 @@ import {
   Image,
   TouchableOpacity,
   AsyncStorageStatic,
+  Modal,
+  Alert
 } from 'react-native';
 
 import { loadAPI } from '../global/Funcoes';
@@ -36,37 +38,27 @@ const Profile = () => {
   const [msg, setMsg] = useState('');
   const navigation = useNavigation();
 
-  const [isbiometricsupported, setIsBiometricSupported] = useState(false);
 
-  useEffect(() => {
-    async () => {
-      const compatible = await LocalAuthentication.hasHardwareAsync();
-      setIsBiometricSupported(compatible)
-    };
-  });
+  const [isModalVisible, setIsModalVisible] = useState(true);
 
-  const fallBacktoDefaultAuth = () => {
-    console.log('fall back to password authentication')
-  }
 
-  const alertComponent = (title, mess, btnText, btnFunc) => {
-    return Alert.alert(title, mess), [
-      {
-        text: btnText,
-        onPress: btnFunc
-      }
-    ]
-  }
+  async function authenticate() {
+    const hasPassword = await LocalAuthentication.isEnrolledAsync();
 
-  const handleBiometricAuth = async () => {
+    if (!hasPassword) return;
 
-    const isbiometricAvaliable = await LocalAuthentication.hasHardwareAsync();
+    const { success, error } = await LocalAuthentication.authenticateAsync();
 
-    if (!isbiometricAvaliable) {
-      return alertComponent('please enter your password', () => fallBacktoDefaultAuth())
+    if (success) {
+
+      Alert.alert('Autenticado com sucesso!');
+    } else {
+      Alert.alert('Login Invalido, por favor tente novamente!');
     }
-
+    setIsModalVisible(false);
   }
+
+  Platform.OS === 'ios' && authenticate();
 
 
   async function getUser() {
@@ -114,6 +106,8 @@ const Profile = () => {
 
       //console.log(usuarium[0].email);
     });
+
+
   };
 
 
@@ -170,6 +164,30 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      {Platform.OS === 'android' && (
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={isModalVisible}
+          onShow={authenticate}
+        >
+          <View style={stilos.modal}>
+            <Text style={stilos.authText}>
+              Autentique-se utilizando a digital
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                LocalAuthentication.cancelAuthenticate();
+                setIsModalVisible(false);
+              }}
+            >
+              <Text style={stilos.cancelText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      )}
+
     </>
   );
 };
@@ -295,5 +313,26 @@ const stilos = StyleSheet.create({
     width: '68%',
     marginRight: '15%',
     marginTop: '-5%',
+  },
+
+  modal: {
+    backgroundColor: '#333',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '40%',
+  },
+
+  cancelText: {
+    color: 'red',
+    fontSize: 16,
+  },
+
+  authText: {
+    color: 'white',
+    fontSize: 16,
   },
 });

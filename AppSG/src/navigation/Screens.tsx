@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Home } from '../screens';
+
 
 import { useScreenOptions, useTranslation } from './hooks';
 import { TarefasAdmin } from '../screens/TarefasAdmin';
@@ -23,7 +23,7 @@ export default () => {
   return (
     <Stack.Navigator>
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="login"
         component={Login}
         options={{ headerShown: false }}
@@ -34,7 +34,7 @@ export default () => {
         component={HomeADM}
         options={{ headerShown: false }}
       />
-
+ */}
 
       <Stack.Screen
         name="HomeGerente"

@@ -27,14 +27,14 @@ export default () => {
         name="login"
         component={Login}
         options={{ headerShown: false }}
-      />
+      /> */}
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="HomeADM"
         component={HomeADM}
         options={{ headerShown: false }}
       />
- */}
+
 
       <Stack.Screen
         name="HomeGerente"
@@ -46,7 +46,7 @@ export default () => {
         name="Profile"
         component={Profile}
         options={{ headerShown: false }}
-      />
+      /> */}
 
       <Stack.Screen
         name="TarefasAdmin"

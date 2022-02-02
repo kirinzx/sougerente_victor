@@ -44,11 +44,77 @@ export function CardAdmin({ dados }: Props) {
   };
 
   /* RATING */
-  const [defaultRating, setDefaultRating] = useState(2);
-  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const [defaultRating, setDefaultRating] = useState('');
+  const [defaultRating2, setDefaultRating2] = useState('');
+  const [defaultRating3, setDefaultRating3] = useState('');
+  const [defaultRating4, setDefaultRating4] = useState('');
+  const [defaultRating5, setDefaultRating5] = useState('');
 
-  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png'
-  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png'
+  const [maxRating, setMaxRating] = useState(['Muito Ruim']);
+  const [maxRating2, setMaxRating2] = useState(['Ruim']);
+  const [maxRating3, setMaxRating3] = useState(['Neutro']);
+  const [maxRating4, setMaxRating4] = useState(['Bom']);
+  const [maxRating5, setMaxRating5] = useState(['Muito Bom']);
+
+  const starImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry.png'
+  const starImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry_white.png'
+  const sadImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/triste.png'
+  const sadImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/triste_white.png'
+  const neutroImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/neutro.png'
+  const neutroImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/neutro_white.png'
+  const bomImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/bom.png'
+  const bomImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/bom_white.png'
+  const mtBomImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/muitobom.png'
+  const mtBomImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/muitobom_white.png'
+
+  function emoji1(item) {
+    setDefaultRating(item);
+    setDefaultRating2('');
+    setDefaultRating3('');
+    setDefaultRating4('');
+    setDefaultRating5('');
+  }
+
+  function emoji2(item) {
+    setDefaultRating('');
+    setDefaultRating2(item);
+    setDefaultRating3('');
+    setDefaultRating4('');
+    setDefaultRating5('');
+  }
+
+  function emoji3(item) {
+    setDefaultRating('');
+    setDefaultRating2('');
+    setDefaultRating3(item);
+    setDefaultRating4('');
+    setDefaultRating5('');
+  }
+
+  function emoji4(item) {
+    setDefaultRating('');
+    setDefaultRating2('');
+    setDefaultRating3('');
+    setDefaultRating4(item);
+    setDefaultRating5('');
+  }
+
+  function emoji5(item) {
+    setDefaultRating('');
+    setDefaultRating2('');
+    setDefaultRating3('');
+    setDefaultRating4('');
+    setDefaultRating5(item);
+  }
+
+  function cancelarModal() {
+    setModalVisible(false);
+    setDefaultRating('');
+    setDefaultRating2('');
+    setDefaultRating3('');
+    setDefaultRating4('');
+    setDefaultRating5('');
+  }
 
   const CustomRatingBar = () => {
     return (
@@ -59,7 +125,7 @@ export function CardAdmin({ dados }: Props) {
               <TouchableOpacity
                 activeOpacity={0.7}
                 key={item}
-                onPress={() => setDefaultRating(item)}
+                onPress={() => emoji1(item)}
               >
                 <Image
                   style={stilos.starImgStyle}
@@ -67,6 +133,86 @@ export function CardAdmin({ dados }: Props) {
                     item <= defaultRating
                       ? { uri: starImgFilled }
                       : { uri: starImgCorner }
+                  }
+                />
+              </TouchableOpacity>
+            )
+          })
+        }
+        {
+          maxRating2.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => emoji2(item)}
+              >
+                <Image
+                  style={stilos.starImgStyle}
+                  source={
+                    item <= defaultRating2
+                      ? { uri: sadImgFilled }
+                      : { uri: sadImgCorner }
+                  }
+                />
+              </TouchableOpacity>
+            )
+          })
+        }
+        {
+          maxRating3.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => emoji3(item)}
+              >
+                <Image
+                  style={stilos.starImgStyle}
+                  source={
+                    item <= defaultRating3
+                      ? { uri: neutroImgFilled }
+                      : { uri: neutroImgCorner }
+                  }
+                />
+              </TouchableOpacity>
+            )
+          })
+        }
+        {
+          maxRating4.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => emoji4(item)}
+              >
+                <Image
+                  style={stilos.starImgStyle}
+                  source={
+                    item <= defaultRating4
+                      ? { uri: bomImgFilled }
+                      : { uri: bomImgCorner }
+                  }
+                />
+              </TouchableOpacity>
+            )
+          })
+        }
+        {
+          maxRating5.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => emoji5(item)}
+              >
+                <Image
+                  style={stilos.starImgStyle}
+                  source={
+                    item <= defaultRating5
+                      ? { uri: mtBomImgFilled }
+                      : { uri: mtBomImgCorner }
                   }
                 />
               </TouchableOpacity>
@@ -87,7 +233,7 @@ export function CardAdmin({ dados }: Props) {
       <ContainerFlex>
         <Departamento>{dados.departamento}</Departamento>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <IconAvaliar source={require('../../assets/icons/metro.png')} />
+          <IconAvaliar source={require('../../assets/icons/avalie.png')} />
         </TouchableOpacity>
         <ContainerStatus type={dados.status}>
           <Status>{dados.status}</Status>
@@ -111,16 +257,20 @@ export function CardAdmin({ dados }: Props) {
         <View style={stilos.modalContent}>
 
           <View style={stilos.vwTitulos}>
-            <Text style={stilos.tituloTarefa}>Checar Geladeiras</Text>
-            <Text style={stilos.usuarioTarefa}>Victor Pavani</Text>
+            <Text style={stilos.tituloTarefa}>{dados.descricao}</Text>
+            <Photos source={{ uri: dados.foto }} style={{ height: 70, width: 70 }}></Photos>
           </View>
 
           <View style={stilos.vwEstrelas}>
             <Text style={stilos.titleAvaliar}> Avaliar Execução da Tarefa</Text>
-            <Text style={stilos.titleAvaliar}>(Sendo 1 Muito Ruim e 5 Muito Bom)</Text>
+
             <CustomRatingBar />
             <Text style={stilos.starCounter}>
-              {defaultRating + '/' + maxRating.length}
+              {defaultRating}
+              {defaultRating2}
+              {defaultRating3}
+              {defaultRating4}
+              {defaultRating5}
             </Text>
           </View>
 
@@ -130,7 +280,7 @@ export function CardAdmin({ dados }: Props) {
               <Text style={stilos.txtAvaliar}> Confirmar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={stilos.btnCancelar} onPress={() => setModalVisible(false)}>
+            <TouchableOpacity style={stilos.btnCancelar} onPress={() => cancelarModal()}>
               <Text style={stilos.txtCancelar}>Cancelar</Text>
             </TouchableOpacity>
           </View>
@@ -207,6 +357,7 @@ const stilos = StyleSheet.create({
     fontFamily: 'OpenSans-ExtraBold',
     fontSize: 30,
     color: 'black',
+    paddingBottom: 15,
   },
 
   usuarioTarefa: {
@@ -295,9 +446,11 @@ const stilos = StyleSheet.create({
   },
 
   starImgStyle: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     resizeMode: 'cover',
+    marginRight: 12,
+    marginLeft: 10,
   },
 
   starCounter: {

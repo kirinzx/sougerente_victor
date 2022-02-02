@@ -224,10 +224,6 @@ export function TarefasAdmin() {
             renderItem={({ item }) => <CardAdmin dados={item} />}
             showsVerticalScrollIndicator={false}
           />
-
-
-
-
         </Container>
       )}
     </>

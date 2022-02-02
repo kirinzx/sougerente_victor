@@ -18,10 +18,415 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <link href="../../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../../assets/css/soft-ui-dashboard.css?v=1.0.5" rel="stylesheet" />
+  <link id="pagestyle" href="../../assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../../assets/css/checklist.css">
+
+  <script>
+    let gbtarefa = '';
+    let salvar = false;
+    let tarefas = [[], [], []];
+
+    function carregarTela() {
+      loadTarefas();
+      loadKanban();
+      loadUsuario();
+    }
+
+    function loadTarefas() {
+      $.each(newloadAPI('kanban_tarefas', []), (i, dados) => {
+        let pos = dados.status == 'Atrasado' ? 0 : dados.status == 'Executando' ? 1 : 2;
+        let obj = {
+          id: dados.id,
+          title: `
+            <span class="mt-2 badge bg-gradient-warning">${dados.periodo}</span>
+            <span class="mt-2 badge bg-gradient-primary">${dados.hora}</span> 
+            <span class="mt-2 badge bg-gradient-secondary">${dados.loja}</span> 
+            <span class="idusuario" style='display:none;'>${dados.idusuario}</span> 
+            <span class="observacao" style='display:none;'>${dados.observacao}</span> 
+            <span class="idtarefa" style='display:none;'>${dados.idtarefa}</span> 
+            <p class="text mt-2">${dados.tarefa}</p>
+            <div class="d-flex">5/10<div> 
+              <i class="fa fa-check-square me-1 text-sm" style='margin-left: 10px;'></i>
+            </div>
+            <div class="avatar-group ms-auto" style='position: absolute; right: 30px; bottom: 45px;'>
+              <a href="javascript:;" class="avatar me-2 rounded-circle" data-toggle="tooltip">
+                <img alt="Image placeholder" src="${dados.foto}" class="">
+              </a>
+            </div>`,
+          class: ["border-radius-md"]
+        }
+
+        tarefas[pos].push(obj);
+      });
+
+      //console.log(tarefas)
+    }
+
+    function loadKanban() {
+      if (document.getElementById("myKanban")) {
+        var KanbanTest = new jKanban({
+          element: "#myKanban",
+          gutter: "10px",
+          widthBoard: "500px",
+          click: el => {
+
+            salvar = false;
+            $('#jkanban-update-task').html('Salvar alterações');
+            $('#title-modal').html('Editar tarefa');
+            let jkanbanInfoModal = document.getElementById("jkanban-info-modal");
+
+            let jkanbanInfoModalTaskId = document.querySelector("#jkanban-info-modal #jkanban-task-id");
+            let jkanbanInfoModalTaskTitle = document.querySelector("#jkanban-info-modal #jkanban-task-title");
+            let jkanbanInfoModalTaskAssignee = document.querySelector("#jkanban-info-modal #edtusuario");
+            let jkanbanInfoModalTaskDescription = document.querySelector("#jkanban-info-modal #jkanban-task-description");
+            let taskId = el.getAttribute("data-eid");
+
+            let taskTitle = el.querySelector('p.text').innerHTML;
+            let taskAssignee = el.getAttribute("data-assignee");
+            let taskDescription = el.getAttribute("data-description");
+            jkanbanInfoModalTaskId.value = taskId;
+            jkanbanInfoModalTaskTitle.value = taskTitle;
+            jkanbanInfoModalTaskAssignee.value = el.querySelector('.idusuario').innerHTML;
+            jkanbanInfoModalTaskDescription.value = el.querySelector('.observacao').innerHTML;
+            var myModal = new bootstrap.Modal(jkanbanInfoModal, { show: true });
+
+            gbtarefa = el.querySelector('.idtarefa').innerHTML;
+            loadChecklist(el.querySelector('.idtarefa').innerHTML)
+
+            myModal.show();
+          },
+          buttonClick: function (el, boardId) {
+            console.log(boardId);
+
+          },
+          addItemButton: false,
+          boards: [
+            {
+              id: "_backlog",
+              title: "To-do",
+              item: tarefas[0]
+            },
+            {
+              id: "_progress",
+              title: "Em andamento",
+              item: tarefas[1]
+            },
+            {
+              id: "_working",
+              title: "Concluído",
+              item: tarefas[2]
+            },
+            {
+              id: "_done",
+              title: "Done",
+              item: []
+            }
+          ]
+        });
+
+        var addBoardDefault = document.getElementById("jkanban-add-new-board");
+        addBoardDefault.addEventListener("click", function () {
+          let newBoardName = document.getElementById("jkanban-new-board-name")
+            .value;
+          let newBoardId = "_" + newBoardName.toLowerCase().replace(/ /g, "_");
+          KanbanTest.addBoards([{
+            id: newBoardId,
+            title: newBoardName,
+            item: []
+          }]);
+          document.querySelector('#new-board-modal').classList.remove('show');
+          document.querySelector('body').classList.remove('modal-open');
+
+          document.querySelector('.modal-backdrop').remove();
+        });
+
+        var updateTask = document.getElementById("jkanban-update-task");
+        updateTask.addEventListener("click", function () {
+          let jkanbanInfoModalTaskId = document.querySelector(
+            "#jkanban-info-modal #jkanban-task-id"
+          );
+          let jkanbanInfoModalTaskTitle = document.querySelector(
+            "#jkanban-info-modal #jkanban-task-title"
+          );
+          let jkanbanInfoModalTaskAssignee = document.querySelector(
+            "#jkanban-info-modal #jkanban-task-assignee"
+          );
+          let jkanbanInfoModalTaskDescription = document.querySelector(
+            "#jkanban-info-modal #jkanban-task-description"
+          );
+          KanbanTest.replaceElement(jkanbanInfoModalTaskId.value, {
+            title: jkanbanInfoModalTaskTitle.value,
+            assignee: jkanbanInfoModalTaskAssignee.value,
+            description: jkanbanInfoModalTaskDescription.value
+          });
+          jkanbanInfoModalTaskId.value = jkanbanInfoModalTaskId.value;
+          jkanbanInfoModalTaskTitle.value = jkanbanInfoModalTaskTitle.value;
+          jkanbanInfoModalTaskAssignee.value = jkanbanInfoModalTaskAssignee.value;
+          jkanbanInfoModalTaskDescription.value = jkanbanInfoModalTaskDescription.value;
+          document.querySelector('#jkanban-info-modal').classList.remove('show');
+          document.querySelector('body').classList.remove('modal-open');
+          document.querySelector('.modal-backdrop').remove();
+
+
+        });
+        $("[data-id='_done']").css('display', 'none');
+        $('.kanban-container').css('overflow-x', 'hidden');
+      }
+    }
+
+    function loadUsuario() {
+      let item = '<option value="0">Selecione o responsável</option>';
+      $.each(newloadAPI('kanban_usuarios', []), (i, dados) => {
+        item += `<option value='${dados.idusuario}'>${dados.nome_completo}</option>`;
+      });
+      $('#edtusuario').html(item);
+    }
+
+    function newTarefa() {
+      salvar = true;
+      $('#jkanban-update-task').html('Criar tarefa');
+      $('#edtusuario').val(0);
+      $('#jkanban-task-title').val('');
+      $('#jkanban-task-description').val('');
+      $('#title-modal').html('Nova tarefa');
+      $('#jkanban-info-modal').modal('show');
+    }
+
+    function loadChecklist(idtarefa) {
+      let arrChecklist = [];
+      $.each(newloadAPI('kanban_checklist', [idtarefa]), (i, dados) => {
+        if (dados.quantidade) return;
+
+        let objCapa = {
+          id: dados.idchecklist,
+          titulo: dados.descricao,
+          list: []
+        };
+
+        $.each(newloadAPI('kanban_checklistitem', [dados.idchecklist]), (i, check) => {
+          let objItem = {
+            id: check.idchecklist_item,
+            titulo: check.descricao,
+            executada: check.executada == 't',
+            idusuario: check.idusuario
+          }
+          objCapa.list.push(objItem);
+        });
+
+        arrChecklist.push(objCapa);
+      });
+
+      frontChecklist(arrChecklist);
+    }
+
+    function handleTitulo(idcapa, editar, salvar) {
+      if (salvar) {
+        let valor = $(`#input-${idcapa}`).val();
+        newloadAPI('kanban_checkupdatetitulo', [idcapa, valor])
+        $(`#title-${idcapa} p`).html(valor);
+      }
+
+      if (editar) {
+        $(`#title-${idcapa}`).css('display', 'none');
+        $(`#title-edit-${idcapa}`).css('display', 'block');
+      } else {
+        $(`#title-${idcapa}`).css('display', 'block');
+        $(`#title-edit-${idcapa}`).css('display', 'none');
+      }
+    }
+
+    function frontChecklist(checklist) {
+      $('.container-checklist').empty();
+
+      let item = '';
+      for (const checkCapa of checklist) {
+        item += `        
+          <div class="form-group div-checklist">
+
+            <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
+
+              <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
+
+              <div id='title-${checkCapa.id}' style='cursor:pointer; width: 100%;'>
+                <p                  
+                  class="h5" 
+                  onclick='handleTitulo(${checkCapa.id}, ${true}, ${false})'
+                >
+                    ${checkCapa.titulo}                
+                </p>              
+              </div>
+
+              <div id='title-edit-${checkCapa.id}' style='display:none;'>
+
+                <div class="input-group input-group-sm" style='width: 220%;'>
+                  <input id='input-${checkCapa.id}' class="form-control" type="text" value='${checkCapa.titulo}'/>
+                </div>
+
+                <div class='icon-checklist d-flex'> 
+                  <button type="button" class="btn btn-success btn-sm"
+                    onclick='handleTitulo(${checkCapa.id}, ${false}, ${true})'
+                  >
+                    <i class="fas fa-check-square" style='font-size:15px'></i>
+                  </button>
+                
+                  <div class='icon-times' onclick='handleTitulo(${checkCapa.id}, ${false}, ${false})' style='cursor:pointer;'>
+                    <i class="fas fa-times"></i>
+                  </div>
+                </div>
+                
+              </div>
+
+            </div>
+        `;
+
+        let total = 0, checkado = 0;
+        let itemLista = '';
+        for (const checkItem of checkCapa.list) {
+          total++;
+          let checked;
+          if (checkItem.executada) {
+            checked = 'checked';
+            checkado++;
+          } else checked = '';
+
+          itemLista += `              
+            <input class='ck-${checkItem.id}' id="${checkItem.id}" type="checkbox" name="r" value="${checkItem.id}" ${checked} 
+              onclick='changeCheck(${checkItem.id}, ${checkCapa.id})'>
+            <label class='label-${checkItem.id}' 
+              ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}</label>                                        
+          `;
+
+
+
+        }
+
+        itemLista = itemLista.indexOf('undefined') > 0 ? '' : itemLista;
+
+        let porcentagem = ((checkado / total) * 100).toFixed(0);
+        item += `
+          <div class="row" style="margin-top: 10px; margin-bottom: -5px;" id='capa-${checkCapa.id}'>
+            <div class="col-1">
+              <div class="progress-wrapper" style="margin-left: 30px;">
+                <span class="text-sm font-weight-bold">${porcentagem}%</span>
+              </div>
+            </div>
+
+            <div class="col-10">
+             <div class="progress-wrapper" style="margin-top: 12px; margin-left: 10px ">
+               <div class="progress">
+                 <div class="progress-bar bg-gradient-success" 
+                   role="progressbar" aria-valuenow="${porcentagem}" 
+                   aria-valuemin="0" aria-valuemax="100" style="width: ${porcentagem}%;"></div>
+                 </div>
+               </div>
+             </div>
+          </div>
+
+          <div id="checklist">        
+        `;
+
+        item += itemLista +
+          `
+              <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})'>+</span>
+            </div>
+          </div>`;
+      }
+
+      $('.container-checklist').append(item);
+    }
+
+    function checkEdit(iditem) {
+      let bool = $(`#${iditem}`).prop('checked')
+      $(`#${iditem}`).prop('checked', !bool)
+
+      console.log(bool);
+    }
+
+    function newItem(idcapa) {
+      let iditem = newloadAPI('kanban_newchecklist_item', [idcapa])[0].idchecklist_item;
+      console.log(iditem)
+    }
+
+    function changeCheck(iditem, idcapa) {
+      let bool = $(`#${iditem}`).is(':checked');
+      newloadAPI('kanban_updatecheck', [iditem, bool]);
+
+      let valor = newloadAPI('kanban_checkporcentagem', [idcapa])[0];
+      let porcentagem = ((Number(valor.checkado) / Number(valor.total)) * 100).toFixed(0);
+
+      $(`#capa-${idcapa} .progress-wrapper .text-sm`).html(porcentagem + '%');
+      $(`#capa-${idcapa} .progress-bar`).css('width', porcentagem + '%');
+    }
+
+    function newChecklist() {
+      let idcheck = newloadAPI('kanban_newchecklist', [gbtarefa])[0].idchecklist;
+      let item = `
+        <div class="form-group div-checklist">
+
+            <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
+              <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
+              <div id='title-${idcheck}' style='cursor:pointer; width: 100%; display:none;'>
+                <p  
+                  class="h5" 
+                  onclick='handleTitulo(${idcheck}, ${true}, ${false})'
+                >
+                  Novo checklist
+                </p>              
+              </div>
+
+              <div id='title-edit-${idcheck}'>
+
+                <div class="input-group input-group-sm" style='width: 220%;'>
+                  <input id='input-${idcheck}' class="form-control" type="text" value='Novo checklist'/>
+                </div>
+
+                <div class='icon-checklist d-flex'> 
+                  <button type="button" class="btn btn-success btn-sm"
+                    onclick='handleTitulo(${idcheck}, ${false}, ${true})'
+                  >
+                    <i class="fas fa-check-square" style='font-size:15px'></i>
+                  </button>
+                
+                  <div class='icon-times' onclick='handleTitulo(${idcheck}, ${false}, ${false})' style='cursor:pointer;'>
+                    <i class="fas fa-times"></i>
+                  </div>
+                </div>
+                
+              </div>
+
+            </div>            
+
+            <div class="row" style="margin-top: 10px; margin-bottom: -5px;" id='capa-${idcheck}'>
+             <div class="col-1">
+               <div class="progress-wrapper" style="margin-left: 30px;">
+                 <span class="text-sm font-weight-bold">0%</span>
+               </div>
+             </div>
+
+             <div class="col-10">
+              <div class="progress-wrapper" style="margin-top: 12px; margin-left: 10px ">
+                <div class="progress">
+                  <div class="progress-bar bg-gradient-success" 
+                    role="progressbar" aria-valuenow="0" 
+                    aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <div id="checklist">
+          </div>
+        </div>`;
+
+      $('.container-checklist').append(item);
+
+    }
+
+  </script>
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
+<body class="g-sidenav-show  bg-gray-100" onload="carregarTela();">
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 "
     id="sidenav-main">
     <div class="sidenav-header">
@@ -165,7 +570,9 @@
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Kanban</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">Kanban</h6>
+          <div style="margin: 15px 0 -20px 5px">
+            <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();">+</button>
+          </div>
         </nav>
         <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
           <a href="javascript:;" class="nav-link text-body p-0">
@@ -179,44 +586,14 @@
       </div>
     </nav>
     <!-- End Navbar -->
-    <div class="container-fluid py-4">
-      <div class="d-flex m-3">
-        <div class="ms-auto d-flex">
-          <div class="pe-4 mt-1 position-relative">
-            <p class="text-secondary text-xs font-weight-bold mb-2">Membros:</p>
-            <div class="d-flex align-items-center justify-content-center">
-              <div class="avatar-group">
-                <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                  data-original-title="Jessica Rowland">
-                  <img alt="Image placeholder" src="../../assets/img/team-1.jpg">
-                </a>
-                <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                  data-original-title="Audrey Love">
-                  <img alt="Image placeholder" src="../../assets/img/team-2.jpg" class="rounded-circle">
-                </a>
-                <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                  data-original-title="Michael Lewis">
-                  <img alt="Image placeholder" src="../../assets/img/team-3.jpg" class="rounded-circle">
-                </a>
-                <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                  data-original-title="Lucia Linda">
-                  <img alt="Image placeholder" src="../../assets/img/team-4.jpg" class="rounded-circle">
-                </a>
-                <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                  data-original-title="Ronald Miller">
-                  <img alt="Image placeholder" src="../../assets/img/team-5.jpg" class="rounded-circle">
-                </a>
-              </div>
-            </div>
-            <hr class="vertical dark mt-0">
-          </div>
+    <div class="container-fluid py-4" style="overflow-x: hidden;">
+
+
+      <div class="py-2 min-vh-100 d-inline-flex" style="overflow: hidden;">
+        <div id="myKanban">
         </div>
       </div>
-      <div class="mt-3 kanban-container">
-        <div class="py-2 min-vh-100 d-inline-flex" style="overflow-x: auto">
-          <div id="myKanban"></div>
-        </div>
-      </div>
+
       <div class="modal fade" id="new-board-modal" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -237,22 +614,24 @@
               <div class="text-end">
                 <button class="m-1 btn btn-primary" id="jkanban-add-new-board" data-toggle="modal"
                   data-target="#new-board-modal">
-                  Save changes
+                  Salvar alterações
                 </button>
                 <button class="m-1 btn btn-secondary" data-dismiss="modal" data-target="#new-board-modal">
-                  Close
+                  Fechar
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="hidden opacity-50 fixed inset-0 z-40 bg-black" id="new-board-modal-backdrop"></div>
-      <div class="modal fade" id="jkanban-info-modal" style="display: none" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
+
+      <div class="modal fade hide-scroll" id="jkanban-info-modal" style="display: none" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="h5 modal-title">Task details</h5>
+              <h5 class="h5 modal-title" id="title-modal"></h5>
               <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -263,26 +642,38 @@
                 <span class="input-group-text">
                   <i class="far fa-edit"></i>
                 </span>
-                <input class="form-control" placeholder="Task Title" type="text" id="jkanban-task-title" />
+                <input class="form-control" placeholder="Titulo" type="text" id="jkanban-task-title" />
               </div>
               <div class="mb-4 input-group">
                 <span class="input-group-text">
                   <i class="fas fa-user"></i>
                 </span>
-                <input class="form-control" placeholder="Task Assignee" type="text" id="jkanban-task-assignee" />
+
+                <select class="form-control" id="edtusuario">
+                </select>
+
               </div>
               <div class="form-group">
-                <textarea class="form-control" placeholder="Task Description" id="jkanban-task-description"
+                <textarea class="form-control" placeholder="Observação" id="jkanban-task-description"
                   rows="4"></textarea>
               </div>
+
+              <div class="container-checklist">
+              </div>
+
+              <button class="m-1 btn btn-primary" data-toggle="modal" data-target="#jkanban-info-modal"
+                onclick="newChecklist();">
+                Novo checklist
+              </button>
+
               <div class="alert alert-success d-none">Changes saved!</div>
               <div class="text-end">
                 <button class="m-1 btn btn-primary" id="jkanban-update-task" data-toggle="modal"
                   data-target="#jkanban-info-modal">
-                  Save changes
+                  Salvar alterações
                 </button>
-                <button class="m-1 btn btn-secondary" data-dismiss="modal" data-target="#jkanban-info-modal">
-                  Close
+                <button class="m-1 btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">
+                  Fechar
                 </button>
               </div>
             </div>
@@ -317,218 +708,10 @@
   <script src="../../assets/js/plugins/dragula/dragula.min.js"></script>
   <script src="../../assets/js/plugins/jkanban/jkanban.js"></script>
   <script>
-      // jkanban init
-
-      (function () {
-        if (document.getElementById("myKanban")) {
-          var KanbanTest = new jKanban({
-            element: "#myKanban",
-            gutter: "10px",
-            widthBoard: "450px",
-            click: el => {
-              let jkanbanInfoModal = document.getElementById("jkanban-info-modal");
-
-              let jkanbanInfoModalTaskId = document.querySelector(
-                "#jkanban-info-modal #jkanban-task-id"
-              );
-              let jkanbanInfoModalTaskTitle = document.querySelector(
-                "#jkanban-info-modal #jkanban-task-title"
-              );
-              let jkanbanInfoModalTaskAssignee = document.querySelector(
-                "#jkanban-info-modal #jkanban-task-assignee"
-              );
-              let jkanbanInfoModalTaskDescription = document.querySelector(
-                "#jkanban-info-modal #jkanban-task-description"
-              );
-              let taskId = el.getAttribute("data-eid");
-
-              let taskTitle = el.querySelector('p.text').innerHTML;
-              let taskAssignee = el.getAttribute("data-assignee");
-              let taskDescription = el.getAttribute("data-description");
-              jkanbanInfoModalTaskId.value = taskId;
-              jkanbanInfoModalTaskTitle.value = taskTitle;
-              jkanbanInfoModalTaskAssignee.value = taskAssignee;
-              jkanbanInfoModalTaskDescription.value = taskDescription;
-              var myModal = new bootstrap.Modal(jkanbanInfoModal, {
-                show: true
-              });
-              myModal.show();
-            },
-            buttonClick: function (el, boardId) {
-              if (
-                document.querySelector("[data-id='" + boardId + "'] .itemform") ===
-                null
-              ) {
-                // create a form to enter element
-                var formItem = document.createElement("form");
-                formItem.setAttribute("class", "itemform");
-                formItem.innerHTML = `<div class="form-group">
-          <textarea class="form-control" rows="2" autofocus></textarea>
-          </div>
-          <div class="form-group">
-              <button type="submit" class="btn bg-gradient-success btn-sm pull-end">Add</button>
-              <button type="button" id="kanban-cancel-item" class="btn bg-gradient-light btn-sm pull-end me-2">Cancel</button>
-          </div>`;
-
-                KanbanTest.addForm(boardId, formItem);
-                formItem.addEventListener("submit", function (e) {
-                  e.preventDefault();
-                  var text = e.target[0].value;
-                  let newTaskId =
-                    "_" + text.toLowerCase().replace(/ /g, "_") + boardId;
-                  KanbanTest.addElement(boardId, {
-                    id: newTaskId,
-                    title: text,
-                    class: ["border-radius-md"]
-                  });
-                  formItem.parentNode.removeChild(formItem);
-                });
-                document.getElementById("kanban-cancel-item").onclick = function () {
-                  formItem.parentNode.removeChild(formItem);
-                };
-              }
-            },
-            addItemButton: true,
-            boards: [{
-              id: "_backlog",
-              title: "Backlog",
-              item: [{
-                id: "_task_1_title_id",
-                title: '<p class="text mb-0">Click me to change title</p>',
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_2_title_id",
-                title: '<p class="text mb-0">Drag me to "In progress" section</p>',
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_do_something_id",
-                title: '<img src="../../assets/img/office-dark.jpg" class="w-100"><span class="mt-3 badge badge-sm bg-gradient-primary">Pending</span><p class="text mt-2">Website Design: New cards for blog section and profile details</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">3</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-1.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs rounded-circle me-2" data-toggle="tooltip" data-original-title="Audrey Love"><img alt="Image placeholder" src="../../assets/img/team-2.jpg" class="rounded-circle"></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Michael Lewis"><img alt="Image placeholder" src="../../assets/img/team-3.jpg" class="rounded-circle"></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              },
-              ]
-            },
-            {
-              id: "_progress",
-              title: "In progress",
-              item: [{
-                id: "_task_3_title_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-warning">Errors</span><p class="text mt-2">Fix Firefox errors</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">11</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jana Lucie"><img alt="Image placeholder" src="../../assets/img/team-3.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-2.jpg" class=""></a></div></div>',
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_4_title_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-info">Updates</span><p class="text mt-2">Argon Dashboard PRO - Angular 11</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">3</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jana Lucie"><img alt="Image placeholder" src="../../assets/img/team-5.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-4.jpg" class=""></a></div></div>',
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_do_something_4_id",
-                title: '<img src="../../assets/img/meeting.jpg" class="w-100"><span class="mt-3 badge badge-sm bg-gradient-info">Updates</span><p class="text mt-2">Vue 3 Updates</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">9</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-1.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs rounded-circle me-2" data-toggle="tooltip" data-original-title="Audrey Love"><img alt="Image placeholder" src="../../assets/img/team-2.jpg" class="rounded-circle"></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Michael Lewis"><img alt="Image placeholder" src="../../assets/img/team-4.jpg" class="rounded-circle"></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              }
-              ]
-
-            },
-            {
-              id: "_working",
-              title: "In review",
-              item: [{
-                id: "_task_do_something_2_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-warning">In Testing</span><p class="text mt-2">Responsive Changes</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">11</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jana Lucie"><img alt="Image placeholder" src="../../assets/img/team-3.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-2.jpg" class=""></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_run_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-success">In review</span><p class="text mt-2 mb-1">Change images dimension</p><div class="col"><div class="progress progressm mb-3 w5"><div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"></div></div></div><div class="d-flex"><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-3.jpg" class=""></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_do_something_3_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-info">In Review</span><p class="text mt-2 mb-1">Update Links</p><div class="col"><div class="progress progressm mb-3 w5"><div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div></div></div><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">6</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jana Lucie"><img alt="Image placeholder" src="../../assets/img/team-5.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Mike Alis"><img alt="Image placeholder" src="../../assets/img/team-1.jpg" class=""></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              }
-              ]
-            },
-            {
-              id: "_done",
-              title: "Done",
-              item: [{
-                id: "_task_all_right_id",
-                title: '<img src="../../assets/img/home-decor-1.jpg" class="w-100"><span class="mt-3 badge badge-sm bg-gradient-success">Done</span><p class="text mt-2">Redesign for the home page</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">8</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Jessica Rowland"><img alt="Image placeholder" src="../../assets/img/team-5.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs rounded-circle me-2" data-toggle="tooltip" data-original-title="Audrey Love"><img alt="Image placeholder" src="../../assets/img/team-1.jpg" class="rounded-circle"></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Michael Lewis"><img alt="Image placeholder" src="../../assets/img/team-4.jpg" class="rounded-circle"></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              },
-              {
-                id: "_task_ok_id",
-                title: '<span class="mt-2 badge badge-sm bg-gradient-success">Done</span><p class="text mt-2">Schedule winter campaign</p><div class="d-flex"><div> <i class="fa fa-paperclip me-1 text-sm"></i><span class="text-sm">2</span></div><div class="avatar-group ms-auto"><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Michael Laurence"><img alt="Image placeholder" src="../../assets/img/team-1.jpg" class=""></a><a href="javascript:;" class="avatar avatar-xs me-2 rounded-circle" data-toggle="tooltip" data-original-title="Michael Lewis"><img alt="Image placeholder" src="../../assets/img/team-4.jpg" class="rounded-circle"></a></div></div>',
-                assignee: "Done Joe",
-                description: "This task's description is for something, but not for anything",
-                class: ["border-radius-md"]
-              }
-              ]
-            }
-            ]
-          });
-
-          var addBoardDefault = document.getElementById("jkanban-add-new-board");
-          addBoardDefault.addEventListener("click", function () {
-            let newBoardName = document.getElementById("jkanban-new-board-name")
-              .value;
-            let newBoardId = "_" + newBoardName.toLowerCase().replace(/ /g, "_");
-            KanbanTest.addBoards([{
-              id: newBoardId,
-              title: newBoardName,
-              item: []
-            }]);
-            document.querySelector('#new-board-modal').classList.remove('show');
-            document.querySelector('body').classList.remove('modal-open');
-
-            document.querySelector('.modal-backdrop').remove();
-          });
-
-          var updateTask = document.getElementById("jkanban-update-task");
-          updateTask.addEventListener("click", function () {
-            let jkanbanInfoModalTaskId = document.querySelector(
-              "#jkanban-info-modal #jkanban-task-id"
-            );
-            let jkanbanInfoModalTaskTitle = document.querySelector(
-              "#jkanban-info-modal #jkanban-task-title"
-            );
-            let jkanbanInfoModalTaskAssignee = document.querySelector(
-              "#jkanban-info-modal #jkanban-task-assignee"
-            );
-            let jkanbanInfoModalTaskDescription = document.querySelector(
-              "#jkanban-info-modal #jkanban-task-description"
-            );
-            KanbanTest.replaceElement(jkanbanInfoModalTaskId.value, {
-              title: jkanbanInfoModalTaskTitle.value,
-              assignee: jkanbanInfoModalTaskAssignee.value,
-              description: jkanbanInfoModalTaskDescription.value
-            });
-            jkanbanInfoModalTaskId.value = jkanbanInfoModalTaskId.value;
-            jkanbanInfoModalTaskTitle.value = jkanbanInfoModalTaskTitle.value;
-            jkanbanInfoModalTaskAssignee.value = jkanbanInfoModalTaskAssignee.value;
-            jkanbanInfoModalTaskDescription.value = jkanbanInfoModalTaskDescription.value;
-            document.querySelector('#jkanban-info-modal').classList.remove('show');
-            document.querySelector('body').classList.remove('modal-open');
-            document.querySelector('.modal-backdrop').remove();
 
 
-          });
-        }
-      })();
+
+
   </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
@@ -539,10 +722,13 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  <!-- Github buttons -->
+
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../../assets/js/soft-ui-dashboard.min.js?v=1.0.5"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="../../default/default.js"></script>
+
+
 </body>
 
 </html>

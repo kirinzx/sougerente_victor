@@ -45,7 +45,7 @@ export default function Profile() {
   let idusuario = 0;
 
   async function getUser() {
-    AsyncStorage.setItem('iduser', '3');
+
     idusuario = await AsyncStorage.getItem('iduser');
     const data = await loadAPI('load_usuario', [idusuario]);
     setUser(data[0]);
@@ -137,7 +137,7 @@ export default function Profile() {
             </ContainerFoto>
             <ViewInf>
               <Nome>{user.nome_completo}</Nome>
-              <Email>Gerente</Email>
+              <Email>{user.desc_funcao}</Email>
             </ViewInf>
           </ContainerUser>
           <ContainerTarefas style={{ marginTop: 15 }}>

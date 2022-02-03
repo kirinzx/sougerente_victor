@@ -170,7 +170,7 @@ export function CardTarefa({ dados, openCamera, loadTarefas }: Props) {
           <View style={{ flexDirection: 'row', marginTop: 17, marginLeft: 5 }}>
             <TouchableOpacity
               style={{ marginLeft: 15 }}
-              onPress={() => setImgVisible(true)}>
+              onPress={() => setObsVisible(true)}>
               <ReactImage
                 style={[stilos.icons]}
                 source={require('../../assets/icons/editar.png')}

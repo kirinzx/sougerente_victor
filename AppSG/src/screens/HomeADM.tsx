@@ -36,7 +36,7 @@ const HomeADM = () => {
       </View>
       <Block row marginTop={sizes.sm} style={{ marginBottom: '-70%' }}>
         <Block marginRight={sizes.sm} style={stilos.card}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={stilos.tcBlock}>
+          <TouchableOpacity onPress={() => navigation.navigate('ProfileADM')} style={stilos.tcBlock}>
             <Image
               source={require('../assets/images/usuario.png')}
               style={stilos.icon}
@@ -91,22 +91,22 @@ export default HomeADM;
 const stilos = StyleSheet.create({
 
   card: {
-    backgroundColor: '#CB8D00',
+    backgroundColor: ('#CB8D00'),
     borderRadius: 15,
     height: '25%',
     marginTop: '30%',
-    shadowColor: '#757575',
+    shadowColor: ('#757575'),
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 4,
   },
 
   card2: {
-    backgroundColor: '#CB8D00',
+    backgroundColor: ('#CB8D00'),
     borderRadius: 15,
     height: '30%',
     marginTop: '-20%',
-    shadowColor: '#757575',
+    shadowColor: ('#757575'),
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 4,
@@ -123,13 +123,13 @@ const stilos = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',
-    color: 'white',
+    color: ('white'),
     marginTop: '6%',
     marginLeft: '5%'
   },
 
   bemvindo: {
-    color: '#CB8D00',
+    color: ('#CB8D00'),
     fontSize: 30,
     fontWeight: 'bold',
     fontFamily: 'OpenSans-ExtraBold',

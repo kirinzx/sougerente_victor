@@ -42,7 +42,7 @@ const Profile = () => {
   const [isModalVisible, setIsModalVisible] = useState(true);
 
 
-  async function authenticate() {
+  /* async function authenticate() {
     const hasPassword = await LocalAuthentication.isEnrolledAsync();
 
     if (!hasPassword) return;
@@ -58,7 +58,7 @@ const Profile = () => {
     setIsModalVisible(false);
   }
 
-  Platform.OS === 'ios' && authenticate();
+  Platform.OS === 'ios' && authenticate(); */
 
 
   async function getUser() {
@@ -86,8 +86,7 @@ const Profile = () => {
         }, 2500);
         return;
       }
-
-      if (usuarium[0].idusuario == 9) {
+      if (usuarium[0].idfuncao == 5) {
         navigation.reset({
           index: 0,
           routes: [{ name: 'HomeADM' }],
@@ -165,7 +164,7 @@ const Profile = () => {
         </View>
       </KeyboardAvoidingView>
 
-      {Platform.OS === 'android' && (
+      {/* {Platform.OS === 'android' && (
         <Modal
           animationType='slide'
           transparent={true}
@@ -186,7 +185,7 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         </Modal>
-      )}
+      )} */}
 
     </>
   );

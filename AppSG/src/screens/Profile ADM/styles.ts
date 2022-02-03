@@ -5,43 +5,49 @@ import {Feather} from '@expo/vector-icons';
 export const Container = styled.View`
   flex: 1;
   background-color: white;
+  padding: 15px;
+  padding-top: 40px;
   align-items: center;
-  padding-top: 15%;
-`;
-
-export const Background = styled.View`
-  top: -42%;
-  position: absolute;
-  width: 80%;
-  height: 80%;
-  background-color: #cb8d00;
-  transform: rotate(105deg);
 `;
 
 export const ContainerUser = styled.View`
   width: 100%;
+  height: 45%;
+  background-color: #cb8d00;
+  justify-content: flex-start;
   align-items: center;
+  border-radius: 20px;
+  padding-top: 5%;
+`;
+
+export const ContainerFoto = styled.View`
+  border-radius: ${RFValue(80)}px;
+  border: 3px solid white;
 `;
 
 export const Foto = styled.Image`
   width: ${RFValue(160)}px;
   height: ${RFValue(160)}px;
-  border-radius: ${RFValue(80)}px;
-  border: 3px solid white;
+  border-radius: ${RFValue(77)}px;
 `;
 
-export const ViewInf = styled.View``;
+export const ButtonPhoto = styled.TouchableOpacity``;
+
+export const ViewInf = styled.View`
+  height: 28%;
+  justify-content: space-around;
+`;
 
 export const Nome = styled.Text`
   margin-vertical: 10px;
   font-weight: bold;
-  color: #404040;
+  color: white;
   font-size: ${RFValue(25)}px;
   text-align: center;
 `;
 
 export const Email = styled.Text`
-  color: black;
+  color: white;
   font-size: ${RFValue(20)}px;
   text-align: center;
 `;
@@ -49,18 +55,17 @@ export const Email = styled.Text`
 export const ContainerTarefas = styled.View`
   justify-content: space-between;
   align-items: center;
+  position: absolute;
   width: 89%;
   height: 12%;
-  top: 5%;
+  top: 45%;
   flex-direction: row;
+  background-color: #8c8c8c;
   border-radius: 20px;
 `;
 
 export const ContainerText = styled.View`
-  border-radius: 10px;
-  width: 30%;
-  height: 100%;
-  background-color: #8c8c8c;
+  width: 33%;
 `;
 
 export const TextNum = styled.Text`
@@ -79,14 +84,12 @@ export const TextDesc = styled.Text`
 `;
 
 export const ContainerCard = styled.View`
-  width: 90%;
   height: ${RFValue(120)}px;
   background-color: #cb8d00;
   margin-top: 20px;
   border-radius: 10px;
   padding: 15px 10px;
   justify-content: space-between;
-  align-self: center;
 `;
 
 export const Title = styled.Text`
@@ -126,4 +129,20 @@ export const ContainerStatus = styled.View`
   border: 2px solid white;
   border-radius: 15px;
   width: 45%;
+`;
+
+export const ContainerBack = styled.TouchableOpacity`
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  flex-direction: row;
+  color: white;
+  align-items: center;
+`;
+
+export const TitleBack = styled.Text`
+  font-weight: bold;
+  color: white;
+  font-size: ${RFValue(18)}px;
+  margin-left: 10px;
 `;

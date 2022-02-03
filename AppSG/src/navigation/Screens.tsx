@@ -11,6 +11,7 @@ import HomeADM from '../screens/HomeADM';
 import agenda from '../screens/agenda';
 import Login from '../screens/login';
 import Profile from '../screens/Profile'
+import ProfileADM from '../screens/Profile ADM'
 import indicadores from '../screens/indicadores';
 
 import { NavigationContext } from '@react-navigation/native';
@@ -27,9 +28,9 @@ export default () => {
         name="login"
         component={Login}
         options={{ headerShown: false }}
-      /> */}
+      />
 
-      {/* <Stack.Screen
+      <Stack.Screen
         name="HomeADM"
         component={HomeADM}
         options={{ headerShown: false }}
@@ -39,6 +40,12 @@ export default () => {
       <Stack.Screen
         name="HomeGerente"
         component={HomeGerente}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ProfileADM"
+        component={ProfileADM}
         options={{ headerShown: false }}
       />
 

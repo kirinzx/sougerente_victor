@@ -31,6 +31,7 @@ import {
   TitleBack,
   ButtonPhoto,
 } from './styles';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -135,6 +136,13 @@ export default function ProfileADM() {
                 <Foto source={{ uri: foto }} resizeMode="cover" />
               </ButtonPhoto>
             </ContainerFoto>
+            <TouchableOpacity style={{ marginTop: '-13%', marginLeft: '35%' }} onPress={() => pickImage()}>
+              <Image
+                width={50}
+                height={50}
+                source={require('../../assets/images/mais_foto.png')}
+              />
+            </TouchableOpacity>
             <ViewInf>
               <Nome>{user.nome_completo}</Nome>
               <Email>{user.desc_funcao}</Email>

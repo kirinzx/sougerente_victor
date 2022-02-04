@@ -230,6 +230,7 @@
       if (editar) {
         $(`#title-${idcapa}`).css('display', 'none');
         $(`#title-edit-${idcapa}`).css('display', 'block');
+        $(`#input-${idcapa}`).focus();
       } else {
         $(`#title-${idcapa}`).css('display', 'block');
         $(`#title-edit-${idcapa}`).css('display', 'none');
@@ -249,12 +250,10 @@
               <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
 
               <div id='title-${checkCapa.id}' style='cursor:pointer; width: 100%;'>
-                <p                  
-                  class="h5" 
-                  onclick='handleTitulo(${checkCapa.id}, ${true}, ${false})'
-                >
+                <p class="h5" 
+                  onclick='handleTitulo(${checkCapa.id}, ${true}, ${false})'>
                     ${checkCapa.titulo}                
-                </p>              
+                </p>
               </div>
 
               <div id='title-edit-${checkCapa.id}' style='display:none;'>
@@ -265,8 +264,7 @@
 
                 <div class='icon-checklist d-flex'> 
                   <button type="button" class="btn btn-success btn-sm"
-                    onclick='handleTitulo(${checkCapa.id}, ${false}, ${true})'
-                  >
+                    onclick='handleTitulo(${checkCapa.id}, ${false}, ${true})'>
                     <i class="fas fa-check-square" style='font-size:15px'></i>
                   </button>
                 
@@ -293,12 +291,11 @@
           itemLista += `              
             <input class='ck-${checkItem.id}' id="${checkItem.id}" type="checkbox" name="r" value="${checkItem.id}" ${checked} 
               onclick='changeCheck(${checkItem.id}, ${checkCapa.id})'>
-            <label class='label-${checkItem.id}' 
-              ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}</label>                                        
+            <label for="${checkItem.id}" class='hover-times' style='position: relative;' ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}
+              <i class="fas fa-times times-item" onclick='deleteItem(${checkItem.id})'></i>  
+            </label>               
+            
           `;
-
-
-
         }
 
         itemLista = itemLista.indexOf('undefined') > 0 ? '' : itemLista;
@@ -326,14 +323,48 @@
           <div id="checklist">        
         `;
 
-        item += itemLista +
-          `
-              <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})'>+</span>
+        item += itemLista + `
+              <div style='display:inline-block; width:200px; '>
+                <div style='display:none; width: 500px;' id='newitem-${checkCapa.id}'>
+                  
+                  <div class='input-group input-group-sm' style='margin-bottom: 15px; width: 300px; margin-right:10px;' >
+                    <input class="form-control" type="text" style='width: 100%;'/>
+                  </div>                
+
+                  <button type="button" class="btn btn-success btn-sm" onclick='handleNewItem(${checkCapa.id}, ${false});'>
+                      <i class="fas fa-check-square" style='font-size:15px'></i>
+                  </button>
+
+                  <div class='icon-times' style='cursor:pointer;' onclick='handleNewItem(${checkCapa.id}, ${true});'>
+                    <i class="fas fa-times"></i>
+                  </div>
+
+                </div>
+                
+                <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})'>+</span>
+              </div>
             </div>
           </div>`;
       }
 
       $('.container-checklist').append(item);
+    }
+
+    function deleteItem(iditem) {
+      newloadAPI('kanban_checklist_deleteitem', [iditem]);
+      loadChecklist(gbtarefa);
+    }
+
+    function handleNewItem(idcapa, exit) {
+      if (exit) {
+        $(`#newitem-${idcapa}`).css('display', 'none');
+        return
+      }
+
+      let valor = $(`#newitem-${idcapa} input`).val();
+      let iditem = newloadAPI('kanban_newchecklist_item', [idcapa, valor]);
+      $(`#newitem-${idcapa}`).css('display', 'none');
+      loadChecklist(gbtarefa);
     }
 
     function checkEdit(iditem) {
@@ -344,8 +375,8 @@
     }
 
     function newItem(idcapa) {
-      let iditem = newloadAPI('kanban_newchecklist_item', [idcapa])[0].idchecklist_item;
-      console.log(iditem)
+      $(`#newitem-${idcapa}`).css('display', 'flex');
+      $(`#newitem-${idcapa} input`).focus();
     }
 
     function changeCheck(iditem, idcapa) {
@@ -416,6 +447,25 @@
           </div>
 
           <div id="checklist">
+            <div style='display:inline-block; width:200px; '>
+                <div style='display:none; width: 500px;' id='newitem-${idcheck}'>
+                  
+                  <div class='input-group input-group-sm' style='margin-bottom: 15px; width: 300px; margin-right:10px;' >
+                    <input class="form-control" type="text" style='width: 100%;'/>
+                  </div>                
+
+                  <button type="button" class="btn btn-success btn-sm" onclick='handleNewItem(${idcheck}, ${false});'>
+                      <i class="fas fa-check-square" style='font-size:15px'></i>
+                  </button>
+
+                  <div class='icon-times' style='cursor:pointer;' onclick='handleNewItem(${idcheck}, ${true});'>
+                    <i class="fas fa-times"></i>
+                  </div>
+
+                </div>
+                
+                <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${idcheck})'>+</span>
+              </div>
           </div>
         </div>`;
 

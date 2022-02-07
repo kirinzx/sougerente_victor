@@ -43,7 +43,7 @@ export default function ProfileADM() {
   const [loading, setLoading] = useState(false);
   const [dataArr, setDataArr] = useState([{}]);
   let fotinha = '';
-  let idusuario = 0;
+  let idusuario = '';
 
   async function getUser() {
 
@@ -54,22 +54,30 @@ export default function ProfileADM() {
   }
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.3,
-    });
+    const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
 
-    if (!result.cancelled) {
-      fotinha = result;
-      Alert.alert('Confirmar seleção de imagem?', '', [
-        {
-          text: 'Cancelar',
-        },
-        { text: 'OK', onPress: () => uploadImage() },
-      ]);
-    } else {
-      return;
+    if (status === 'granted') {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.3,
+      });
+
+      if (!result.cancelled) {
+        fotinha = result;
+        Alert.alert('Confirmar seleção de imagem?', '', [
+          {
+            text: 'Cancelar',
+          },
+          { text: 'OK', onPress: () => uploadImage() },
+        ]);
+      } else {
+        return;
+      }
+    }
+
+    if (status === 'denied') {
+      alert('Acesso a galeria não autorizado, favor autorizar o seu uso nas configurações do seu dispositivo')
     }
   };
 
@@ -78,10 +86,7 @@ export default function ProfileADM() {
 
     let nome = '';
     await loadAPI('profile_usuario', [iduser]).then((result) => {
-      nome = result[0].nome_completo.slice(
-        0,
-        result[0].nome_completo.indexOf(' '),
-      );
+      nome = result[0].nome_completo.replace(' ', '_')
     });
 
     const path = fotinha.uri.split('/');
@@ -98,6 +103,7 @@ export default function ProfileADM() {
     );
 
     setFoto(fotinha.uri);
+    console.log(fotinha.uri)
   }
 
   async function loadCard() {

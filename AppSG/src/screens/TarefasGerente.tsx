@@ -28,7 +28,8 @@ export default function TarefasGerente() {
   const [modalPic, setModalPic] = useState(false);
   const { sizes, assets } = useTheme();
   const navigation = useNavigation();
-  //const [fotinha, setFotinha] = useState();
+
+
 
   let fotinha = '';
 
@@ -65,7 +66,6 @@ export default function TarefasGerente() {
       uri: fotinha.uri,
       type: fotinha.type,
     });
-    console.log(data2);
     await axios.post(
       'http://192.168.1.6/8LIGHT/api_goauditt/sg_fotos.php',
       data2,
@@ -73,18 +73,27 @@ export default function TarefasGerente() {
   }
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 0.3,
-    });
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
-    if (!result.cancelled) {
-      fotinha = result;
-      uploadImage();
-    } else {
-      return;
+    if (status === 'granted') {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: false,
+        quality: 0.3,
+      });
+
+      if (!result.cancelled) {
+        fotinha = result;
+        uploadImage();
+      } else {
+        return;
+      }
     }
+
+    if (status === 'denied') {
+      alert('Permissao a camera nao autorizada, favor autorizar o uso nas configurações do seu dispositivo')
+    }
+    return;
   };
 
   async function loadAPI(api, param) {

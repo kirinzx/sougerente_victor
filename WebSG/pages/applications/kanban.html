@@ -23,14 +23,16 @@
   <link rel="stylesheet" href="../../assets/css/checklist.css">
 
   <script>
-
-
     let refresh = false;
     let gbtarefa = '';
     let salvar = false;
     let tarefas = [[], [], []];
+    let viewAdm = false;
+    let idusuario = 1;
 
     function carregarTela() {
+      $('#btn-newtarefa').css('display', viewAdm ? 'block' : 'none');
+      $('#btn-newchecklist').css('display', viewAdm ? 'block' : 'none');
       loadTarefas();
       loadKanban();
       loadUsuario();
@@ -39,7 +41,7 @@
     function loadTarefas() {
       tarefas = [[], [], []];
       $('#myKanban').empty();
-      $.each(newloadAPI('kanban_tarefas', []), (i, dados) => {
+      $.each(newloadAPI('kanban_tarefas', [idusuario]), (i, dados) => {
         let divImage =
           dados.anexos ? `<img src="${dados.anexos}" class="w-100 img-tarefa">` : '';
 
@@ -60,6 +62,7 @@
             <span class="idusuario" style='display:none;'>${dados.idusuario}</span> 
             <span class="observacao" style='display:none;'>${cripMensagem('D', dados.observacao)}</span> 
             <span class="idtarefa" style='display:none;'>${dados.idtarefa}</span> 
+            <span class="idparceiro" style='display:none;'>${dados.razao_social}</span> 
             ${divImage}
             <p class="text mt-2">${cripMensagem('D', dados.tarefa)}</p>
 
@@ -77,7 +80,6 @@
 
             `,
           class: ["border-radius-md"]
-          //<div class="avatar-group ms-auto" style='position: absolute; right: 30px; bottom: 45px;'>
         }
 
         tarefas[pos].push(obj);
@@ -109,6 +111,7 @@
             $('.div-span').append(divSpan);
 
 
+            $('#idparceiro').val(el.querySelector('.idparceiro').innerHTML);
             let jkanbanInfoModalTaskId = document.querySelector("#jkanban-info-modal #jkanban-task-id");
             let jkanbanInfoModalTaskTitle = document.querySelector("#jkanban-info-modal #jkanban-task-title");
             let jkanbanInfoModalTaskAssignee = document.querySelector("#jkanban-info-modal #edtusuario");
@@ -275,6 +278,8 @@
     }
 
     function handleTitulo(idcapa, editar, salvar) {
+      if (!viewAdm) return
+
       if (salvar) {
         let valor = $(`#input-${idcapa}`).val();
         valor = cripMensagem('C', valor);
@@ -305,7 +310,7 @@
         item += `        
           <div class="form-group div-checklist">
             
-            <div class='delete-check' onclick='deleteCapa(${checkCapa.id})'>
+            <div class='delete-check' onclick='deleteCapa(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}'>
               <i class="fas fa-trash"></i>
             </div>
             
@@ -356,7 +361,7 @@
             <input class='ck-${checkItem.id}' id="${checkItem.id}" type="checkbox" name="r" value="${checkItem.id}" ${checked} 
               onclick='changeCheck(${checkItem.id}, ${checkCapa.id})'>
             <label for="${checkItem.id}" class='hover-times' style='position: relative;' ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}
-              <i class="fas fa-times times-item" onclick='deleteItem(${checkItem.id})'></i>  
+              <i class="fas fa-times times-item" onclick='deleteItem(${checkItem.id})' style='display:${viewAdm ? 'block' : 'none'}'></i>  
             </label>               
             
           `;
@@ -406,7 +411,7 @@
 
                 </div>
                 
-                <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})'>+</span>
+                <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}'>+</span>
               </div>
             </div>
           </div>`;
@@ -466,7 +471,7 @@
 
             <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
               <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
-              <div id='title-${idcheck}' style='cursor:pointer; width: 100%; display:none;'>
+              <div id='title-${idcheck}' style='cursor:pointer; width: 100%; display : none;'>
                 <p  
                   class="h5" 
                   onclick='handleTitulo(${idcheck}, ${true}, ${false})'
@@ -477,7 +482,7 @@
 
               <div id='title-edit-${idcheck}'>
 
-                <div class="input-group input-group-sm" style='width: 220%;'>
+                <div class="input-group input-group-sm" style='width: 220%; display:${viewAdm ? 'block' : 'none'}' >
                   <input id='input-${idcheck}' class="form-control" type="text" value='Novo checklist'/>
                 </div>
 
@@ -704,9 +709,10 @@
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Kanban</li>
             <li>
               <div style="margin: -11px 0 -20px 20px; display: flex; width: 300px; justify-content: space-between;">
-                <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();">+</button>
+                <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();"
+                  id="btn-newtarefa">+</button>
 
-                <div class="input-group" style="width: 70%;">
+                <div class=" input-group" style="width: 70%; opacity: 0;">
                   <span class="input-group-text">
                     <i class="far fa-clock"></i>
                   </span>
@@ -793,6 +799,13 @@
               <input id="jkanban-task-id" class="d-none" />
               <div class="mb-4 input-group">
                 <span class="input-group-text">
+                  <i class="fas fa-store"></i>
+                </span>
+                <input class="form-control" placeholder="Parceiro" type="text" disabled style="padding: 5px 15px;"
+                  id="idparceiro" />
+              </div>
+              <div class="mb-4 input-group">
+                <span class="input-group-text">
                   <i class="far fa-edit"></i>
                 </span>
                 <input class="form-control" placeholder="Titulo" type="text" id="jkanban-task-title" disabled
@@ -803,20 +816,20 @@
                   <i class="fas fa-user"></i>
                 </span>
 
-                <select class="form-control" id="edtusuario" onchange="changeUsuario();">
+                <select class="form-control" id="edtusuario" onchange="changeUsuario();" disabled>
                 </select>
 
               </div>
               <div class="form-group">
-                <textarea class="form-control" placeholder="Observação" id="jkanban-task-description"
+                <textarea class="form-control" placeholder="Observação" id="jkanban-task-description" disabled
                   onblur="blurObs();" rows="4"></textarea>
               </div>
 
               <div class="container-checklist">
               </div>
 
-              <button class="m-1 btn bg-gradient-primary" data-toggle="modal" data-target="#jkanban-info-modal"
-                onclick="newChecklist();">
+              <button class="m-1 btn bg-gradient-primary" data-toggle="modal" id="btn-newchecklist"
+                data-target="#jkanban-info-modal" onclick="newChecklist();">
                 Novo checklist
               </button>
 

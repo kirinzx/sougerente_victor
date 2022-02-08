@@ -23,6 +23,9 @@
   <link rel="stylesheet" href="../../assets/css/checklist.css">
 
   <script>
+
+
+    let refresh = false;
     let gbtarefa = '';
     let salvar = false;
     let tarefas = [[], [], []];
@@ -34,18 +37,18 @@
     }
 
     function loadTarefas() {
+      tarefas = [[], [], []];
       $('#myKanban').empty();
       $.each(newloadAPI('kanban_tarefas', []), (i, dados) => {
         let divImage =
           dados.anexos ? `<img src="${dados.anexos}" class="w-100 img-tarefa">` : '';
 
         let progress = dados.porcentagem ?
-          `            
-              <div class="progress-bar bg-gradient-info" 
-                role="progressbar" aria-valuenow="${dados.porcentagem}" 
-                aria-valuemin="0" aria-valuemax="100" style="width: ${dados.porcentagem}%;">
-              </div>
-            ` : null;
+          `<div class="progress-bar bg-gradient-info" 
+            role="progressbar" aria-valuenow="${dados.porcentagem}" 
+            aria-valuemin="0" aria-valuemax="100" style="width: ${dados.porcentagem}%;">
+           </div>
+          ` : null;
 
         let pos = dados.status == 'Atrasado' ? 0 : dados.status == 'Executando' ? 1 : 2;
         let obj = {
@@ -78,6 +81,7 @@
         }
 
         tarefas[pos].push(obj);
+
       });
     }
 
@@ -118,7 +122,7 @@
             jkanbanInfoModalTaskTitle.value = taskTitle;
             jkanbanInfoModalTaskAssignee.value = el.querySelector('.idusuario').innerHTML;
             jkanbanInfoModalTaskDescription.value = el.querySelector('.observacao').innerHTML;
-            var myModal = new bootstrap.Modal(jkanbanInfoModal, { show: true });
+            var myModal = new bootstrap.Modal(jkanbanInfoModal, { show: true, backdrop: 'static' });
 
             gbtarefa = el.querySelector('.idtarefa').innerHTML;
             loadChecklist(el.querySelector('.idtarefa').innerHTML);
@@ -127,7 +131,6 @@
           },
           buttonClick: function (el, boardId) {
             console.log(boardId);
-
           },
           dragendEl: function (el, boardId) {
             let idtarefa = $(el).attr('data-eid');
@@ -208,6 +211,18 @@
         });
         $("[data-id='_done']").css('display', 'none');
         $('.kanban-container').css('overflow-x', 'hidden');
+
+        setInterval(() => {
+          if (refresh) {
+            KanbanTest.removeBoard("_backlog");
+            KanbanTest.removeBoard("_progress");
+            KanbanTest.removeBoard("_working");
+            refresh = false;
+
+            loadTarefas();
+            loadKanban();
+          }
+        }, 1000);
       }
     }
 
@@ -528,8 +543,7 @@
     }
 
     function closeModal() {
-      //loadTarefas();
-      //loadKanban();
+      refresh = true;
       $('#jkanban-info-modal').modal('hide');
     }
 
@@ -689,9 +703,22 @@
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Kanban</li>
             <li>
-              <div style="margin: -5px 0 -20px 20px">
+              <div style="margin: -11px 0 -20px 20px; display: flex; width: 300px; justify-content: space-between;">
                 <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();">+</button>
+
+                <div class="input-group" style="width: 70%;">
+                  <span class="input-group-text">
+                    <i class="far fa-clock"></i>
+                  </span>
+                  <select class="form-control" id="edtperiodo">
+                    <option>opton1</option>
+                    <option>opton2</option>
+                    <option>opton3</option>
+                  </select>
+                </div>
+
               </div>
+
 
             </li>
 
@@ -751,8 +778,8 @@
 
       <div class="hidden opacity-50 fixed inset-0 z-40 bg-black" id="new-board-modal-backdrop"></div>
 
-      <div class="modal fade hide-scroll" id="jkanban-info-modal" style="display: none" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
+      <div class="modal fade hide-scroll" id="jkanban-info-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg ">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="h5 modal-title" id="title-modal"></h5>

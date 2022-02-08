@@ -34,33 +34,51 @@
     }
 
     function loadTarefas() {
+      $('#myKanban').empty();
       $.each(newloadAPI('kanban_tarefas', []), (i, dados) => {
+        let divImage =
+          dados.anexos ? `<img src="${dados.anexos}" class="w-100 img-tarefa">` : '';
+
+        let progress = dados.porcentagem ?
+          `            
+              <div class="progress-bar bg-gradient-info" 
+                role="progressbar" aria-valuenow="${dados.porcentagem}" 
+                aria-valuemin="0" aria-valuemax="100" style="width: ${dados.porcentagem}%;">
+              </div>
+            ` : null;
+
         let pos = dados.status == 'Atrasado' ? 0 : dados.status == 'Executando' ? 1 : 2;
         let obj = {
-          id: dados.id,
+          id: dados.idtarefa,
           title: `
             <span class="mt-2 badge bg-gradient-warning">${dados.periodo}</span>
             <span class="mt-2 badge bg-gradient-primary">${dados.hora}</span> 
             <span class="mt-2 badge bg-gradient-secondary">${dados.loja}</span> 
             <span class="idusuario" style='display:none;'>${dados.idusuario}</span> 
-            <span class="observacao" style='display:none;'>${dados.observacao}</span> 
+            <span class="observacao" style='display:none;'>${cripMensagem('D', dados.observacao)}</span> 
             <span class="idtarefa" style='display:none;'>${dados.idtarefa}</span> 
-            <p class="text mt-2">${dados.tarefa}</p>
-            <div class="d-flex">5/10<div> 
-              <i class="fa fa-check-square me-1 text-sm" style='margin-left: 10px;'></i>
-            </div>
-            <div class="avatar-group ms-auto" style='position: absolute; right: 30px; bottom: 45px;'>
+            ${divImage}
+            <p class="text mt-2">${cripMensagem('D', dados.tarefa)}</p>
+
+            <div class='card-footer' >             
+
+              <div class="progress" style='width: 75%; opacity: ${!progress ? '0' : '1'}'>
+                ${progress}               
+              </div>
+
               <a href="javascript:;" class="avatar me-2 rounded-circle" data-toggle="tooltip">
                 <img alt="Image placeholder" src="${dados.foto}" class="">
               </a>
-            </div>`,
+
+            </div>
+
+            `,
           class: ["border-radius-md"]
+          //<div class="avatar-group ms-auto" style='position: absolute; right: 30px; bottom: 45px;'>
         }
 
         tarefas[pos].push(obj);
       });
-
-      //console.log(tarefas)
     }
 
     function loadKanban() {
@@ -75,6 +93,17 @@
             $('#jkanban-update-task').html('Salvar alterações');
             $('#title-modal').html('Editar tarefa');
             let jkanbanInfoModal = document.getElementById("jkanban-info-modal");
+
+            let divSpan = `
+                <span class="mt-2 badge bg-gradient-warning">${el.querySelector('.bg-gradient-warning').innerHTML}</span>
+                <span class="mt-2 badge bg-gradient-primary">${el.querySelector('.bg-gradient-primary').innerHTML}</span>
+                <span class="mt-2 badge bg-gradient-secondary">${el.querySelector('.bg-gradient-secondary').innerHTML}</span>
+            `;
+
+            $('#jkanban-task-title').attr('disabled', true);
+            $('.div-span').empty();
+            $('.div-span').append(divSpan);
+
 
             let jkanbanInfoModalTaskId = document.querySelector("#jkanban-info-modal #jkanban-task-id");
             let jkanbanInfoModalTaskTitle = document.querySelector("#jkanban-info-modal #jkanban-task-title");
@@ -92,13 +121,20 @@
             var myModal = new bootstrap.Modal(jkanbanInfoModal, { show: true });
 
             gbtarefa = el.querySelector('.idtarefa').innerHTML;
-            loadChecklist(el.querySelector('.idtarefa').innerHTML)
+            loadChecklist(el.querySelector('.idtarefa').innerHTML);
 
             myModal.show();
           },
           buttonClick: function (el, boardId) {
             console.log(boardId);
 
+          },
+          dragendEl: function (el, boardId) {
+            let idtarefa = $(el).attr('data-eid');
+            let boardDestino = $(el).parent().parent()[0];
+            boardDestino = $(boardDestino).attr('data-order');
+            let bool = boardDestino == 3;
+            newloadAPI('kanban_tarefaupdate', [idtarefa, bool]);
           },
           addItemButton: false,
           boards: [
@@ -184,6 +220,8 @@
     }
 
     function newTarefa() {
+      $('.div-span').empty();
+      $('#jkanban-task-title').attr('disabled', false);
       salvar = true;
       $('#jkanban-update-task').html('Criar tarefa');
       $('#edtusuario').val(0);
@@ -200,14 +238,15 @@
 
         let objCapa = {
           id: dados.idchecklist,
-          titulo: dados.descricao,
+          titulo: cripMensagem('D', dados.descricao),
           list: []
         };
 
         $.each(newloadAPI('kanban_checklistitem', [dados.idchecklist]), (i, check) => {
+          if (check.quantidade) return;
           let objItem = {
             id: check.idchecklist_item,
-            titulo: check.descricao,
+            titulo: cripMensagem('D', check.descricao),
             executada: check.executada == 't',
             idusuario: check.idusuario
           }
@@ -223,6 +262,7 @@
     function handleTitulo(idcapa, editar, salvar) {
       if (salvar) {
         let valor = $(`#input-${idcapa}`).val();
+        valor = cripMensagem('C', valor);
         newloadAPI('kanban_checkupdatetitulo', [idcapa, valor])
         $(`#title-${idcapa} p`).html(valor);
       }
@@ -237,6 +277,11 @@
       }
     }
 
+    function deleteCapa(idcapa) {
+      newloadAPI('kanban_checklist_deletecapa', [idcapa]);
+      loadChecklist(gbtarefa);
+    }
+
     function frontChecklist(checklist) {
       $('.container-checklist').empty();
 
@@ -244,7 +289,11 @@
       for (const checkCapa of checklist) {
         item += `        
           <div class="form-group div-checklist">
-
+            
+            <div class='delete-check' onclick='deleteCapa(${checkCapa.id})'>
+              <i class="fas fa-trash"></i>
+            </div>
+            
             <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
 
               <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
@@ -299,8 +348,9 @@
         }
 
         itemLista = itemLista.indexOf('undefined') > 0 ? '' : itemLista;
-
         let porcentagem = ((checkado / total) * 100).toFixed(0);
+        if (checkado == 0) porcentagem = 0;
+
         item += `
           <div class="row" style="margin-top: 10px; margin-bottom: -5px;" id='capa-${checkCapa.id}'>
             <div class="col-1">
@@ -310,14 +360,14 @@
             </div>
 
             <div class="col-10">
-             <div class="progress-wrapper" style="margin-top: 12px; margin-left: 10px ">
-               <div class="progress">
-                 <div class="progress-bar bg-gradient-success" 
-                   role="progressbar" aria-valuenow="${porcentagem}" 
-                   aria-valuemin="0" aria-valuemax="100" style="width: ${porcentagem}%;"></div>
-                 </div>
-               </div>
-             </div>
+              <div class="progress-wrapper" style="margin-top: 12px; margin-left: 10px ">
+                <div class="progress">
+                  <div class="progress-bar bg-gradient-success" 
+                    role="progressbar" aria-valuenow="${porcentagem}" 
+                    aria-valuemin="0" aria-valuemax="100" style="width: ${porcentagem}%;"></div>
+                  </div>
+                </div>
+              </div>
           </div>
 
           <div id="checklist">        
@@ -395,6 +445,10 @@
       let item = `
         <div class="form-group div-checklist">
 
+            <div class='delete-check' onclick='deleteCapa(${idcheck})'>
+              <i class="fas fa-trash"></i>
+            </div>
+
             <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
               <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
               <div id='title-${idcheck}' style='cursor:pointer; width: 100%; display:none;'>
@@ -471,6 +525,21 @@
 
       $('.container-checklist').append(item);
 
+    }
+
+    function closeModal() {
+      //loadTarefas();
+      //loadKanban();
+      $('#jkanban-info-modal').modal('hide');
+    }
+
+    function changeUsuario() {
+      let idusuario = $('#edtusuario').val();
+      newloadAPI('kanban_tarefaupdate_usuario', [gbtarefa, idusuario]);
+    }
+
+    function blurObs() {
+      newloadAPI('kanban_tarefaupdate_obs', [cripMensagem('C', $('#jkanban-task-description').val()), gbtarefa]);
     }
 
   </script>
@@ -619,10 +688,15 @@
             </li>
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Kanban</li>
+            <li>
+              <div style="margin: -5px 0 -20px 20px">
+                <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();">+</button>
+              </div>
+
+            </li>
+
           </ol>
-          <div style="margin: 15px 0 -20px 5px">
-            <button class="mb-0 kanban-title-button btn btn-sm btn-secondary" onclick="newTarefa();">+</button>
-          </div>
+
         </nav>
         <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
           <a href="javascript:;" class="nav-link text-body p-0">
@@ -682,6 +756,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="h5 modal-title" id="title-modal"></h5>
+              <div class="div-span" style="margin-left: 20px; margin-bottom: 5px;">
+              </div>
               <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -692,37 +768,38 @@
                 <span class="input-group-text">
                   <i class="far fa-edit"></i>
                 </span>
-                <input class="form-control" placeholder="Titulo" type="text" id="jkanban-task-title" />
+                <input class="form-control" placeholder="Titulo" type="text" id="jkanban-task-title" disabled
+                  style="padding: 5px 15px;" />
               </div>
               <div class="mb-4 input-group">
                 <span class="input-group-text">
                   <i class="fas fa-user"></i>
                 </span>
 
-                <select class="form-control" id="edtusuario">
+                <select class="form-control" id="edtusuario" onchange="changeUsuario();">
                 </select>
 
               </div>
               <div class="form-group">
                 <textarea class="form-control" placeholder="Observação" id="jkanban-task-description"
-                  rows="4"></textarea>
+                  onblur="blurObs();" rows="4"></textarea>
               </div>
 
               <div class="container-checklist">
               </div>
 
-              <button class="m-1 btn btn-primary" data-toggle="modal" data-target="#jkanban-info-modal"
+              <button class="m-1 btn bg-gradient-primary" data-toggle="modal" data-target="#jkanban-info-modal"
                 onclick="newChecklist();">
                 Novo checklist
               </button>
 
               <div class="alert alert-success d-none">Changes saved!</div>
               <div class="text-end">
-                <button class="m-1 btn btn-primary" id="jkanban-update-task" data-toggle="modal"
-                  data-target="#jkanban-info-modal">
+                <button class="m-1 btn bg-gradient-primary" id="jkanban-update-task" data-toggle="modal"
+                  data-target="#jkanban-info-modal" style="display: none;">
                   Salvar alterações
                 </button>
-                <button class="m-1 btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">
+                <button class="m-1 btn btn-secondary" onclick="closeModal()">
                   Fechar
                 </button>
               </div>

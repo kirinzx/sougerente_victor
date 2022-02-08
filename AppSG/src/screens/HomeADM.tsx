@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../navigation/hooks/';
 import axios from 'axios';
 import { Block, Button } from '../components/';
+import Modal from 'react-native-modal';
 
 
 let usus = [];
@@ -16,6 +17,7 @@ const HomeADM = () => {
   const { assets, colors, fonts, gradients, sizes } = useTheme();
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
+  const [isModalVisible, setModalVisible] = useState(true);
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');
@@ -81,7 +83,36 @@ const HomeADM = () => {
         <Block marginRight={sizes.sm}>
         </Block>
       </Block>
+      <Modal isVisible={isModalVisible} style={stilos.modal}>
+        <View style={stilos.modalContent}>
 
+          <View style={stilos.vwTitulos}>
+            <Text style={stilos.tituloTarefa}>Autenticação</Text>
+          </View>
+
+          <View style={stilos.vwEstrelas}>
+            <Text style={stilos.txtDescricao}>Gostaria de usar Autenticação Biométrica da próxima vez que logar no sistema?</Text>
+            <Text style={stilos.txtBonus}>*( Autenticação Facial/Digital )</Text>
+          </View>
+
+          <Image
+            source={require('../assets/images/digital.png')}
+            style={stilos.imgDigital}
+          />
+
+          <View style={stilos.vwBtn}>
+            <TouchableOpacity style={stilos.btnConfirmar}>
+              <Text style={stilos.txtAceitar}>Sim, usar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={stilos.btnRecusar}>
+              <Text style={stilos.txtRecusar}>Não, obrigado</Text>
+            </TouchableOpacity>
+
+          </View>
+
+        </View>
+      </Modal>
     </Block>
   );
 };
@@ -139,6 +170,99 @@ const stilos = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    height: '60%',
+    borderTopLeftRadius: 60,
+    borderTopRightRadius: 60,
+  },
+
+
+  vwTitulos: {
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '-70%',
+  },
+
+  vwEstrelas: {
+    marginTop: 30,
+  },
+
+  vwBtn: {
+    width: '100%',
+    height: '25%',
+    flexDirection: 'row-reverse',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '-80%',
+    marginTop: '5%',
+  },
+
+  btnConfirmar: {
+    backgroundColor: '#39AF31',
+    width: '100%',
+    height: '30%',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    marginRight: '15%'
+  },
+
+  btnRecusar: {
+    backgroundColor: 'red',
+    width: '100%',
+    height: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    borderRadius: 20,
+    marginRight: '5%',
+  },
+
+  txtAceitar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  txtRecusar: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+    color: 'white',
+  },
+
+  imgDigital: {
+    height: 90,
+    width: 90,
+    marginTop: '10%',
+  },
+
+  txtDescricao: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 16,
+  },
+
+  txtBonus: {
+    textAlign: 'center',
+    alignContent: 'center',
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 15,
+  },
+
 
 });
 

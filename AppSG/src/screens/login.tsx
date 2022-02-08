@@ -42,7 +42,7 @@ const Profile = () => {
   const [isModalVisible, setIsModalVisible] = useState(true);
 
 
-  /* async function authenticate() {
+  async function authenticate() {
     const hasPassword = await LocalAuthentication.isEnrolledAsync();
 
     if (!hasPassword) return;
@@ -50,15 +50,19 @@ const Profile = () => {
     const { success, error } = await LocalAuthentication.authenticateAsync();
 
     if (success) {
-
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'HomeADM' }],
+      });
       Alert.alert('Autenticado com sucesso!');
+      AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
     } else {
       Alert.alert('Login Invalido, por favor tente novamente!');
     }
     setIsModalVisible(false);
   }
 
-  Platform.OS === 'ios' && authenticate(); */
+  Platform.OS === 'ios' && authenticate();
 
 
   async function getUser() {
@@ -164,28 +168,15 @@ const Profile = () => {
         </View>
       </KeyboardAvoidingView>
 
-      {/* {Platform.OS === 'android' && (
+      {Platform.OS === 'android' && (
         <Modal
           animationType='slide'
           transparent={true}
           visible={isModalVisible}
           onShow={authenticate}
         >
-          <View style={stilos.modal}>
-            <Text style={stilos.authText}>
-              Autentique-se utilizando a digital
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                LocalAuthentication.cancelAuthenticate();
-                setIsModalVisible(false);
-              }}
-            >
-              <Text style={stilos.cancelText}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
         </Modal>
-      )} */}
+      )}
 
     </>
   );

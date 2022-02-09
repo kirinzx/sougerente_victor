@@ -17,7 +17,7 @@ const HomeADM = () => {
   const { assets, colors, fonts, gradients, sizes } = useTheme();
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
-  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');
@@ -87,11 +87,12 @@ const HomeADM = () => {
         <View style={stilos.modalContent}>
 
           <View style={stilos.vwTitulos}>
-            <Text style={stilos.tituloTarefa}>Autenticação</Text>
+            <Text style={stilos.tituloAuth}>Autenticação</Text>
           </View>
 
           <View style={stilos.vwEstrelas}>
-            <Text style={stilos.txtDescricao}>Gostaria de usar Autenticação Biométrica da próxima vez que logar no sistema?</Text>
+            <Text style={stilos.txtDescricao}>Gostaria de usar Autenticação Biométrica</Text>
+            <Text style={stilos.txtDescricao}>para realizar login?</Text>
             <Text style={stilos.txtBonus}>*( Autenticação Facial/Digital )</Text>
           </View>
 
@@ -102,11 +103,13 @@ const HomeADM = () => {
 
           <View style={stilos.vwBtn}>
             <TouchableOpacity style={stilos.btnConfirmar}>
-              <Text style={stilos.txtAceitar}>Sim, usar</Text>
+              <Text style={stilos.txtAceitar}>Sim</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={stilos.btnRecusar}>
-              <Text style={stilos.txtRecusar}>Não, obrigado</Text>
+            <View style={{ width: 10 }}></View>
+
+            <TouchableOpacity style={stilos.btnRecusar} onPress={() => setModalVisible(false)}>
+              <Text style={stilos.txtRecusar}>Não, Obrigado</Text>
             </TouchableOpacity>
 
           </View>
@@ -172,20 +175,22 @@ const stilos = StyleSheet.create({
   },
 
   modal: {
-    justifyContent: 'flex-end',
-    margin: 0,
+    justifyContent: 'center',
+    margin: 20,
   },
 
   modalContent: {
     backgroundColor: 'white',
-    padding: 10,
+    padding: 0,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
-    height: '60%',
-    borderTopLeftRadius: 60,
-    borderTopRightRadius: 60,
+    height: '50%',
+    borderTopLeftRadius: 45,
+    borderTopRightRadius: 45,
+    borderBottomLeftRadius: 45,
+    borderBottomRightRadius: 45,
   },
 
 
@@ -201,7 +206,7 @@ const stilos = StyleSheet.create({
   },
 
   vwBtn: {
-    width: '100%',
+    width: 500,
     height: '25%',
     flexDirection: 'row-reverse',
     alignContent: 'center',
@@ -219,7 +224,8 @@ const stilos = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
-    marginRight: '15%'
+    marginRight: '15%',
+    marginBottom: 15,
   },
 
   btnRecusar: {
@@ -231,6 +237,7 @@ const stilos = StyleSheet.create({
     alignContent: 'center',
     borderRadius: 20,
     marginRight: '5%',
+    marginBottom: 15,
   },
 
   txtAceitar: {
@@ -254,6 +261,8 @@ const stilos = StyleSheet.create({
   txtDescricao: {
     fontFamily: 'OpenSans-Bold',
     fontSize: 16,
+    marginLeft: 5,
+    marginRight: 5,
   },
 
   txtBonus: {
@@ -261,6 +270,12 @@ const stilos = StyleSheet.create({
     alignContent: 'center',
     fontFamily: 'OpenSans-Regular',
     fontSize: 15,
+    marginTop: 10,
+  },
+
+  tituloAuth: {
+    fontSize: 22,
+    fontFamily: 'OpenSans-ExtraBold',
   },
 
 

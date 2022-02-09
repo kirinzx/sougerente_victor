@@ -42,25 +42,7 @@ const Profile = () => {
   const [isModalVisible, setIsModalVisible] = useState(true);
 
 
-  async function authenticate() {
-    const hasPassword = await LocalAuthentication.isEnrolledAsync();
 
-    if (!hasPassword) return;
-
-    const { success, error } = await LocalAuthentication.authenticateAsync();
-
-    if (success) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'HomeADM' }],
-      });
-      Alert.alert('Autenticado com sucesso!');
-      AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
-    } else {
-      Alert.alert('Login Invalido, por favor tente novamente!');
-    }
-    setIsModalVisible(false);
-  }
 
   Platform.OS === 'ios' && authenticate();
 
@@ -96,7 +78,7 @@ const Profile = () => {
           routes: [{ name: 'HomeADM' }],
         });
         AsyncStorage.setItem('iduser', usuarium[0].idusuario);
-        AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
+        AsyncStorage.getItem('iduser');
       } else {
         navigation.reset({
           index: 0,
@@ -104,14 +86,58 @@ const Profile = () => {
         });
         AsyncStorage.clear();
         AsyncStorage.setItem('iduser', usuarium[0].idusuario);
-        AsyncStorage.getItem('iduser').then((valor) => console.log(valor));
+        AsyncStorage.getItem('iduser');
       }
 
-      //console.log(usuarium[0].email);
+
     });
-
-
   };
+
+
+  async function authenticate() {
+    const iduser = await AsyncStorage.getItem('iduser')
+    //let usuario1 = iduser;
+
+    if (iduser != null) {
+      const hasPassword = await LocalAuthentication.isEnrolledAsync();
+      if (!hasPassword) return;
+
+      const { success, error } = await LocalAuthentication.authenticateAsync();
+
+      if (success) {
+
+        await loadAPI('load_usuario_bio', [iduser]).then((result) => {
+          for (const dado of result) {
+            usuarium.push(dado);
+          }
+
+          if (usuarium[0].idfuncao == 5) {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'HomeADM' }],
+            });
+
+          } else {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'HomeGerente' }],
+            });
+          }
+        });
+      } else {
+        Alert.alert('Login Invalido, por favor tente novamente!');
+      }
+      setIsModalVisible(false);
+    } else {
+      alert('Faça login uma primeira vez para usar a biometria');
+    }
+
+  }
+
+
+  useEffect(() => {
+    authenticate();
+  }, []);
 
 
   return (

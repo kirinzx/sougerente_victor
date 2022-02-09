@@ -379,7 +379,7 @@ const stilos = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
-    height: '60%',
+    height: '80%',
     borderTopLeftRadius: 60,
     borderTopRightRadius: 60,
   },

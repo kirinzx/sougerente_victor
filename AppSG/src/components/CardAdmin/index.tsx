@@ -22,6 +22,7 @@ import {
   IconClock,
   IconAvaliar,
 } from './styles';
+import { color } from 'react-native-reanimated';
 
 interface Props {
   dados: {
@@ -56,16 +57,27 @@ export function CardAdmin({ dados }: Props) {
   const [maxRating4, setMaxRating4] = useState(['Bom']);
   const [maxRating5, setMaxRating5] = useState(['Muito Bom']);
 
+  const [dfImage, setDfImage] = useState('');
+  const [mxImage, setMxImage] = useState([]);
+
   const starImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry.png'
   const starImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry_white.png'
+
   const sadImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/triste.png'
   const sadImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/triste_white.png'
+
   const neutroImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/neutro.png'
   const neutroImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/neutro_white.png'
+
   const bomImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/bom.png'
   const bomImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/bom_white.png'
+
   const mtBomImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/muitobom.png'
   const mtBomImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/muitobom_white.png'
+
+  const ImageBlack = 'http://192.168.1.6/8LIGHT/api_sougerente/images/FotoCard/imagem_black.png'
+  const ImageColor = 'http://192.168.1.6/8LIGHT/api_sougerente/images/FotoCard/imagem.png'
+
 
   function emoji1(item) {
     setDefaultRating(item);
@@ -73,6 +85,10 @@ export function CardAdmin({ dados }: Props) {
     setDefaultRating3('');
     setDefaultRating4('');
     setDefaultRating5('');
+  }
+
+  function imagezinha(item) {
+    setDfImage(item);
   }
 
   function emoji2(item) {
@@ -114,6 +130,33 @@ export function CardAdmin({ dados }: Props) {
     setDefaultRating3('');
     setDefaultRating4('');
     setDefaultRating5('');
+  }
+
+  const CustomImageButton = () => {
+    return (
+      <View style={stilos.customRatingBarStyle}>
+        {
+          mxImage.map((item, key) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item}
+                onPress={() => imagezinha(item)}
+              >
+                <Image
+                  style={stilos.fotoNormal}
+                  source={
+                    item <= dfImage
+                      ? { uri: ImageColor }
+                      : { uri: ImageBlack }
+                  }
+                />
+              </TouchableOpacity>
+            )
+          })
+        }
+      </View>
+    )
   }
 
   const CustomRatingBar = () => {
@@ -221,8 +264,6 @@ export function CardAdmin({ dados }: Props) {
         }
       </View>
     )
-
-
   }
 
   /* RATING */
@@ -253,16 +294,31 @@ export function CardAdmin({ dados }: Props) {
           <Hora>{dados.horario}</Hora>
         </Time>
       </User>
+
+
       <Modal isVisible={isModalVisible} style={stilos.modal}>
         <View style={stilos.modalContent}>
 
           <View style={stilos.vwTitulos}>
             <Text style={stilos.tituloTarefa}>{dados.descricao}</Text>
-            <Photos source={{ uri: dados.foto }} style={{ height: 70, width: 70 }}></Photos>
+            <Photos source={{ uri: dados.foto }} style={stilos.fotoModal}></Photos>
+
+            <TouchableOpacity style={stilos.tchRefazer}>
+              <Image
+                source={require('../../assets/images/prancheta.png')}
+                style={stilos.fotoRefazer}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={stilos.vwOBS}>
+            <Text style={stilos.txtOBS}>Observação</Text>
           </View>
 
           <View style={stilos.vwEstrelas}>
             <Text style={stilos.titleAvaliar}> Avaliar Execução da Tarefa</Text>
+
+            <CustomImageButton />
 
             <CustomRatingBar />
             <Text style={stilos.starCounter}>
@@ -355,7 +411,7 @@ const stilos = StyleSheet.create({
 
   tituloTarefa: {
     fontFamily: 'OpenSans-ExtraBold',
-    fontSize: 30,
+    fontSize: 28,
     color: 'black',
     paddingBottom: 15,
   },
@@ -432,7 +488,7 @@ const stilos = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '-70%',
+    marginTop: '-60%',
   },
 
   vwEstrelas: {
@@ -464,6 +520,47 @@ const stilos = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 18,
     textAlign: 'center',
+  },
+
+  fotoModal: {
+    height: 50,
+    width: 50,
+    marginLeft: '-80%',
+  },
+
+  vwOBS: {
+    borderWidth: 1,
+    borderColor: '#9b9b9b',
+    height: '30%',
+    width: '75%',
+    marginRight: '-17%',
+    marginTop: '-50%',
+    backgroundColor: '#CDCDCD',
+    borderRadius: 20,
+  },
+
+  txtOBS: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 16,
+    marginLeft: '5%',
+    color: '#686767',
+  },
+
+  fotoNormal: {
+    width: 40,
+    height: 40,
+    marginLeft: '-80%',
+    marginTop: '7%',
+  },
+
+  fotoRefazer: {
+    width: 40,
+    height: 40,
+  },
+
+  tchRefazer: {
+    marginTop: '7%',
+    marginLeft: '-80%',
   },
 
 });

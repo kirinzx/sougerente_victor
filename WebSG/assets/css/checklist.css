@@ -1,8 +1,37 @@
+::-webkit-scrollbar-track {
+  background-color: #F4F4F4;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  background: #F4F4F4;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dad7d7;
+}
+
+.kanban-board-header {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.kanban-title-board {
+  margin: 0;
+  display: flex !important;
+  justify-content: space-around;
+  align-items: center;
+  width: 80%;
+}
+
 .card-footer {
   margin-top: -20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 }
 
 .kanban-item {

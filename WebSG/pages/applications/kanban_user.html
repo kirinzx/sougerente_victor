@@ -27,7 +27,7 @@
     let gbtarefa = '';
     let salvar = false;
     let tarefas = [[], [], []];
-    let viewAdm = false;
+    let viewAdm = true;
     let idusuario = 1;
 
     function carregarTela() {
@@ -438,10 +438,8 @@
     }
 
     function checkEdit(iditem) {
-      let bool = $(`#${iditem}`).prop('checked')
-      $(`#${iditem}`).prop('checked', !bool)
-
-      console.log(bool);
+      let bool = $(`#${iditem}`).prop('checked');
+      $(`#${iditem}`).prop('checked', !bool);
     }
 
     function newItem(idcapa) {

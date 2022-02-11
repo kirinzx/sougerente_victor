@@ -17,7 +17,7 @@ const HomeADM = () => {
   const { assets, colors, fonts, gradients, sizes } = useTheme();
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(true);
 
   async function getUser() {
     var user = await AsyncStorage.getItem('iduser');

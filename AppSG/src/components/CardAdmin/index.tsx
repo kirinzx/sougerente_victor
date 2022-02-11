@@ -33,6 +33,7 @@ interface Props {
     horario: string;
     sigla: string;
     foto: string;
+    anexos: string;
   };
 }
 
@@ -40,9 +41,11 @@ export function CardAdmin({ dados }: Props) {
 
   const [isModalVisible, setModalVisible] = useState(false);
 
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
 
   /* RATING */
   const [defaultRating, setDefaultRating] = useState('');
@@ -58,7 +61,7 @@ export function CardAdmin({ dados }: Props) {
   const [maxRating5, setMaxRating5] = useState(['Muito Bom']);
 
   const [dfImage, setDfImage] = useState('');
-  const [mxImage, setMxImage] = useState([]);
+  const [mxImage, setMxImage] = useState(['1']);
 
   const starImgFilled = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry.png'
   const starImgCorner = 'http://192.168.1.6/8LIGHT/api_sougerente/images/Avaliacao/angry_white.png'
@@ -77,6 +80,28 @@ export function CardAdmin({ dados }: Props) {
 
   const ImageBlack = 'http://192.168.1.6/8LIGHT/api_sougerente/images/FotoCard/imagem_black.png'
   const ImageColor = 'http://192.168.1.6/8LIGHT/api_sougerente/images/FotoCard/imagem.png'
+
+  function loadAnexo(dados) {
+    if (dados.anexos === null) {
+      setDfImage('');
+    } else {
+      setDfImage(dados.anexos)
+    }
+  }
+
+  function Avaliar(dados) {
+    loadAnexo(dados);
+    setModalVisible(true);
+  }
+
+  function InsideImage(dados) {
+    if (dados.anexos === null) {
+      alert('Esta Tarefa não possui nenhuma imagem.')
+    } else {
+      setModalVisible(false);
+    }
+
+  }
 
 
   function emoji1(item) {
@@ -134,19 +159,18 @@ export function CardAdmin({ dados }: Props) {
 
   const CustomImageButton = () => {
     return (
-      <View style={stilos.customRatingBarStyle}>
+      <View style={stilos.customImageBarStyle}>
         {
           mxImage.map((item, key) => {
             return (
               <TouchableOpacity
-                activeOpacity={0.7}
                 key={item}
-                onPress={() => imagezinha(item)}
+                onPress={() => InsideImage(dados)}
               >
                 <Image
                   style={stilos.fotoNormal}
                   source={
-                    item <= dfImage
+                    dfImage != ''
                       ? { uri: ImageColor }
                       : { uri: ImageBlack }
                   }
@@ -273,7 +297,7 @@ export function CardAdmin({ dados }: Props) {
       <Title>{dados.descricao}</Title>
       <ContainerFlex>
         <Departamento>{dados.departamento}</Departamento>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity onPress={() => Avaliar(dados)}>
           <IconAvaliar source={require('../../assets/icons/avalie.png')} />
         </TouchableOpacity>
         <ContainerStatus type={dados.status}>
@@ -309,16 +333,21 @@ export function CardAdmin({ dados }: Props) {
                 style={stilos.fotoRefazer}
               />
             </TouchableOpacity>
+
+          </View>
+
+          <View style={{ width: 300, marginTop: 20, marginLeft: '-7%' }}>
+            <CustomImageButton />
           </View>
 
           <View style={stilos.vwOBS}>
-            <Text style={stilos.txtOBS}>Observação</Text>
+            <Text style={stilos.txtOBS}>{dados.descricao_observacao}</Text>
           </View>
 
           <View style={stilos.vwEstrelas}>
             <Text style={stilos.titleAvaliar}> Avaliar Execução da Tarefa</Text>
 
-            <CustomImageButton />
+
 
             <CustomRatingBar />
             <Text style={stilos.starCounter}>
@@ -346,7 +375,7 @@ export function CardAdmin({ dados }: Props) {
 
 
       </Modal>
-    </Card>
+    </Card >
   );
 }
 
@@ -501,6 +530,15 @@ const stilos = StyleSheet.create({
     marginTop: 30,
   },
 
+  customImageBarStyle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 0,
+    width: '0%',
+    marginLeft: '0%',
+  },
+
+
   starImgStyle: {
     width: 50,
     height: 50,
@@ -549,8 +587,9 @@ const stilos = StyleSheet.create({
   fotoNormal: {
     width: 40,
     height: 40,
-    marginLeft: '-80%',
-    marginTop: '7%',
+    resizeMode: 'cover',
+    marginLeft: '0%',
+    marginTop: '0%',
   },
 
   fotoRefazer: {

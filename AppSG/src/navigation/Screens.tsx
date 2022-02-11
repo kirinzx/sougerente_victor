@@ -30,12 +30,12 @@ export default () => {
         options={{ headerShown: false }}
       /> */}
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="HomeADM"
         component={HomeADM}
         options={{ headerShown: false }}
       />
-
+ */}
 
       <Stack.Screen
         name="HomeGerente"

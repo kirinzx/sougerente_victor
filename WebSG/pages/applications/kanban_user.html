@@ -52,10 +52,10 @@
           `<div class="progress-bar bg-gradient-info" 
             role="progressbar" aria-valuenow="${dados.porcentagem}" 
             aria-valuemin="0" aria-valuemax="100" style="width: ${dados.porcentagem}%;">
-           </div>
-          ` : null;
+          </div>`
+          : null;
 
-        let pos = dados.status == 'Atrasado' ? 0 : dados.status == 'Executando' ? 1 : 2;
+        let pos = !dados.status || dados.status == 'to-do' ? 0 : dados.status == 'andamento' ? 1 : 2;
         let obj = {
           id: dados.idtarefa,
 
@@ -75,17 +75,13 @@
             <p class="text mt-2">${cripMensagem('D', dados.tarefa)}</p>
 
             <div class='card-footer' >             
-
               <div class="progress" style='width: 75%; opacity: ${!progress ? '0' : '1'}'>
                 ${progress}               
               </div>
-
               <a href="javascript:;" class="avatar me-2 rounded-circle" data-toggle="tooltip">
                 <img alt="Image placeholder" src="${dados.foto}" class="">
               </a>
-
             </div>
-
             `,
           class: ["border-radius-md"]
         }
@@ -147,7 +143,9 @@
             let boardDestino = $(el).parent().parent()[0];
             boardDestino = $(boardDestino).attr('data-order');
             let bool = boardDestino == 3;
-            newloadAPI('kanban_tarefaupdate', [idtarefa, bool]);
+
+            if (boardDestino == 3) newloadAPI('kanban_tarefaupdate', [idtarefa, bool]);
+            else newloadAPI('kanban_tarefaupdate_tarefa', [idtarefa, boardDestino]);
           },
           addItemButton: false,
           boards: [

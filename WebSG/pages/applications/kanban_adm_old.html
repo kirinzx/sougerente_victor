@@ -19,79 +19,34 @@
   <link href="../../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../../assets/css/soft-ui-dashboard.css" rel="stylesheet" />
-
   <link rel="stylesheet" href="../../assets/css/checklist.css">
 
   <script>
-    let refresh = false;
-    let gbtarefa = '';
-    let salvar = false;
-    let tarefas = [[], [], []];
-    let viewAdm = false;
-    let idusuario = 12;
 
+    let refresh = false;
+    let idorganograma = 13;
+    let arrBoards = [];
     function carregarTela() {
-      $('#btn-newtarefa').css('display', viewAdm ? 'block' : 'none');
-      $('#btn-newchecklist').css('display', viewAdm ? 'block' : 'none');
-      loadTarefas();
+      loadBoards();
       loadKanban();
-      loadUsuario();
+
+      $('.kanban-container:nth-child(1)').css('overflow', 'hidden');
+      $('.kanban-container:nth-child(2)').css('overflow-y', 'hidden');
+      $('.kanban-container:nth-child(1)').css('border', '2px solid red');
     }
 
-    function loadTarefas() {
-      tarefas = [[], [], []];
-      $('#myKanban').empty();
-      $.each(newloadAPI('kanban_tarefas', [idusuario]), (i, dados) => {
-
-        if (dados.quantidade) return
-
-        let divImage =
-          dados.anexos ? `<img src="${dados.anexos}" class="w-100 img-tarefa">` : '';
-
-        let progress = dados.porcentagem ?
-          `<div class="progress-bar bg-gradient-info" 
-            role="progressbar" aria-valuenow="${dados.porcentagem}" 
-            aria-valuemin="0" aria-valuemax="100" style="width: ${dados.porcentagem}%;">
-           </div>
-          ` : null;
-
-        let pos = dados.status == 'Atrasado' ? 0 : dados.status == 'Executando' ? 1 : 2;
+    function loadBoards() {
+      $.each(newloadAPI('kanbanadm_board', [idorganograma]), (i, dados) => {
         let obj = {
-          id: dados.idtarefa,
-
-          //<span class="mt-2 badge bg-gradient-warning">${dados.periodo}</span>
-          //<span class="mt-2 badge bg-gradient-primary">${dados.hora}</span> 
-          //<span class="mt-2 badge bg-gradient-secondary">${dados.loja}</span> 
-
+          id: dados.idusuario,
           title: `
-            <span class="mt-2 badge bg-gradient-info">${dados.descricao_grupo_tarefas}</span>
-            <span class="mt-2 badge bg-gradient-secondary">${dados.descricao_funcao}</span> 
-            <span class="mt-2 badge bg-gradient-warning">${dados.descricao_departamento}</span> 
-            <span class="idusuario" style='display:none;'>${dados.idusuario}</span> 
-            <span class="observacao" style='display:none;'>${cripMensagem('D', dados.observacao)}</span> 
-            <span class="idtarefa" style='display:none;'>${dados.idtarefa}</span> 
-            <span class="idparceiro" style='display:none;'>${dados.razao_social}</span> 
-            ${divImage}
-            <p class="text mt-2">${cripMensagem('D', dados.tarefa)}</p>
-
-            <div class='card-footer' >             
-
-              <div class="progress" style='width: 75%; opacity: ${!progress ? '0' : '1'}'>
-                ${progress}               
-              </div>
-
-              <a href="javascript:;" class="avatar me-2 rounded-circle" data-toggle="tooltip">
-                <img alt="Image placeholder" src="${dados.foto}" class="">
-              </a>
-
-            </div>
-
-            `,
-          class: ["border-radius-md"]
+            <div>${dados.nome_completo}</div>
+            <a href="javascript:;" class="avatar me-2 rounded-circle img-user" data-toggle="tooltip">
+              <img alt="Image placeholder" src="${dados.foto}" class="">
+            </a>`,
+          item: [],
         }
-
-        tarefas[pos].push(obj);
-
+        arrBoards.push(obj)
       });
     }
 
@@ -101,24 +56,27 @@
           element: "#myKanban",
           gutter: "10px",
           widthBoard: "500px",
-          click: el => {
+          click: el => {//FUNCAO DE CLICK NO CARD
 
-            salvar = false;
-            $('#jkanban-update-task').html('Salvar alterações');
-            $('#title-modal').html('Editar tarefa');
             let jkanbanInfoModal = document.getElementById("jkanban-info-modal");
 
+
+            $('#jkanban-update-task').html('Salvar alterações');
+            $('#title-modal').html('Editar tarefa');
+
             let divSpan = `
-                <span class="mt-2 badge bg-gradient-info">${el.querySelector('.bg-gradient-info').innerHTML}</span>
+            < span class="mt-2 badge bg-gradient-warning" > ${el.querySelector('.bg-gradient-warning').innerHTML}</ >
+                <span class="mt-2 badge bg-gradient-primary">${el.querySelector('.bg-gradient-primary').innerHTML}</span>
                 <span class="mt-2 badge bg-gradient-secondary">${el.querySelector('.bg-gradient-secondary').innerHTML}</span>
-                <span class="mt-2 badge bg-gradient-warning">${el.querySelector('.bg-gradient-warning').innerHTML}</span>
-            `;
+        `;
 
             $('#jkanban-task-title').attr('disabled', true);
             $('.div-span').empty();
             $('.div-span').append(divSpan);
-
             $('#idparceiro').val(el.querySelector('.idparceiro').innerHTML);
+
+
+
             let jkanbanInfoModalTaskId = document.querySelector("#jkanban-info-modal #jkanban-task-id");
             let jkanbanInfoModalTaskTitle = document.querySelector("#jkanban-info-modal #jkanban-task-title");
             let jkanbanInfoModalTaskAssignee = document.querySelector("#jkanban-info-modal #edtusuario");
@@ -136,7 +94,6 @@
 
             gbtarefa = el.querySelector('.idtarefa').innerHTML;
             loadChecklist(el.querySelector('.idtarefa').innerHTML);
-
             myModal.show();
           },
           buttonClick: function (el, boardId) {
@@ -152,20 +109,11 @@
           addItemButton: false,
           boards: [
             {
-              id: "_backlog",
+              id: "_todo",
               title: "To-do",
-              item: tarefas[0]
+              item: []//tarefas[0]
             },
-            {
-              id: "_progress",
-              title: "Em andamento",
-              item: tarefas[1]
-            },
-            {
-              id: "_working",
-              title: "Concluído",
-              item: tarefas[2]
-            },
+            ...arrBoards,
             {
               id: "_done",
               title: "Done",
@@ -176,8 +124,7 @@
 
         var addBoardDefault = document.getElementById("jkanban-add-new-board");
         addBoardDefault.addEventListener("click", function () {
-          let newBoardName = document.getElementById("jkanban-new-board-name")
-            .value;
+          let newBoardName = document.getElementById("jkanban-new-board-name").value;
           let newBoardId = "_" + newBoardName.toLowerCase().replace(/ /g, "_");
           KanbanTest.addBoards([{
             id: newBoardId,
@@ -220,7 +167,6 @@
 
         });
         $("[data-id='_done']").css('display', 'none');
-        $('.kanban-container').css('overflow-x', 'hidden');
 
         setInterval(() => {
           if (refresh) {
@@ -239,7 +185,7 @@
     function loadUsuario() {
       let item = '<option value="0">Selecione o responsável</option>';
       $.each(newloadAPI('kanban_usuarios', []), (i, dados) => {
-        item += `<option value='${dados.idusuario}'>${dados.nome_completo}</option>`;
+        item += `< option value = '${dados.idusuario}' > ${dados.nome_completo}</ > `;
       });
       $('#edtusuario').html(item);
     }
@@ -288,19 +234,19 @@
       if (!viewAdm) return
 
       if (salvar) {
-        let valor = $(`#input-${idcapa}`).val();
+        let valor = $(`#input - ${idcapa} `).val();
         valor = cripMensagem('C', valor);
         newloadAPI('kanban_checkupdatetitulo', [idcapa, valor])
-        $(`#title-${idcapa} p`).html(valor);
+        $(`#title - ${idcapa} p`).html(valor);
       }
 
       if (editar) {
-        $(`#title-${idcapa}`).css('display', 'none');
-        $(`#title-edit-${idcapa}`).css('display', 'block');
-        $(`#input-${idcapa}`).focus();
+        $(`#title - ${idcapa} `).css('display', 'none');
+        $(`#title - edit - ${idcapa} `).css('display', 'block');
+        $(`#input - ${idcapa} `).focus();
       } else {
-        $(`#title-${idcapa}`).css('display', 'block');
-        $(`#title-edit-${idcapa}`).css('display', 'none');
+        $(`#title - ${idcapa} `).css('display', 'block');
+        $(`#title - edit - ${idcapa} `).css('display', 'none');
       }
     }
 
@@ -314,44 +260,44 @@
 
       let item = '';
       for (const checkCapa of checklist) {
-        item += `        
-          <div class="form-group div-checklist">
-            
-            <div class='delete-check' onclick='deleteCapa(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}'>
+        item += `
+          < div class="form-group div-checklist" >
+
+            <div class='delete-check' onclick='deleteCapa(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}' >
               <i class="fas fa-trash"></i>
+            </div >
+
+          <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
+
+            <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
+
+            <div id='title-${checkCapa.id}' style='cursor:pointer; width: 100%;'>
+              <p class="h5"
+                onclick='handleTitulo(${checkCapa.id}, ${true}, ${false})'>
+                ${checkCapa.titulo}
+              </p>
             </div>
-            
-            <div class="d-flex" style="padding: 15px 0 0 15px; margin-bottom: -10px;">
 
-              <i class="fa fa-tasks text-lg" style=' margin: 5px 10px 0 10px;'></i>
+            <div id='title-edit-${checkCapa.id}' style='display:none;'>
 
-              <div id='title-${checkCapa.id}' style='cursor:pointer; width: 100%;'>
-                <p class="h5" 
-                  onclick='handleTitulo(${checkCapa.id}, ${true}, ${false})'>
-                    ${checkCapa.titulo}                
-                </p>
+              <div class="input-group input-group-sm" style='width: 220%;'>
+                <input id='input-${checkCapa.id}' class="form-control" type="text" value='${checkCapa.titulo}' />
               </div>
 
-              <div id='title-edit-${checkCapa.id}' style='display:none;'>
+              <div class='icon-checklist d-flex'>
+                <button type="button" class="btn btn-success btn-sm"
+                  onclick='handleTitulo(${checkCapa.id}, ${false}, ${true})'>
+                  <i class="fas fa-check-square" style='font-size:15px'></i>
+                </button>
 
-                <div class="input-group input-group-sm" style='width: 220%;'>
-                  <input id='input-${checkCapa.id}' class="form-control" type="text" value='${checkCapa.titulo}'/>
+                <div class='icon-times' onclick='handleTitulo(${checkCapa.id}, ${false}, ${false})' style='cursor:pointer;'>
+                  <i class="fas fa-times"></i>
                 </div>
-
-                <div class='icon-checklist d-flex'> 
-                  <button type="button" class="btn btn-success btn-sm"
-                    onclick='handleTitulo(${checkCapa.id}, ${false}, ${true})'>
-                    <i class="fas fa-check-square" style='font-size:15px'></i>
-                  </button>
-                
-                  <div class='icon-times' onclick='handleTitulo(${checkCapa.id}, ${false}, ${false})' style='cursor:pointer;'>
-                    <i class="fas fa-times"></i>
-                  </div>
-                </div>
-                
               </div>
 
             </div>
+
+          </div>
         `;
 
         let total = 0, checkado = 0;
@@ -364,13 +310,13 @@
             checkado++;
           } else checked = '';
 
-          itemLista += `              
-            <input class='ck-${checkItem.id}' id="${checkItem.id}" type="checkbox" name="r" value="${checkItem.id}" ${checked} 
-              onclick='changeCheck(${checkItem.id}, ${checkCapa.id})'>
-            <label for="${checkItem.id}" class='hover-times' style='position: relative;' ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}
-              <i class="fas fa-times times-item" onclick='deleteItem(${checkItem.id})' style='display:${viewAdm ? 'block' : 'none'}'></i>  
-            </label>               
-            
+          itemLista += `
+          < input class='ck-${checkItem.id}' id = "${checkItem.id}" type = "checkbox" name = "r" value = "${checkItem.id}" ${checked}
+        onclick = 'changeCheck(${checkItem.id}, ${checkCapa.id})' >
+          <label for="${checkItem.id}" class='hover-times' style='position: relative;' ondblclick='checkEdit(${checkItem.id});'>${checkItem.titulo}
+            <i class="fas fa-times times-item" onclick='deleteItem(${checkItem.id})' style='display:${viewAdm ? ' block' : 'none'}'></i>  
+            </label >
+
           `;
         }
 
@@ -379,7 +325,7 @@
         if (checkado == 0) porcentagem = 0;
 
         item += `
-          <div class="row" style="margin-top: 10px; margin-bottom: -5px;" id='capa-${checkCapa.id}'>
+          < div class="row" style = "margin-top: 10px; margin-bottom: -5px;" id = 'capa-${checkCapa.id}' >
             <div class="col-1">
               <div class="progress-wrapper" style="margin-left: 30px;">
                 <span class="text-sm font-weight-bold">${porcentagem}%</span>
@@ -395,33 +341,33 @@
                   </div>
                 </div>
               </div>
-          </div>
+          </ >
 
-          <div id="checklist">        
-        `;
+          <div id="checklist">
+            `;
 
         item += itemLista + `
-              <div style='display:inline-block; width:200px; '>
-                <div style='display:none; width: 500px;' id='newitem-${checkCapa.id}'>
-                  
-                  <div class='input-group input-group-sm' style='margin-bottom: 15px; width: 300px; margin-right:10px;' >
-                    <input class="form-control" type="text" style='width: 100%;'/>
-                  </div>                
+            <div style='display:inline-block; width:200px; '>
+              <div style='display:none; width: 500px;' id='newitem-${checkCapa.id}'>
 
-                  <button type="button" class="btn btn-success btn-sm" onclick='handleNewItem(${checkCapa.id}, ${false});'>
-                      <i class="fas fa-check-square" style='font-size:15px'></i>
-                  </button>
-
-                  <div class='icon-times' style='cursor:pointer;' onclick='handleNewItem(${checkCapa.id}, ${true});'>
-                    <i class="fas fa-times"></i>
-                  </div>
-
+                <div class='input-group input-group-sm' style='margin-bottom: 15px; width: 300px; margin-right:10px;' >
+                  <input class="form-control" type="text" style='width: 100%;' />
                 </div>
-                
-                <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}'>+</span>
+
+                <button type="button" class="btn btn-success btn-sm" onclick='handleNewItem(${checkCapa.id}, ${false});'>
+                  <i class="fas fa-check-square" style='font-size:15px'></i>
+                </button>
+
+                <div class='icon-times' style='cursor:pointer;' onclick='handleNewItem(${checkCapa.id}, ${true});'>
+                  <i class="fas fa-times"></i>
+                </div>
+
               </div>
-            </div>
-          </div>`;
+
+              <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${checkCapa.id})' style='opacity:${viewAdm ? '1' : '0'}'>+</span>
+          </div>
+            </div >
+          </div > `;
       }
 
       $('.container-checklist').append(item);
@@ -434,41 +380,43 @@
 
     function handleNewItem(idcapa, exit) {
       if (exit) {
-        $(`#newitem-${idcapa}`).css('display', 'none');
+        $(`#newitem - ${idcapa} `).css('display', 'none');
         return
       }
 
-      let valor = $(`#newitem-${idcapa} input`).val();
+      let valor = $(`#newitem - ${idcapa} input`).val();
       let iditem = newloadAPI('kanban_newchecklist_item', [idcapa, valor]);
-      $(`#newitem-${idcapa}`).css('display', 'none');
+      $(`#newitem - ${idcapa} `).css('display', 'none');
       loadChecklist(gbtarefa);
     }
 
     function checkEdit(iditem) {
-      let bool = $(`#${iditem}`).prop('checked');
-      $(`#${iditem}`).prop('checked', !bool);
+      let bool = $(`#${iditem} `).prop('checked')
+      $(`#${iditem} `).prop('checked', !bool)
+
+      console.log(bool);
     }
 
     function newItem(idcapa) {
-      $(`#newitem-${idcapa}`).css('display', 'flex');
-      $(`#newitem-${idcapa} input`).focus();
+      $(`#newitem - ${idcapa} `).css('display', 'flex');
+      $(`#newitem - ${idcapa} input`).focus();
     }
 
     function changeCheck(iditem, idcapa) {
-      let bool = $(`#${iditem}`).is(':checked');
+      let bool = $(`#${iditem} `).is(':checked');
       newloadAPI('kanban_updatecheck', [iditem, bool]);
 
       let valor = newloadAPI('kanban_checkporcentagem', [idcapa])[0];
       let porcentagem = ((Number(valor.checkado) / Number(valor.total)) * 100).toFixed(0);
 
-      $(`#capa-${idcapa} .progress-wrapper .text-sm`).html(porcentagem + '%');
-      $(`#capa-${idcapa} .progress-bar`).css('width', porcentagem + '%');
+      $(`#capa - ${idcapa} .progress - wrapper.text - sm`).html(porcentagem + '%');
+      $(`#capa - ${idcapa} .progress - bar`).css('width', porcentagem + '%');
     }
 
     function newChecklist() {
       let idcheck = newloadAPI('kanban_newchecklist', [gbtarefa])[0].idchecklist;
       let item = `
-        <div class="form-group div-checklist">
+          < div class="form-group div-checklist" >
 
             <div class='delete-check' onclick='deleteCapa(${idcheck})'>
               <i class="fas fa-trash"></i>
@@ -505,7 +453,7 @@
                 
               </div>
 
-            </div>            
+            </div >            
 
             <div class="row" style="margin-top: 10px; margin-bottom: -5px;" id='capa-${idcheck}'>
              <div class="col-1">
@@ -546,7 +494,7 @@
                 <span class="badge bg-gradient-primary span-newitem" onclick='newItem(${idcheck})'>+</span>
               </div>
           </div>
-        </div>`;
+        </ >`;
 
       $('.container-checklist').append(item);
 
@@ -748,10 +696,8 @@
       </div>
     </nav>
     <!-- End Navbar -->
-    <div class="container-fluid py-4" style="overflow-x: hidden;">
-
-
-      <div class="py-2 min-vh-100 d-inline-flex" style="overflow: hidden;">
+    <div class="container-fluid py-4">
+      <div class="py-2 min-vh-100 d-inline-flex">
         <div id="myKanban">
         </div>
       </div>
@@ -821,8 +767,7 @@
                   <i class="fas fa-user"></i>
                 </span>
 
-                <select style="padding: 0 15px;" class="form-control" id="edtusuario" onchange="changeUsuario();"
-                  disabled>
+                <select class="form-control" id="edtusuario" onchange="changeUsuario();" disabled>
                 </select>
 
               </div>
@@ -880,12 +825,6 @@
   <!-- Kanban scripts -->
   <script src="../../assets/js/plugins/dragula/dragula.min.js"></script>
   <script src="../../assets/js/plugins/jkanban/jkanban.js"></script>
-  <script>
-
-
-
-
-  </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {

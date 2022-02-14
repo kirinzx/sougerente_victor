@@ -88,19 +88,23 @@
             `<div class="progress-bar bg-gradient-info" 
               role="progressbar" aria-valuenow="${item.porcentagem}" 
               aria-valuemin="0" aria-valuemax="100" style="width: ${item.porcentagem}%;">
-            </div>
-          ` : null;
+             </div>
+            `: null;
+
+          item.status = !item.status ? 'to-do' : item.status;
 
           objItem = {
             id: item.idtarefas_executadas,
             title: `            
               <span class="mt-2 badge bg-gradient-info" id='${item.idgrupo_tarefas}'>${item.descricao_grupo_tarefas}</span> 
               <span class="mt-2 badge bg-gradient-secondary" id='${item.idfuncao}'>${item.descricao_funcao}</span> 
-              <span class="mt-2 badge bg-gradient-warning" id='${item.iddepartamento}'>${item.descricao_departamento}</span> 
+              <span class="mt-2 badge bg-gradient-warning" id='${item.iddepartamento}'>${item.descricao_departamento}</span>               
               <span class="observacao" style='display:none;'>${item.observacao}</span>
+              <span class="idtarefa" style='display:none;'>${item.idtarefas_executadas}</span>
               <span class="idtarefa" style='display:none;'>${item.idtarefas_executadas}</span>
               <p class="text mt-2 tarefa">${cripMensagem('D', item.descricao_tarefa)}</p>
               <p class='board-user' style='display:none'></p>
+              <span class="badge badge-sm badge-success badge-user">${item.status}</span>
             
               <div class='card-footer'>
                 <div class="progress" style='width: 100%; margin-top: 10px; opacity: ${!progress ? '0' : '1'}'>
@@ -339,6 +343,9 @@
     }
 
     function newChecklist() {
+
+      console.log(gbtarefa)
+
       let idcheck = newloadAPI('kanban_newchecklist_definicao', [gbtarefa])[0].idchecklist;
       let item = `
         <div class="form-group div-checklist">
@@ -627,6 +634,11 @@
       $('#edtgrupotarefa').attr('disabled', bool);
       $('#edtfuncao').attr('disabled', bool);
       $('#edtdepartamento').attr('disabled', bool);
+    }
+
+    function deleteCapa(idcapa) {
+      newloadAPI('kanban_checklist_deletecapa', [idcapa]);
+      loadChecklist(gbtarefa);
     }
 
   </script>

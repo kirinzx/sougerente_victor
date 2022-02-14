@@ -1,3 +1,9 @@
+.badge-user {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
 ::-webkit-scrollbar-track {
   background-color: #F4F4F4;
 }
